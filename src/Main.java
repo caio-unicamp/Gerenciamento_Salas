@@ -51,7 +51,7 @@ public class Main {
                     mainFrame.setVisible(true);
                     while (mainFrame.isVisible()) {
                         try{
-                            Thread.sleep(10);
+                            Thread.sleep(100);
                         }catch(Exception e){
                             Thread.currentThread().interrupt();
                             System.err.println("MainFrame loop interrompido.");
