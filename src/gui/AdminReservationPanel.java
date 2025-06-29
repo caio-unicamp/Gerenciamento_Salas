@@ -204,13 +204,6 @@ public class AdminReservationPanel extends JPanel {
         }
     }
 
-<<<<<<< HEAD
-=======
-    /**
-     * Cancela a reserva selecionada na tabela, solicitando justificativa do usuário.
-     * Exibe mensagens de erro caso não haja seleção, justificativa ou ocorra algum problema.
-     */
->>>>>>> 3d08e3f913bc2cc9b87f52bd9423501f79380acd
     private void cancelSelectedReservation() {
         int selectedRow = reservationsTable.getSelectedRow();
         if (selectedRow == -1) {
