@@ -16,7 +16,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 
-public class ReservationPanel extends JPanel { // Interface gráfica 
+public class ReservationPanel extends JPanel { // Interface gráfica
     private ReservationManager manager;
     private User loggedInUser;
 
@@ -35,7 +35,7 @@ public class ReservationPanel extends JPanel { // Interface gráfica
 
     private void initComponents() {
         // Tabela de reservas
-        String[] columnNames = {"ID", "Sala", "Data", "Início", "Término", "Propósito", "Status"};
+        String[] columnNames = { "ID", "Sala", "Data", "Início", "Término", "Propósito", "Status", "Observações" };
         reservationTableModel = new DefaultTableModel(columnNames, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -71,16 +71,18 @@ public class ReservationPanel extends JPanel { // Interface gráfica
 
     public void refreshReservationList() {
         reservationTableModel.setRowCount(0); // Limpa a tabela
-        List<Reservation> reservations = manager.getReservationsByUser(loggedInUser); // Exibe apenas as reservas do usuário logado
+        List<Reservation> reservations = manager.getReservationsByUser(loggedInUser); // Exibe apenas as reservas do
+                                                                                      // usuário logado
         for (Reservation reservation : reservations) {
-            reservationTableModel.addRow(new Object[]{
-                reservation.getId(),
-                reservation.getClassroom().getName(),
-                reservation.getDate().toString(),
-                reservation.getStartTime().toString(),
-                reservation.getEndTime().toString(),
-                reservation.getPurpose(),
-                reservation.getStatus().getName()
+            reservationTableModel.addRow(new Object[] {
+                    reservation.getId(),
+                    reservation.getClassroom().getName(),
+                    reservation.getDate().toString(),
+                    reservation.getStartTime().toString(),
+                    reservation.getEndTime().toString(),
+                    reservation.getPurpose(),
+                    reservation.getStatus().getName(),
+                    reservation.getObservation()
             });
         }
     }
@@ -102,7 +104,8 @@ public class ReservationPanel extends JPanel { // Interface gráfica
         if (classroomComboBox.getItemCount() > 0) {
             classroomComboBox.setSelectedIndex(0);
         } else {
-            JOptionPane.showMessageDialog(this, "Não há salas cadastradas para reservar.", "Erro", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Não há salas cadastradas para reservar.", "Erro",
+                    JOptionPane.WARNING_MESSAGE);
             dialog.dispose();
             return;
         }
@@ -122,7 +125,8 @@ public class ReservationPanel extends JPanel { // Interface gráfica
         getRootPane().setDefaultButton(confirmButton);
         confirmButton.addActionListener(e -> {
             try {
-                Classroom selectedClassroom = (Classroom) manager.getAllClassrooms().get(classroomComboBox.getSelectedIndex());
+                Classroom selectedClassroom = (Classroom) manager.getAllClassrooms()
+                        .get(classroomComboBox.getSelectedIndex());
                 LocalDate date = LocalDate.parse(dateField.getText());
                 LocalTime startTime = LocalTime.parse(startTimeField.getText());
                 LocalTime endTime = LocalTime.parse(endTimeField.getText());
@@ -133,18 +137,23 @@ public class ReservationPanel extends JPanel { // Interface gráfica
                 }
 
                 manager.makeReservation(selectedClassroom, loggedInUser, date, startTime, endTime, purpose);
-                JOptionPane.showMessageDialog(dialog, "Reserva realizada com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(dialog, "Reserva realizada com sucesso!", "Sucesso",
+                        JOptionPane.INFORMATION_MESSAGE);
                 refreshReservationList(); // Atualiza a tabela de reservas
                 dialog.dispose();
 
             } catch (DateTimeParseException ex) {
-                JOptionPane.showMessageDialog(dialog, "Formato de data ou hora inválido. Use AAAA-MM-DD e HH:MM.", "Erro de Formato", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(dialog, "Formato de data ou hora inválido. Use AAAA-MM-DD e HH:MM.",
+                        "Erro de Formato", JOptionPane.ERROR_MESSAGE);
             } catch (IllegalArgumentException ex) {
-                JOptionPane.showMessageDialog(dialog, "Erro: " + ex.getMessage(), "Erro de Entrada", JOptionPane.ERROR_MESSAGE);
-            } catch (ReservationConflictException ex) { // Trata a exceção personalizada 
-                JOptionPane.showMessageDialog(dialog, ex.getMessage(), "Conflito de Reserva", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(dialog, "Erro: " + ex.getMessage(), "Erro de Entrada",
+                        JOptionPane.ERROR_MESSAGE);
+            } catch (ReservationConflictException ex) { // Trata a exceção personalizada
+                JOptionPane.showMessageDialog(dialog, ex.getMessage(), "Conflito de Reserva",
+                        JOptionPane.WARNING_MESSAGE);
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(dialog, "Ocorreu um erro inesperado: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(dialog, "Ocorreu um erro inesperado: " + ex.getMessage(), "Erro",
+                        JOptionPane.ERROR_MESSAGE);
                 ex.printStackTrace();
             }
         });
@@ -160,27 +169,38 @@ public class ReservationPanel extends JPanel { // Interface gráfica
     private void cancelSelectedReservation() {
         int selectedRow = reservationTable.getSelectedRow();
         if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "Selecione uma reserva para cancelar.", "Nenhuma Seleção", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Selecione uma reserva para cancelar.", "Nenhuma Seleção",
+                    JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        int confirm = JOptionPane.showConfirmDialog(this, "Tem certeza que deseja cancelar esta reserva?", "Confirmar Cancelamento", JOptionPane.YES_NO_OPTION);
+        int confirm = JOptionPane.showConfirmDialog(this, "Tem certeza que deseja cancelar esta reserva?",
+                "Confirmar Cancelamento", JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
+            String observation = JOptionPane.showInputDialog(this, "Insira a justificativa para o cancelamento:",
+                    "Justificativa do Cancelamento", JOptionPane.QUESTION_MESSAGE);
+            if (observation == null || observation.trim().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "A justificativa é obrigatória para cancelar a reserva.", "Aviso",
+                        JOptionPane.WARNING_MESSAGE);
+                return;
+            }
             int reservationId = (int) reservationTableModel.getValueAt(selectedRow, 0);
             // Encontrar a reserva correta pelo ID (ou por objeto, se tiver uma referência)
             Reservation reservationToCancel = manager.getAllReservations().stream()
-                                                    .filter(r -> r.getId() == reservationId)
-                                                    .findFirst()
-                                                    .orElse(null);
+                    .filter(r -> r.getId() == reservationId)
+                    .findFirst()
+                    .orElse(null);
             if (reservationToCancel != null) {
-                manager.cancelReservation(reservationToCancel);
-                JOptionPane.showMessageDialog(this, "Reserva cancelada com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+                manager.cancelReservation(reservationToCancel, observation);
+                JOptionPane.showMessageDialog(this, "Reserva cancelada com sucesso!", "Sucesso",
+                        JOptionPane.INFORMATION_MESSAGE);
                 refreshReservationList();
                 if (SwingUtilities.getWindowAncestor(this) instanceof MainFrame) {
                     ((MainFrame) SwingUtilities.getWindowAncestor(this)).refreshPanels();
                 }
             } else {
-                JOptionPane.showMessageDialog(this, "Erro ao encontrar a reserva para cancelar.", "Erro", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Erro ao encontrar a reserva para cancelar.", "Erro",
+                        JOptionPane.ERROR_MESSAGE);
             }
         }
     }

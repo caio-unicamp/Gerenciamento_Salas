@@ -30,14 +30,14 @@ public class AdminReservationPanel extends JPanel {
 
     private void initComponents() {
         // Configuração da tabela de reservas (agora exibirá todas)
-        String[] columnNames = {"ID", "Sala", "Usuário", "Data", "Início", "Término", "Propósito", "Status"};
+        String[] columnNames = {"ID", "Sala", "Usuário", "Data", "Início", "Término", "Propósito", "Status", "Observações"}; // Adicionado "Observações"
         reservationsTableModel = new DefaultTableModel(columnNames, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
             }
         };
-        
+
         reservationsTable = new JTable(reservationsTableModel);
         reservationsTable.setFillsViewportHeight(true);
 
@@ -82,15 +82,16 @@ public class AdminReservationPanel extends JPanel {
         reservationsTableModel.setRowCount(0); // Limpa a tabela
         List<Reservation> allReservations = manager.getAllReservations(); // Pega TODAS as reservas
         for (Reservation reservation : allReservations) {
-            reservationsTableModel.addRow(new Object[]{
-                reservation.getId(),
-                reservation.getClassroom().getName(),
-                reservation.getReservedBy().getUsername(),
-                reservation.getDate().toString(),
-                reservation.getStartTime().toString(),
-                reservation.getEndTime().toString(),
-                reservation.getPurpose(),
-                reservation.getStatus().getName()
+            reservationsTableModel.addRow(new Object[] {
+                    reservation.getId(),
+                    reservation.getClassroom().getName(),
+                    reservation.getReservedBy().getUsername(),
+                    reservation.getDate().toString(),
+                    reservation.getStartTime().toString(),
+                    reservation.getEndTime().toString(),
+                    reservation.getPurpose(),
+                    reservation.getStatus().getName(),
+                    reservation.getObservation()
             });
         }
     }
@@ -98,19 +99,21 @@ public class AdminReservationPanel extends JPanel {
     private void confirmSelectedReservation() {
         int selectedRow = reservationsTable.getSelectedRow();
         if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "Selecione uma reserva para confirmar.", "Nenhuma Seleção", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Selecione uma reserva para confirmar.", "Nenhuma Seleção",
+                    JOptionPane.WARNING_MESSAGE);
             return;
         }
 
         int reservationId = (int) reservationsTableModel.getValueAt(selectedRow, 0);
         Reservation reservationToConfirm = manager.getAllReservations().stream()
-                                                    .filter(r -> r.getId() == reservationId)
-                                                    .findFirst()
-                                                    .orElse(null);
+                .filter(r -> r.getId() == reservationId)
+                .findFirst()
+                .orElse(null);
         if (reservationToConfirm != null) {
             try {
                 manager.confirmReservation(reservationToConfirm);
-                JOptionPane.showMessageDialog(this, "Reserva confirmada com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Reserva confirmada com sucesso!", "Sucesso",
+                        JOptionPane.INFORMATION_MESSAGE);
                 refreshReservationsList(); // Atualiza a lista
                 if (SwingUtilities.getWindowAncestor(this) instanceof MainFrame) {
                     ((MainFrame) SwingUtilities.getWindowAncestor(this)).refreshPanels();
@@ -118,98 +121,49 @@ public class AdminReservationPanel extends JPanel {
             } catch (IllegalArgumentException ex) {
                 JOptionPane.showMessageDialog(this, "Erro: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
             } catch (ReservationConflictException ex) {
-                JOptionPane.showMessageDialog(this, ex.getMessage(), "Conflito de Confirmação", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Conflito de Confirmação",
+                        JOptionPane.WARNING_MESSAGE);
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, "Ocorreu um erro inesperado: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Ocorreu um erro inesperado: " + ex.getMessage(), "Erro",
+                        JOptionPane.ERROR_MESSAGE);
                 ex.printStackTrace();
             }
         } else {
-            JOptionPane.showMessageDialog(this, "Reserva não encontrada para confirmação.", "Erro", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Reserva não encontrada para confirmação.", "Erro",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
     private void rejectSelectedReservation() {
         int selectedRow = reservationsTable.getSelectedRow();
         if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "Selecione uma reserva para rejeitar.", "Nenhuma Seleção", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Selecione uma reserva para rejeitar.", "Nenhuma Seleção",
+                    JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        int reservationId = (int) reservationsTableModel.getValueAt(selectedRow, 0);
-        Reservation reservationToReject = manager.getAllReservations().stream()
-                                                  .filter(r -> r.getId() == reservationId)
-                                                  .findFirst()
-                                                  .orElse(null);
-        if (reservationToReject != null) {
-            try {
-                manager.rejectReservation(reservationToReject);
-                JOptionPane.showMessageDialog(this, "Reserva rejeitada com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
-                refreshReservationsList(); // Atualiza a lista
-                if (SwingUtilities.getWindowAncestor(this) instanceof MainFrame) {
-                    ((MainFrame) SwingUtilities.getWindowAncestor(this)).refreshPanels();
-                }
-            } catch (IllegalArgumentException ex) {
-                JOptionPane.showMessageDialog(this, "Erro: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, "Ocorreu um erro inesperado: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
-                ex.printStackTrace();
-            }
-        } else {
-            JOptionPane.showMessageDialog(this, "Reserva não encontrada para rejeição.", "Erro", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    // NOVO MÉTODO PARA CANCELAR RESERVAS
-    private void cancelSelectedReservation() {
-        int selectedRow = reservationsTable.getSelectedRow();
-        if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "Selecione uma reserva para cancelar.", "Nenhuma Seleção", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
-        int confirm = JOptionPane.showConfirmDialog(this, "Tem certeza que deseja CANCELAR esta reserva?", "Confirmar Cancelamento", JOptionPane.YES_NO_OPTION);
+        int confirm = JOptionPane.showConfirmDialog(this, "Tem certeza que deseja REJEITAR esta reserva?",
+                "Confirmar Rejeição", JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
-            int reservationId = (int) reservationsTableModel.getValueAt(selectedRow, 0);
-            Reservation reservationToCancel = manager.getAllReservations().stream()
-                                                    .filter(r -> r.getId() == reservationId)
-                                                    .findFirst()
-                                                    .orElse(null);
-            if (reservationToCancel != null) {
-                try {
-                    manager.cancelReservation(reservationToCancel); // Reutiliza o método do manager
-                    JOptionPane.showMessageDialog(this, "Reserva cancelada com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
-                    refreshReservationsList(); // Atualiza a lista
-                    if (SwingUtilities.getWindowAncestor(this) instanceof MainFrame) {
-                        ((MainFrame) SwingUtilities.getWindowAncestor(this)).refreshPanels();
-                    }
-                } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(this, "Ocorreu um erro ao cancelar: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
-                    ex.printStackTrace();
-                }
-            } else {
-                JOptionPane.showMessageDialog(this, "Reserva não encontrada para cancelar.", "Erro", JOptionPane.ERROR_MESSAGE);
+
+            String observation = JOptionPane.showInputDialog(this, "Insira a justificativa para a rejeição:",
+                    "Justificativa da Rejeição", JOptionPane.QUESTION_MESSAGE);
+            if (observation == null || observation.trim().isEmpty()) { // Usuário clicou em cancelar ou deixou vazio
+                JOptionPane.showMessageDialog(this, "A justificativa é obrigatória para rejeitar a reserva.", "Aviso",
+                        JOptionPane.WARNING_MESSAGE);
+                return;
             }
-        }
-    }
 
-    private void deleteSelectedReservation() {
-        int selectedRow = reservationsTable.getSelectedRow();
-        if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "Selecione uma reserva para deletar.", "Nenhuma Seleção", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
-        int confirm = JOptionPane.showConfirmDialog(this, "Tem certeza que deseja DELETAR esta reserva?", "Confirmar Cancelamento", JOptionPane.YES_NO_OPTION);
-        if (confirm == JOptionPane.YES_OPTION) {
             int reservationId = (int) reservationsTableModel.getValueAt(selectedRow, 0);
-            Reservation reservationToDelete = manager.getAllReservations().stream()
-                                                        .filter(r -> r.getId() == reservationId)
-                                                        .findFirst()
-                                                        .orElse(null);
-            if (reservationToDelete != null) {
+            Reservation reservationToReject = manager.getAllReservations().stream()
+                    .filter(r -> r.getId() == reservationId)
+                    .findFirst()
+                    .orElse(null);
+            if (reservationToReject != null) {
                 try {
-                    manager.deleteReservation(reservationToDelete);
-                    JOptionPane.showMessageDialog(this, "Reserva deletada com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+                    manager.rejectReservation(reservationToReject, observation);
+                    JOptionPane.showMessageDialog(this, "Reserva rejeitada com sucesso!", "Sucesso",
+                            JOptionPane.INFORMATION_MESSAGE);
                     refreshReservationsList(); // Atualiza a lista
                     if (SwingUtilities.getWindowAncestor(this) instanceof MainFrame) {
                         ((MainFrame) SwingUtilities.getWindowAncestor(this)).refreshPanels();
@@ -217,11 +171,98 @@ public class AdminReservationPanel extends JPanel {
                 } catch (IllegalArgumentException ex) {
                     JOptionPane.showMessageDialog(this, "Erro: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
                 } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(this, "Ocorreu um erro inesperado: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Ocorreu um erro inesperado: " + ex.getMessage(), "Erro",
+                            JOptionPane.ERROR_MESSAGE);
                     ex.printStackTrace();
                 }
             } else {
-                JOptionPane.showMessageDialog(this, "Reserva não encontrada para deletar.", "Erro", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Reserva não encontrada para rejeição.", "Erro",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
+    // NOVO MÉTODO PARA CANCELAR RESERVAS
+    private void cancelSelectedReservation() {
+        int selectedRow = reservationsTable.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Selecione uma reserva para cancelar.", "Nenhuma Seleção",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        int confirm = JOptionPane.showConfirmDialog(this, "Tem certeza que deseja CANCELAR esta reserva?",
+                "Confirmar Cancelamento", JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) {
+            String observation = JOptionPane.showInputDialog(this, "Insira a justificativa para o cancelamento:",
+                    "Justificativa do Cancelamento", JOptionPane.QUESTION_MESSAGE);
+            if (observation == null || observation.trim().isEmpty()) { // Usuário clicou em cancelar ou deixou vazio
+                JOptionPane.showMessageDialog(this, "A justificativa é obrigatória para cancelar a reserva.", "Aviso",
+                        JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            int reservationId = (int) reservationsTableModel.getValueAt(selectedRow, 0);
+            Reservation reservationToCancel = manager.getAllReservations().stream()
+                    .filter(r -> r.getId() == reservationId)
+                    .findFirst()
+                    .orElse(null);
+            if (reservationToCancel != null) {
+                try {
+                    manager.cancelReservation(reservationToCancel, observation); // Reutiliza o método do manager
+                    JOptionPane.showMessageDialog(this, "Reserva cancelada com sucesso!", "Sucesso",
+                            JOptionPane.INFORMATION_MESSAGE);
+                    refreshReservationsList(); // Atualiza a lista
+                    if (SwingUtilities.getWindowAncestor(this) instanceof MainFrame) {
+                        ((MainFrame) SwingUtilities.getWindowAncestor(this)).refreshPanels();
+                    }
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(this, "Ocorreu um erro ao cancelar: " + ex.getMessage(), "Erro",
+                            JOptionPane.ERROR_MESSAGE);
+                    ex.printStackTrace();
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Reserva não encontrada para cancelar.", "Erro",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
+    private void deleteSelectedReservation() {
+        int selectedRow = reservationsTable.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Selecione uma reserva para deletar.", "Nenhuma Seleção",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        int confirm = JOptionPane.showConfirmDialog(this, "Tem certeza que deseja DELETAR esta reserva?",
+                "Confirmar Cancelamento", JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) {
+            int reservationId = (int) reservationsTableModel.getValueAt(selectedRow, 0);
+            Reservation reservationToDelete = manager.getAllReservations().stream()
+                    .filter(r -> r.getId() == reservationId)
+                    .findFirst()
+                    .orElse(null);
+            if (reservationToDelete != null) {
+                try {
+                    manager.deleteReservation(reservationToDelete);
+                    JOptionPane.showMessageDialog(this, "Reserva deletada com sucesso!", "Sucesso",
+                            JOptionPane.INFORMATION_MESSAGE);
+                    refreshReservationsList(); // Atualiza a lista
+                    if (SwingUtilities.getWindowAncestor(this) instanceof MainFrame) {
+                        ((MainFrame) SwingUtilities.getWindowAncestor(this)).refreshPanels();
+                    }
+                } catch (IllegalArgumentException ex) {
+                    JOptionPane.showMessageDialog(this, "Erro: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(this, "Ocorreu um erro inesperado: " + ex.getMessage(), "Erro",
+                            JOptionPane.ERROR_MESSAGE);
+                    ex.printStackTrace();
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Reserva não encontrada para deletar.", "Erro",
+                        JOptionPane.ERROR_MESSAGE);
             }
         }
     }

@@ -195,25 +195,27 @@ public class ReservationManager implements Serializable {
         System.out.println("Reserva " + reservation.getId() + " confirmada com sucesso.");
     }
 
-    public void rejectReservation(Reservation reservation) {
+    public void rejectReservation(Reservation reservation, String observation) {
         if (!reservation.getStatus().equals(ReservationStatus.PENDING)) {
             throw new IllegalArgumentException("Reserva não está no status Pendente para ser rejeitada.");
         }
+        reservation.setObservation(observation); // Define a observação
         reservation.setStatus(ReservationStatus.REJECTED);
         saveData();
-        System.out.println("Reserva " + reservation.getId() + " rejeitada com sucesso.");
+        System.out.println("Reserva " + reservation.getId() + " rejeitada com sucesso. Obs: " + observation);
+    
     }
 
 
-    public void cancelReservation(Reservation reservation) {
-        // Permitir cancelar qualquer reserva, independente do status, mas geralmente se cancela CONFIRMED ou PENDING
-        if (!reservation.getStatus().equals(ReservationStatus.PENDING) && !reservation.getStatus().equals(ReservationStatus.CONFIRMED)) {
-            throw new IllegalArgumentException("Reserva não está no status Pendente ou Confirmada para ser cancelada.");
+    public void cancelReservation(Reservation reservation, String observation) {
+        if (reservation.getStatus().equals(ReservationStatus.REJECTED) || reservation.getStatus().equals(ReservationStatus.CANCELLED)) {
+            throw new IllegalArgumentException("Não é possível cancelar uma reserva que já foi rejeitada ou cancelada.");
         }
-
+        reservation.setObservation(observation); // Define a observação
         reservation.setStatus(ReservationStatus.CANCELLED);
         saveData();
-        System.out.println("Reserva " + reservation.getId() + " cancelada com sucesso.");
+        System.out.println("Reserva " + reservation.getId() + " cancelada com sucesso. Obs: " + observation);
+    
     }
 
     public void deleteReservation(Reservation reservation) {
