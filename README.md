@@ -32,6 +32,7 @@ O projeto incorpora os seguintes conceitos de programação orientada a objetos:
 * **Tratamento de exceções:** Trata exceções, incluindo pelo menos uma exceção definida pelo grupo (`ReservationConflictException`).
 * **Arquivos (leitura e gravação):** O sistema realiza operações de leitura e escrita em arquivos relevantes ao projeto (`data/classrooms.txt`, `data/reservations.txt`, `data/users.txt`).
 
+
 ## 4. Como Configurar e Rodar o Projeto
 
 Siga os passos abaixo para preparar seu ambiente e executar a aplicação.
@@ -110,19 +111,17 @@ Se você estiver rodando o projeto dentro do WSL e quiser que a interface gráfi
         cd /mnt/c/Projetos/MC322
         ```
 
-2.  **Compile os Arquivos Java:**
-    * Execute o comando de compilação a partir do diretório raiz do projeto:
+2. **Ative a permissão para o arquivo Shell**
+    * Rode o comando 
         ```bash
-        javac src/Main.java src/model/*.java src/manager/*.java src/exception/*.java src/gui/*.java src/util/*.java
+        chmod +x run.sh 
         ```
-    * Este comando compilará todos os arquivos `.java` nos subdiretórios listados.
 
-3.  **Execute a Aplicação:**
-    * Após a compilação, execute o programa principal:
+3.  **Compile os Arquivos Java e Execute os arquivos Java:**
+    * Por fim, basta rodar o programa
         ```bash
-        java -cp src Main
+        ./run.sh
         ```
-    * A aplicação GUI deve iniciar, exibindo uma tela de login.
 
 ## 5. Primeiros Acessos e Credenciais Padrão
 
@@ -152,7 +151,30 @@ O sistema oferece as seguintes funcionalidades principais:
     * Funcionalidades adicionais para adicionar novas salas (acessível via uma aba específica na interface).
 * **Persistência de Dados:** As informações de salas, usuários e reservas são salvas e carregadas automaticamente de arquivos (`.txt`) localizados na pasta `data/`, garantindo a persistência dos dados entre as sessões.
 
-## 7. Problemas Comuns e Soluções
+## Diagrama de Classes 
+
+O sistema completo é representado pelo diagrama de classes, mostrando as relações entre as diferentes classes
+![Imagem do diagrama de classes](./UML/diagrama_classes.png)
+
+## Hierarquia Resumida
+
+```
+.
+ └── src/
+      └── model/     # Classes de modelo (Classroom , Reservation, User, Student, Administrator)
+      └── manager/   # Classe para gerenciar a lógica de negócios (ReservationManager)
+      └── exception/ # Classes de exceção personalizadas (ReservationConflictException)
+      └── gui/    # Classes da interface gráfica do usuário (Swing)
+      └── util/  # Classes utilitárias (FileUtil)
+      └── Main.Java # Ponto de entrada principal da aplicação
+ └── data/   # Diretório para arquivos de persistência de dados (classrooms.txt, reservations.txt, users.txt)
+ └── MEMBROS.txt    # Lista dos membros do grupo
+ └── Video.txt    # Link para o vídeo de apresentação do projeto
+ └── UML/     # Pasta com o diagrama de classes 
+ └── README.md     # Este arquivo (descrição do projeto)
+```
+
+## Problemas Comuns e Soluções
 
 * **`java.awt.AWTError: Can't connect to X11 window server...`:** Este erro indica que o ambiente gráfico não foi configurado corretamente ou o servidor X não está acessível.
     * **Solução:** Revise a Seção 5.2 "Configuração para Usuários WSL", garantindo que o VcXsrv (ou Xming) esteja rodando, que a opção "Disable access control" esteja marcada, que o Firewall do Windows permita a comunicação, e que a variável `DISPLAY` no seu WSL esteja apontando para o IP correto do host Windows (e que o WSL tenha sido reiniciado após as configurações).
