@@ -1,5 +1,5 @@
 package model;
-// Exemplo de enumeração
+
 public enum ReservationStatus {
     CONFIRMED("Confirmada"), PENDING("Pendente"), CANCELLED("Cancelada"), REJECTED("Rejeitada");
 

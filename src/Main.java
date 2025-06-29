@@ -1,4 +1,3 @@
-// src/Main.java
 import gui.LoginDialog;
 import gui.MainFrame;
 import manager.ReservationManager;

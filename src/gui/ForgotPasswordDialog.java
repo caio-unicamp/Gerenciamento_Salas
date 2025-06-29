@@ -209,7 +209,7 @@ public class ForgotPasswordDialog extends JDialog {
             return;
         }
 
-        // Definir a nova senha (assumindo que a classe User tem um setter para senha)
+        // Definir a nova senha 
         foundUser.setPassword(newPassword); 
         manager.saveData(); // Salva as mudanças na lista de usuários (persistência)
 

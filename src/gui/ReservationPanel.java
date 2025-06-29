@@ -6,7 +6,7 @@ import model.Reservation;
 import model.User;
 import exception.ReservationConflictException;
 
-import javax.swing.*; // Interface gráfica 
+import javax.swing.*; 
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 
@@ -16,7 +16,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 
-public class ReservationPanel extends JPanel { // Interface gráfica
+public class ReservationPanel extends JPanel { 
     private ReservationManager manager;
     private User loggedInUser;
 
@@ -71,8 +71,7 @@ public class ReservationPanel extends JPanel { // Interface gráfica
 
     public void refreshReservationList() {
         reservationTableModel.setRowCount(0); // Limpa a tabela
-        List<Reservation> reservations = manager.getReservationsByUser(loggedInUser); // Exibe apenas as reservas do
-                                                                                      // usuário logado
+        List<Reservation> reservations = manager.getReservationsByUser(loggedInUser); // Exibe apenas as reservas do usuário logado
         for (Reservation reservation : reservations) {
             reservationTableModel.addRow(new Object[] {
                     reservation.getId(),

@@ -1,6 +1,5 @@
 package model;
 
-// Exemplo de herança [cite: 5]
 public class Student extends User {
     private String studentId;
 

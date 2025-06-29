@@ -3,13 +3,13 @@ package gui;
 import manager.ReservationManager;
 import model.User;
 
-import javax.swing.*; // Interface gráfica 
+import javax.swing.*; 
 
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-public class MainFrame extends JFrame { // Interface gráfica
+public class MainFrame extends JFrame { 
     private ReservationManager manager;
     private User loggedInUser;
     private LoginDialog parentLoginDialog; // Referência ao diálogo de login que a abriu
@@ -20,7 +20,7 @@ public class MainFrame extends JFrame { // Interface gráfica
     private CalendarPanel calendarPanel;
     private AdminReservationPanel adminReservationPanel; 
     private AdminClassroomPanel adminClassroomPanel; 
-    private JButton logoutButton; // Novo botão de logout
+    private JButton logoutButton;
 
     public MainFrame(ReservationManager manager, User loggedInUser, LoginDialog parentLoginDialog) {
         this.manager = manager;
@@ -94,8 +94,8 @@ public class MainFrame extends JFrame { // Interface gráfica
                         "Tem certeza que deseja sair do sistema?", "Sair",
                         JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
-            manager.saveData(); // Save data before exiting
-            System.exit(0); // Terminate the application
+            manager.saveData(); // Salva os dados antes de sair
+            System.exit(0); // Encerra o programa
         }
     }
     // Método para atualizar as abas quando necessário (ex: após uma reserva)

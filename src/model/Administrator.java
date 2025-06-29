@@ -1,6 +1,5 @@
 package model;
 
-// Exemplo de herança [cite: 5]
 public class Administrator extends User {
 
     public Administrator(String username, String password, String name, String email) {

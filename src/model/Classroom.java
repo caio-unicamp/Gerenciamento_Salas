@@ -2,17 +2,16 @@ package model;
 
 import java.io.Serializable;
 import java.util.Objects;
-import java.util.ArrayList; // Exemplo de uso de Arrays (Listas) 
+import java.util.ArrayList;  
 import java.util.List;
 
-// Exemplo de classe 
 public class Classroom implements Serializable {
     private static final long serialVersionUID = 1L; // Para serialização
     private String name;
     private int capacity;
     private String location;
     private boolean hasProjector;
-    private List<String> features; // Exemplo de uso de Arrays (Listas) 
+    private List<String> features; 
 
     // Construtor
     public Classroom(String name, int capacity, String location, boolean hasProjector) {
@@ -23,7 +22,7 @@ public class Classroom implements Serializable {
         this.features = new ArrayList<>();
     }
 
-    // Sobrecarga de construtor (exemplo de sobrecarga de métodos) 
+    // Sobrecarga de construtor 
     public Classroom(String name, int capacity, String location, boolean hasProjector, List<String> features) {
         this(name, capacity, location, hasProjector);
         if (features != null) {

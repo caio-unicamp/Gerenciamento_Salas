@@ -2,7 +2,6 @@ package model;
 
 import java.io.Serializable;
 
-// Exemplo de classe abstrata [cite: 8]
 public abstract class User implements Serializable {
     private String username;
     protected String password; // Simplificado para o exemplo, em um sistema real usaria hash

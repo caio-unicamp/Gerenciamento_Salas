@@ -96,8 +96,7 @@ public class ReservationManager implements Serializable {
 
         Reservation newReservation = new Reservation(classroom, reservedBy, date, startTime, endTime, purpose);
 
-        // Ao fazer uma nova reserva, verificar conflitos APENAS com reservas JÁ
-        // CONFIRMADAS.
+        // Ao fazer uma nova reserva, verificar conflitos APENAS com reservas JÁ CONFIRMADAS.
         // Reservas pendentes não causam conflito neste estágio.
         for (Reservation existingReservation : reservations) {
             if (existingReservation.getStatus().equals(ReservationStatus.CONFIRMED)
@@ -117,12 +116,11 @@ public class ReservationManager implements Serializable {
     }
 
     /**
-     * Busca salas disponíveis para um determinado período, considerando apenas
-     * reservas CONFIRMADAS.
+     * Busca salas disponíveis para um determinado período, considerando apenas reservas CONFIRMADAS.
      * 
-     * @param date      Data desejada.
+     * @param date Data desejada.
      * @param startTime Horário de início desejado.
-     * @param endTime   Horário de término desejado.
+     * @param endTime Horário de término desejado.
      * @return Lista de salas disponíveis.
      */
     public List<Classroom> findAvailableClassrooms(LocalDate date, LocalTime startTime, LocalTime endTime) {
@@ -170,10 +168,8 @@ public class ReservationManager implements Serializable {
 
     /**
      * Confirma uma reserva pendente.
-     * 
      * @param reservation A reserva a ser confirmada.
-     * @throws ReservationConflictException Se a confirmação causar conflito com uma
-     *                                      reserva CONFIRMED existente.
+     * @throws ReservationConflictException Se a confirmação causar conflito com uma reserva CONFIRMED existente.
      */
     public void confirmReservation(Reservation reservation) throws ReservationConflictException {
         // Verificar se a reserva já está confirmada ou cancelada/rejeitada
@@ -181,10 +177,8 @@ public class ReservationManager implements Serializable {
             throw new IllegalArgumentException("Reserva não está no status Pendente para ser confirmada.");
         }
 
-        // Antes de confirmar, VERIFICAR NOVAMENTE se a confirmação causaria conflito
-        // com OUTRAS reservas JÁ CONFIRMADAS.
-        // A reserva 'reservation' que estamos tentando confirmar NÃO deve ser
-        // verificada contra si mesma.
+        // Antes de confirmar, VERIFICA NOVAMENTE se a confirmação causaria conflito com OUTRAS reservas JÁ CONFIRMADAS.
+        // A reserva 'reservation' que estamos tentando confirmar NÃO deve ser verificada contra si mesma.
         for (Reservation existingReservation : reservations) {
             if (existingReservation.equals(reservation)) {
                 continue; // Pula a própria reserva

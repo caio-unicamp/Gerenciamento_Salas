@@ -105,7 +105,6 @@ public class Reservation implements Serializable {
     public void setObservation(String observation) {
         this.observation = observation;
     }
-
     /**
      * Verifica se esta reserva se sobrepõe a outra reserva.
      * @param other A outra reserva para verificar.

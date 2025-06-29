@@ -7,7 +7,6 @@ import model.User;
 
 import javax.swing.*;
 
-import exception.ReservationConflictException;
 import exception.UserConflictException;
 
 import java.awt.*;
