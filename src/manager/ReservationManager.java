@@ -39,6 +39,15 @@ public class ReservationManager implements Serializable {
         }
     }
 
+    public void removeClassroom(Classroom classroom) {
+        if (classrooms.contains(classroom)) {
+            classrooms.remove(classroom);
+            saveData();
+        } else {
+            System.out.println("Sala " + classroom.getName() + "não existe.");
+        }
+    }
+
     public Classroom getClassroomByName(String name) {
         return classrooms.stream()
                 .filter(c -> c.getName().equalsIgnoreCase(name))

@@ -41,7 +41,8 @@ public class LoginDialog extends JDialog { // Interface gráfica
 
         loginButton = new JButton("Login");
         loginButton.addActionListener(e -> performLogin());
-
+        getRootPane().setDefaultButton(loginButton);
+        
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(loginButton);
 

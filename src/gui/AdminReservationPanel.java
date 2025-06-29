@@ -36,6 +36,7 @@ public class AdminReservationPanel extends JPanel {
                 return false;
             }
         };
+        
         reservationsTable = new JTable(reservationsTableModel);
         reservationsTable.setFillsViewportHeight(true);
         JScrollPane scrollPane = new JScrollPane(reservationsTable);
