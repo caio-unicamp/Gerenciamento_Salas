@@ -6,10 +6,19 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-// Classe utilitária para operações de arquivo (leitura e gravação) 
+/**
+ * Classe utilitária para operações de arquivo (leitura e gravação) de listas de objetos serializáveis.
+ */
 public class FileUtil {
 
-    // Método para escrever um objeto (ou lista de objetos) em um arquivo
+    /**
+     * Escreve uma lista de objetos serializáveis em um arquivo.
+     *
+     * @param objects  Lista de objetos a serem gravados.
+     * @param filename Caminho do arquivo de destino.
+     * @param <T>      Tipo dos objetos (deve implementar Serializable).
+     * @throws IOException Se ocorrer erro de escrita.
+     */
     public static <T extends Serializable> void writeObjectToFile(List<T> objects, String filename) throws IOException {
         Path filePath = Paths.get(filename);
         Files.createDirectories(filePath.getParent()); // Garante que o diretório exista
@@ -19,7 +28,15 @@ public class FileUtil {
         }
     }
 
-    // Método para ler um objeto (ou lista de objetos) de um arquivo
+    /**
+     * Lê uma lista de objetos serializáveis de um arquivo.
+     *
+     * @param filename Caminho do arquivo de origem.
+     * @param <T>      Tipo dos objetos (deve implementar Serializable).
+     * @return Lista de objetos lidos ou null se o arquivo não existir ou estiver vazio.
+     * @throws IOException            Se ocorrer erro de leitura.
+     * @throws ClassNotFoundException Se a classe dos objetos não for encontrada.
+     */
     @SuppressWarnings("unchecked") // Supressão para o cast de Object para List<T>
     public static <T extends Serializable> List<T> readObjectFromFile(String filename) throws IOException, ClassNotFoundException {
         File file = new File(filename);

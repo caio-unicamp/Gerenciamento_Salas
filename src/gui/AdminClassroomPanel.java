@@ -8,6 +8,10 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.List;
 
+/**
+ * Painel de administração para gerenciamento de salas de aula.
+ * Permite adicionar, remover e visualizar salas cadastradas.
+ */
 public class AdminClassroomPanel extends JPanel {
     private ReservationManager manager;
     private JTable classroomTable;
@@ -16,6 +20,12 @@ public class AdminClassroomPanel extends JPanel {
     private JButton removeButton;
     private Frame mainFrame;
 
+    /**
+     * Construtor do painel de administração de salas.
+     *
+     * @param mainFrame Janela principal da aplicação.
+     * @param manager   Gerenciador de reservas e salas.
+     */
     public AdminClassroomPanel(Frame mainFrame, ReservationManager manager) {
         this.manager = manager;
         this.mainFrame=mainFrame;
@@ -24,6 +34,9 @@ public class AdminClassroomPanel extends JPanel {
         refreshClassroomList(); // Carrega todas as reservas ao iniciar
     }
 
+    /**
+     * Atualiza a tabela de salas exibindo todas as salas cadastradas.
+     */
     public void refreshClassroomList() {
         classroomTableModel.setRowCount(0); // Limpa a tabela
         List<Classroom> classrooms = manager.getAllClassrooms();
@@ -38,6 +51,9 @@ public class AdminClassroomPanel extends JPanel {
         }
     }
 
+    /**
+     * Inicializa os componentes gráficos do painel.
+     */
     private void initComponents() {
         // Configuração da tabela de reservas (agora exibirá todas)
         String[] columnNames = {"Nome", "Capacidade", "Localização", "Projetor", "Características"};
@@ -66,12 +82,19 @@ public class AdminClassroomPanel extends JPanel {
         add(buttonPanel, BorderLayout.NORTH);
     }
 
+    /**
+     * Abre o diálogo para adicionar uma nova sala e atualiza a lista após a adição.
+     */
     private void addSelectedClassroom(){
         AddClassroomDialog dialog = new AddClassroomDialog(mainFrame, manager);
         dialog.setVisible(true);
         refreshClassroomList(); // Atualiza a lista após adicionar
     }
 
+    /**
+     * Remove a sala selecionada na tabela, após confirmação do usuário.
+     * Exibe mensagens de erro caso não haja seleção ou ocorra algum problema.
+     */
     private void removeSelectedClassroom() {
         int selectedRow = classroomTable.getSelectedRow();
         if (selectedRow == -1) {

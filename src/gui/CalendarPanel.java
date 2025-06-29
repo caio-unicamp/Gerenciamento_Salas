@@ -19,6 +19,10 @@ import java.util.Locale;
 import java.util.stream.Collectors;
 import java.util.Comparator;
 
+/**
+ * Painel de calendário para visualização de reservas confirmadas por dia.
+ * Permite navegar entre meses e visualizar reservas do dia selecionado.
+ */
 public class CalendarPanel extends JPanel {
     private ReservationManager manager;
     private JPanel calendarGridPanel;
@@ -40,6 +44,11 @@ public class CalendarPanel extends JPanel {
     private static final Color TODAY_COLOR = new Color(255, 223, 186);
     private static final Color RESERVATION_DAY_BORDER_COLOR = new Color(0, 100, 0);
 
+    /**
+     * Construtor do painel de calendário.
+     *
+     * @param manager Gerenciador de reservas.
+     */
     public CalendarPanel(ReservationManager manager) {
         this.manager = manager;
         this.currentMonth = YearMonth.now();
@@ -54,6 +63,9 @@ public class CalendarPanel extends JPanel {
         displayReservationsForSelectedDay();
     }
 
+    /**
+     * Inicializa os componentes gráficos do painel de calendário.
+     */
     private void initComponents() {
         JPanel monthNavPanel = new JPanel(new BorderLayout(5, 1));
         monthNavPanel.setBackground(HEADER_BG_COLOR);
@@ -122,6 +134,11 @@ public class CalendarPanel extends JPanel {
         add(reservationsPanel, BorderLayout.SOUTH);
     }
 
+    /**
+     * Navega para o mês anterior ou seguinte no calendário.
+     *
+     * @param months Quantidade de meses a navegar (negativo para anterior, positivo para próximo).
+     */
     private void navigateMonth(int months) {
         currentMonth = currentMonth.plusMonths(months);
         updateCalendar();
@@ -133,6 +150,10 @@ public class CalendarPanel extends JPanel {
         displayReservationsForSelectedDay();
     }
 
+    /**
+     * Atualiza a grade do calendário exibindo os dias do mês atual.
+     * Destaca o dia selecionado, o dia atual e dias com reservas confirmadas.
+     */
     private void updateCalendar() {
         calendarGridPanel.removeAll();
 
@@ -202,6 +223,9 @@ public class CalendarPanel extends JPanel {
         calendarGridPanel.repaint();
     }
 
+    /**
+     * Exibe na tabela as reservas confirmadas para o dia selecionado.
+     */
     private void displayReservationsForSelectedDay() {
         reservationsForDayTableModel.setRowCount(0);
 
@@ -225,6 +249,9 @@ public class CalendarPanel extends JPanel {
         }
     }
 
+    /**
+     * Atualiza o calendário e a tabela de reservas do dia selecionado.
+     */
     public void refreshCalendarAndReservations() {
         updateCalendar();
         displayReservationsForSelectedDay();

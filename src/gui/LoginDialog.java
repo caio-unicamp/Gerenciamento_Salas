@@ -6,6 +6,10 @@ import model.User;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Diálogo de login para autenticação de usuários.
+ * Permite login, criação de conta e recuperação de senha.
+ */
 public class LoginDialog extends JDialog {
     private JTextField usernameField;
     private JPasswordField passwordField;
@@ -15,11 +19,24 @@ public class LoginDialog extends JDialog {
     private ReservationManager manager;
     private User authenticatedUser;
 
+    /**
+     * Interface para notificação de sucesso no login.
+     */
     public interface LoginListener {
+        /**
+         * Chamado quando o login é realizado com sucesso.
+         * @param user Usuário autenticado.
+         */
         void onLoginSuccess(User user);
     }
     private LoginListener loginListener;
 
+    /**
+     * Construtor do diálogo de login.
+     * 
+     * @param parent Janela pai (Frame) para modalidade.
+     * @param manager Gerenciador de reservas para autenticação.
+     */
     public LoginDialog(Frame parent, ReservationManager manager) {
         super(parent, "Login", true);
         this.manager = manager;
@@ -32,10 +49,18 @@ public class LoginDialog extends JDialog {
         initUI();
     }
 
+    /**
+     * Define o listener para eventos de login bem-sucedido.
+     * 
+     * @param listener Listener a ser notificado.
+     */
     public void setLoginListener(LoginListener listener) {
         this.loginListener = listener;
     }
 
+    /**
+     * Inicializa os componentes gráficos do diálogo de login.
+     */
     private void initUI() {
         setLayout(new BorderLayout());
 
@@ -72,11 +97,14 @@ public class LoginDialog extends JDialog {
 
         forgotPasswordButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        
         add(formPanel, BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);
     }
 
+    /**
+     * Realiza a autenticação do usuário com os dados informados.
+     * Exibe mensagens de erro em caso de falha.
+     */
     private void performLogin() {
         String username = usernameField.getText();
         String password = new String(passwordField.getPassword());
@@ -95,20 +123,34 @@ public class LoginDialog extends JDialog {
         }
     }
 
+    /**
+     * Abre o diálogo para criação de nova conta.
+     */
     private void openRegisterDialog() {
         RegisterDialog registerDialog = new RegisterDialog(this, manager);
         registerDialog.setVisible(true);
     }
 
+    /**
+     * Abre o diálogo para recuperação de senha.
+     */
     private void openForgotPasswordDialog() {
         ForgotPasswordDialog forgotDialog = new ForgotPasswordDialog(this, manager);
         forgotDialog.setVisible(true);
     }
 
+    /**
+     * Retorna o usuário autenticado após login bem-sucedido.
+     * 
+     * @return Usuário autenticado ou null se não autenticado.
+     */
     public User getAuthenticatedUser() {
         return authenticatedUser;
     }
     
+    /**
+     * Limpa os campos de login e reseta o usuário autenticado.
+     */
     public void clearFields() {
         usernameField.setText("");
         passwordField.setText("");

@@ -15,17 +15,28 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Classe responsável pelo gerenciamento centralizado de salas, usuários e reservas.
+ * Realiza operações de cadastro, consulta, atualização e persistência dos dados.
+ */
 public class ReservationManager implements Serializable {
     private static final long serialVersionUID = 1L;
     
     private List<Classroom> classrooms;
     private List<Reservation> reservations;
     private List<User> users;
+<<<<<<< HEAD
     
     private static final String CLASSROOMS_FILE = "../data/classrooms.txt";
     private static final String RESERVATIONS_FILE = "../data/reservations.txt";
     private static final String USERS_FILE = "../data/users.txt";
     
+=======
+
+    /**
+     * Construtor padrão. Inicializa as listas e carrega os dados persistidos.
+     */
+>>>>>>> 3d08e3f913bc2cc9b87f52bd9423501f79380acd
     public ReservationManager() {
         this.classrooms = new ArrayList<>();
         this.reservations = new ArrayList<>();
@@ -35,6 +46,11 @@ public class ReservationManager implements Serializable {
 
     // --- Métodos de Gerenciamento de Salas ---
 
+    /**
+     * Adiciona uma nova sala ao sistema, se ainda não existir.
+     * 
+     * @param classroom Sala a ser adicionada.
+     */
     public void addClassroom(Classroom classroom) {
         if (!classrooms.contains(classroom)) {
             classrooms.add(classroom);
@@ -44,6 +60,11 @@ public class ReservationManager implements Serializable {
         }
     }
 
+    /**
+     * Remove uma sala do sistema, se existir.
+     * 
+     * @param classroom Sala a ser removida.
+     */
     public void removeClassroom(Classroom classroom) {
         if (classrooms.contains(classroom)) {
             classrooms.remove(classroom);
@@ -53,6 +74,12 @@ public class ReservationManager implements Serializable {
         }
     }
 
+    /**
+     * Busca uma sala pelo nome.
+     * 
+     * @param name Nome da sala.
+     * @return Sala encontrada ou null se não existir.
+     */
     public Classroom getClassroomByName(String name) {
         return classrooms.stream()
                 .filter(c -> c.getName().equalsIgnoreCase(name))
@@ -60,12 +87,23 @@ public class ReservationManager implements Serializable {
                 .orElse(null);
     }
 
+    /**
+     * Retorna uma lista com todas as salas cadastradas.
+     * 
+     * @return Lista de salas.
+     */
     public List<Classroom> getAllClassrooms() {
         return new ArrayList<>(classrooms);
     }
 
     // --- Métodos de Gerenciamento de Usuários ---
 
+    /**
+     * Adiciona um novo usuário ao sistema, se o nome de usuário não existir.
+     * 
+     * @param user Usuário a ser adicionado.
+     * @throws UserConflictException Se o nome de usuário já existir.
+     */
     public void addUser(User user) throws UserConflictException {
         if (!users.stream().anyMatch(u -> u.getUsername().equalsIgnoreCase(user.getUsername()))) {
             users.add(user);
@@ -76,6 +114,12 @@ public class ReservationManager implements Serializable {
         }
     }
 
+    /**
+     * Busca um usuário pelo nome de usuário.
+     * 
+     * @param username Nome de usuário.
+     * @return Usuário encontrado ou null se não existir.
+     */
     public User getUserByUsername(String username) {
         return users.stream()
                 .filter(u -> u.getUsername().equalsIgnoreCase(username))
@@ -83,12 +127,28 @@ public class ReservationManager implements Serializable {
                 .orElse(null);
     }
 
+    /**
+     * Retorna uma lista com todos os usuários cadastrados.
+     * 
+     * @return Lista de usuários.
+     */
     public List<User> getAllUsers() {
         return new ArrayList<>(users);
     }
 
     // --- Métodos de Gerenciamento de Reservas ---
 
+    /**
+     * Realiza uma nova reserva, verificando conflitos apenas com reservas já confirmadas.
+     * 
+     * @param classroom Sala a ser reservada.
+     * @param reservedBy Usuário que está reservando.
+     * @param date Data da reserva.
+     * @param startTime Horário de início.
+     * @param endTime Horário de término.
+     * @param purpose Propósito da reserva.
+     * @throws ReservationConflictException Se houver conflito com outra reserva confirmada.
+     */
     public void makeReservation(Classroom classroom, User reservedBy, LocalDate date, LocalTime startTime,
             LocalTime endTime, String purpose) throws ReservationConflictException {
         if (startTime.isAfter(endTime) || startTime.equals(endTime)) {
@@ -141,6 +201,15 @@ public class ReservationManager implements Serializable {
         return available;
     }
 
+    /**
+     * Busca salas disponíveis para um determinado período e capacidade mínima.
+     * 
+     * @param date Data desejada.
+     * @param startTime Horário de início desejado.
+     * @param endTime Horário de término desejado.
+     * @param minCapacity Capacidade mínima da sala.
+     * @return Lista de salas disponíveis.
+     */
     public List<Classroom> findAvailableClassrooms(LocalDate date, LocalTime startTime, LocalTime endTime,
             int minCapacity) {
         return findAvailableClassrooms(date, startTime, endTime).stream()
@@ -148,22 +217,44 @@ public class ReservationManager implements Serializable {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Retorna uma lista com todas as reservas cadastradas.
+     * 
+     * @return Lista de reservas.
+     */
     public List<Reservation> getAllReservations() {
         return new ArrayList<>(reservations);
     }
 
+    /**
+     * Retorna uma lista de reservas feitas por um usuário específico.
+     * 
+     * @param user Usuário desejado.
+     * @return Lista de reservas do usuário.
+     */
     public List<Reservation> getReservationsByUser(User user) {
         return reservations.stream()
                 .filter(r -> r.getReservedBy().equals(user))
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Retorna uma lista de reservas para uma sala específica.
+     * 
+     * @param classroom Sala desejada.
+     * @return Lista de reservas da sala.
+     */
     public List<Reservation> getReservationsByClassroom(Classroom classroom) {
         return reservations.stream()
                 .filter(r -> r.getClassroom().equals(classroom))
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Retorna uma lista de reservas pendentes.
+     * 
+     * @return Lista de reservas pendentes.
+     */
     public List<Reservation> getPendingReservations() {
         return reservations.stream()
                 .filter(r -> r.getStatus().equals(ReservationStatus.PENDING))
@@ -172,6 +263,7 @@ public class ReservationManager implements Serializable {
 
     /**
      * Confirma uma reserva pendente.
+     * 
      * @param reservation A reserva a ser confirmada.
      * @throws ReservationConflictException Se a confirmação causar conflito com uma reserva CONFIRMED existente.
      */
@@ -203,6 +295,12 @@ public class ReservationManager implements Serializable {
         System.out.println("Reserva " + reservation.getId() + " confirmada com sucesso.");
     }
 
+    /**
+     * Rejeita uma reserva pendente, adicionando uma observação.
+     * 
+     * @param reservation Reserva a ser rejeitada.
+     * @param observation Justificativa da rejeição.
+     */
     public void rejectReservation(Reservation reservation, String observation) {
         if (!reservation.getStatus().equals(ReservationStatus.PENDING)) {
             throw new IllegalArgumentException("Reserva não está no status Pendente para ser rejeitada.");
@@ -214,6 +312,12 @@ public class ReservationManager implements Serializable {
 
     }
 
+    /**
+     * Cancela uma reserva (exceto se já estiver rejeitada ou cancelada), adicionando uma observação.
+     * 
+     * @param reservation Reserva a ser cancelada.
+     * @param observation Justificativa do cancelamento.
+     */
     public void cancelReservation(Reservation reservation, String observation) {
         if (reservation.getStatus().equals(ReservationStatus.REJECTED)
                 || reservation.getStatus().equals(ReservationStatus.CANCELLED)) {
@@ -227,6 +331,11 @@ public class ReservationManager implements Serializable {
 
     }
 
+    /**
+     * Remove uma reserva do sistema.
+     * 
+     * @param reservation Reserva a ser deletada.
+     */
     public void deleteReservation(Reservation reservation) {
         reservations.remove(reservation);
         saveData();
@@ -236,6 +345,9 @@ public class ReservationManager implements Serializable {
     // --- Métodos de Persistência de Dados (Leitura e Gravação de Arquivos) ---
 
 
+    /**
+     * Carrega os dados de salas, usuários e reservas dos arquivos de persistência.
+     */
     @SuppressWarnings("unchecked")
     public void loadData() {
         try {
@@ -270,6 +382,9 @@ public class ReservationManager implements Serializable {
         }
     }
 
+    /**
+     * Salva os dados de salas, usuários e reservas nos arquivos de persistência.
+     */
     public void saveData() {
         try {
             FileUtil.writeObjectToFile(classrooms, CLASSROOMS_FILE);

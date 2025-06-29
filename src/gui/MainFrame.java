@@ -3,25 +3,36 @@ package gui;
 import manager.ReservationManager;
 import model.User;
 
-import javax.swing.*; 
+import javax.swing.*;
 
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-public class MainFrame extends JFrame { 
+/**
+ * Janela principal da aplicação de gerenciamento de reservas de salas de aula.
+ * Exibe as abas de funcionalidades conforme o tipo de usuário logado.
+ */
+public class MainFrame extends JFrame {
     private ReservationManager manager;
     private User loggedInUser;
     private LoginDialog parentLoginDialog; // Referência ao diálogo de login que a abriu
-    
+
     private JTabbedPane tabbedPane;
     private ClassroomPanel classroomPanel;
     private ReservationPanel reservationPanel;
     private CalendarPanel calendarPanel;
-    private AdminReservationPanel adminReservationPanel; 
-    private AdminClassroomPanel adminClassroomPanel; 
+    private AdminReservationPanel adminReservationPanel;
+    private AdminClassroomPanel adminClassroomPanel;
     private JButton logoutButton;
 
+    /**
+     * Construtor da janela principal.
+     *
+     * @param manager           Gerenciador de reservas.
+     * @param loggedInUser      Usuário autenticado.
+     * @param parentLoginDialog Referência ao diálogo de login.
+     */
     public MainFrame(ReservationManager manager, User loggedInUser, LoginDialog parentLoginDialog) {
         this.manager = manager;
         this.parentLoginDialog = parentLoginDialog; // Armazena a referência ao diálogo de login
@@ -42,6 +53,9 @@ public class MainFrame extends JFrame {
         });
     }
 
+    /**
+     * Inicializa os componentes gráficos da janela principal.
+     */
     private void initUI() {
         // Painel superior para o título e botão de logout
         JPanel topPanel = new JPanel(new BorderLayout());
@@ -69,7 +83,7 @@ public class MainFrame extends JFrame {
         tabbedPane.addTab("Calendário de Reservas", calendarPanel);
 
         if (loggedInUser.getRole().equals("Administrator")) {
-            adminClassroomPanel = new AdminClassroomPanel(this,manager);
+            adminClassroomPanel = new AdminClassroomPanel(this, manager);
             tabbedPane.addTab("Administração de Salas", adminClassroomPanel);
 
             adminReservationPanel = new AdminReservationPanel(manager);
@@ -78,6 +92,10 @@ public class MainFrame extends JFrame {
 
         add(tabbedPane, BorderLayout.CENTER);
     }
+
+    /**
+     * Realiza o logout do usuário, salvando os dados e retornando ao diálogo de login.
+     */
     private void performLogout() {
         int confirm = JOptionPane.showConfirmDialog(MainFrame.this,
                         "Tem certeza que deseja fazer logout?", "Logout",
@@ -89,6 +107,10 @@ public class MainFrame extends JFrame {
             parentLoginDialog.setVisible(true); // Torna o diálogo de login visível novamente
         }
     }
+
+    /**
+     * Realiza a saída do sistema, salvando os dados e encerrando o programa.
+     */
     private void performExit() {
         int confirm = JOptionPane.showConfirmDialog(MainFrame.this,
                         "Tem certeza que deseja sair do sistema?", "Sair",
@@ -98,7 +120,10 @@ public class MainFrame extends JFrame {
             System.exit(0); // Encerra o programa
         }
     }
-    // Método para atualizar as abas quando necessário (ex: após uma reserva)
+
+    /**
+     * Atualiza as abas do painel principal, útil após alterações em reservas ou salas.
+     */
     public void refreshPanels() {
         classroomPanel.refreshClassroomList();
         reservationPanel.refreshReservationList();

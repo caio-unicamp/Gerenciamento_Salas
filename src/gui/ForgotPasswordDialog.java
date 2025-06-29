@@ -9,6 +9,10 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * Diálogo para recuperação de senha de usuários.
+ * Permite validar informações do usuário e redefinir a senha.
+ */
 public class ForgotPasswordDialog extends JDialog {
     private JTextField usernameField;
     private JTextField fullNameField;
@@ -19,10 +23,15 @@ public class ForgotPasswordDialog extends JDialog {
     private JButton resetPasswordButton;
     private JComboBox<String> userTypeComboBox;
 
-
     private ReservationManager manager;
     private User foundUser; // Para armazenar o usuário encontrado após a validação
 
+    /**
+     * Construtor do diálogo de recuperação de senha.
+     *
+     * @param parent  Janela pai (LoginDialog) para modalidade.
+     * @param manager Gerenciador de reservas para buscar e atualizar usuários.
+     */
     public ForgotPasswordDialog(LoginDialog parent, ReservationManager manager) {
         super(parent, "Esqueci Minha Senha", true);
         this.manager = manager;
@@ -35,6 +44,9 @@ public class ForgotPasswordDialog extends JDialog {
         initUI();
     }
 
+    /**
+     * Inicializa os componentes gráficos do diálogo.
+     */
     private void initUI() {
         setLayout(new BorderLayout());
 
@@ -130,6 +142,10 @@ public class ForgotPasswordDialog extends JDialog {
         add(buttonPanel, BorderLayout.SOUTH);
     }
     
+    /**
+     * Atualiza a visibilidade dos campos de acordo com o tipo de usuário selecionado.
+     * Exibe o campo RA/Matrícula apenas para estudantes.
+     */
     private void updateFieldsVisibility() {
         String selectedType = (String) userTypeComboBox.getSelectedItem();
         boolean isStudent = "Estudante".equals(selectedType);
@@ -145,6 +161,10 @@ public class ForgotPasswordDialog extends JDialog {
         pack(); // Ajusta o tamanho do diálogo após mudar a visibilidade
     }
 
+    /**
+     * Valida as informações fornecidas pelo usuário e, se corretas, habilita a redefinição de senha.
+     * Exibe mensagens de erro caso as informações não coincidam com o cadastro.
+     */
     private void validateAndResetPassword() {
         String username = usernameField.getText().trim();
         String fullName = fullNameField.getText().trim();
@@ -190,6 +210,10 @@ public class ForgotPasswordDialog extends JDialog {
         }
     }
 
+    /**
+     * Redefine a senha do usuário validado, após confirmação dos campos de senha.
+     * Exibe mensagens de erro caso as senhas não coincidam ou estejam vazias.
+     */
     private void resetUserPassword() {
         if (foundUser == null) {
             JOptionPane.showMessageDialog(this, "Nenhum usuário validado para redefinir a senha.", "Erro", JOptionPane.ERROR_MESSAGE);

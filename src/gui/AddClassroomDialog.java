@@ -6,7 +6,10 @@ import model.Classroom;
 import javax.swing.*; 
 import java.awt.*;
 
-public class AddClassroomDialog extends JDialog { 
+/**
+ * Diálogo para adicionar uma nova sala de aula ao sistema.
+ */
+public class AddClassroomDialog extends JDialog {
     private JTextField nameField;
     private JSpinner capacitySpinner;
     private JTextField locationField;
@@ -16,6 +19,12 @@ public class AddClassroomDialog extends JDialog {
 
     private ReservationManager manager;
 
+    /**
+     * Construtor do diálogo de adição de sala.
+     *
+     * @param parent  Janela pai (Frame) para modalidade.
+     * @param manager Gerenciador de reservas para adicionar a sala criada.
+     */
     public AddClassroomDialog(Frame parent, ReservationManager manager) {
         super(parent, "Adicionar Nova Sala", true); 
         this.manager = manager;
@@ -27,6 +36,9 @@ public class AddClassroomDialog extends JDialog {
         initUI();
     }
 
+    /**
+     * Inicializa os componentes gráficos do diálogo.
+     */
     private void initUI() {
         setLayout(new BorderLayout());
 
@@ -63,6 +75,11 @@ public class AddClassroomDialog extends JDialog {
         add(buttonPanel, BorderLayout.SOUTH);
     }
 
+    /**
+     * Realiza a validação dos campos e adiciona a nova sala ao sistema.
+     * Exibe mensagens de erro caso algum campo obrigatório não seja preenchido.
+     * Fecha o diálogo ao adicionar com sucesso.
+     */
     private void addClassroom() {
         String name = nameField.getText().trim();
         int capacity = (Integer) capacitySpinner.getValue();

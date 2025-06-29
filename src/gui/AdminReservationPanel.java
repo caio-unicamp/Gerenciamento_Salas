@@ -11,6 +11,10 @@ import javax.swing.table.TableColumnModel;
 import java.awt.*;
 import java.util.List;
 
+/**
+ * Painel de administração para gerenciamento de reservas.
+ * Permite confirmar, rejeitar, cancelar, deletar e visualizar reservas cadastradas.
+ */
 public class AdminReservationPanel extends JPanel {
     private ReservationManager manager;
     private JTable reservationsTable; 
@@ -21,6 +25,11 @@ public class AdminReservationPanel extends JPanel {
     private JButton deleteButton;
     private JButton refreshButton;
 
+    /**
+     * Construtor do painel de administração de reservas.
+     *
+     * @param manager Gerenciador de reservas.
+     */
     public AdminReservationPanel(ReservationManager manager) {
         this.manager = manager;
         setLayout(new BorderLayout());
@@ -28,9 +37,12 @@ public class AdminReservationPanel extends JPanel {
         refreshReservationsList(); // Carrega todas as reservas ao iniciar
     }
 
+    /**
+     * Inicializa os componentes gráficos do painel.
+     */
     private void initComponents() {
         // Configuração da tabela de reservas
-        String[] columnNames = {"ID", "Sala", "Usuário", "Data", "Início", "Término", "Propósito", "Status", "Observações"}; // Adicionado "Observações"
+        String[] columnNames = {"ID", "Sala", "Usuário", "Data", "Início", "Término", "Propósito", "Status", "Observações"};
         reservationsTableModel = new DefaultTableModel(columnNames, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -41,13 +53,13 @@ public class AdminReservationPanel extends JPanel {
         reservationsTable = new JTable(reservationsTableModel);
         reservationsTable.setFillsViewportHeight(true);
 
-        reservationsTable.setAutoCreateColumnsFromModel(true); // Garante que a tabela use o modelo de colunas
+        reservationsTable.setAutoCreateColumnsFromModel(true);
         TableColumnModel tcm = reservationsTable.getColumnModel();
         tcm.getColumn(0).setMinWidth(0);
         tcm.getColumn(0).setMaxWidth(0);
         tcm.getColumn(0).setWidth(0);
         tcm.getColumn(0).setPreferredWidth(0);
-        tcm.getColumn(0).setResizable(false); // Impede que o usuário redimensione para ver
+        tcm.getColumn(0).setResizable(false);
 
         JScrollPane scrollPane = new JScrollPane(reservationsTable);
         add(scrollPane, BorderLayout.CENTER);
@@ -77,10 +89,12 @@ public class AdminReservationPanel extends JPanel {
         add(buttonPanel, BorderLayout.SOUTH);
     }
 
-    // Renomeado e modificado para exibir TODAS as reservas, não apenas pendentes
+    /**
+     * Atualiza a tabela exibindo todas as reservas cadastradas.
+     */
     public void refreshReservationsList() {
         reservationsTableModel.setRowCount(0); // Limpa a tabela
-        List<Reservation> allReservations = manager.getAllReservations(); // Pega TODAS as reservas
+        List<Reservation> allReservations = manager.getAllReservations();
         for (Reservation reservation : allReservations) {
             reservationsTableModel.addRow(new Object[] {
                     reservation.getId(),
@@ -96,6 +110,10 @@ public class AdminReservationPanel extends JPanel {
         }
     }
 
+    /**
+     * Confirma a reserva selecionada na tabela, após confirmação do usuário.
+     * Exibe mensagens de erro caso não haja seleção ou ocorra algum problema.
+     */
     private void confirmSelectedReservation() {
         int selectedRow = reservationsTable.getSelectedRow();
         if (selectedRow == -1) {
@@ -114,7 +132,7 @@ public class AdminReservationPanel extends JPanel {
                 manager.confirmReservation(reservationToConfirm);
                 JOptionPane.showMessageDialog(this, "Reserva confirmada com sucesso!", "Sucesso",
                         JOptionPane.INFORMATION_MESSAGE);
-                refreshReservationsList(); // Atualiza a lista
+                refreshReservationsList();
                 if (SwingUtilities.getWindowAncestor(this) instanceof MainFrame) {
                     ((MainFrame) SwingUtilities.getWindowAncestor(this)).refreshPanels();
                 }
@@ -134,6 +152,10 @@ public class AdminReservationPanel extends JPanel {
         }
     }
 
+    /**
+     * Rejeita a reserva selecionada na tabela, solicitando justificativa do usuário.
+     * Exibe mensagens de erro caso não haja seleção, justificativa ou ocorra algum problema.
+     */
     private void rejectSelectedReservation() {
         int selectedRow = reservationsTable.getSelectedRow();
         if (selectedRow == -1) {
@@ -148,7 +170,7 @@ public class AdminReservationPanel extends JPanel {
 
             String observation = JOptionPane.showInputDialog(this, "Insira a justificativa para a rejeição:",
                     "Justificativa da Rejeição", JOptionPane.QUESTION_MESSAGE);
-            if (observation == null || observation.trim().isEmpty()) { // Usuário clicou em cancelar ou deixou vazio
+            if (observation == null || observation.trim().isEmpty()) {
                 JOptionPane.showMessageDialog(this, "A justificativa é obrigatória para rejeitar a reserva.", "Aviso",
                         JOptionPane.WARNING_MESSAGE);
                 return;
@@ -164,7 +186,7 @@ public class AdminReservationPanel extends JPanel {
                     manager.rejectReservation(reservationToReject, observation);
                     JOptionPane.showMessageDialog(this, "Reserva rejeitada com sucesso!", "Sucesso",
                             JOptionPane.INFORMATION_MESSAGE);
-                    refreshReservationsList(); // Atualiza a lista
+                    refreshReservationsList();
                     if (SwingUtilities.getWindowAncestor(this) instanceof MainFrame) {
                         ((MainFrame) SwingUtilities.getWindowAncestor(this)).refreshPanels();
                     }
@@ -182,6 +204,13 @@ public class AdminReservationPanel extends JPanel {
         }
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * Cancela a reserva selecionada na tabela, solicitando justificativa do usuário.
+     * Exibe mensagens de erro caso não haja seleção, justificativa ou ocorra algum problema.
+     */
+>>>>>>> 3d08e3f913bc2cc9b87f52bd9423501f79380acd
     private void cancelSelectedReservation() {
         int selectedRow = reservationsTable.getSelectedRow();
         if (selectedRow == -1) {
@@ -195,7 +224,7 @@ public class AdminReservationPanel extends JPanel {
         if (confirm == JOptionPane.YES_OPTION) {
             String observation = JOptionPane.showInputDialog(this, "Insira a justificativa para o cancelamento:",
                     "Justificativa do Cancelamento", JOptionPane.QUESTION_MESSAGE);
-            if (observation == null || observation.trim().isEmpty()) { // Usuário clicou em cancelar ou deixou vazio
+            if (observation == null || observation.trim().isEmpty()) {
                 JOptionPane.showMessageDialog(this, "A justificativa é obrigatória para cancelar a reserva.", "Aviso",
                         JOptionPane.WARNING_MESSAGE);
                 return;
@@ -208,10 +237,10 @@ public class AdminReservationPanel extends JPanel {
                     .orElse(null);
             if (reservationToCancel != null) {
                 try {
-                    manager.cancelReservation(reservationToCancel, observation); // Reutiliza o método do manager
+                    manager.cancelReservation(reservationToCancel, observation);
                     JOptionPane.showMessageDialog(this, "Reserva cancelada com sucesso!", "Sucesso",
                             JOptionPane.INFORMATION_MESSAGE);
-                    refreshReservationsList(); // Atualiza a lista
+                    refreshReservationsList();
                     if (SwingUtilities.getWindowAncestor(this) instanceof MainFrame) {
                         ((MainFrame) SwingUtilities.getWindowAncestor(this)).refreshPanels();
                     }
@@ -227,6 +256,10 @@ public class AdminReservationPanel extends JPanel {
         }
     }
 
+    /**
+     * Deleta a reserva selecionada na tabela, após confirmação do usuário.
+     * Exibe mensagens de erro caso não haja seleção ou ocorra algum problema.
+     */
     private void deleteSelectedReservation() {
         int selectedRow = reservationsTable.getSelectedRow();
         if (selectedRow == -1) {
@@ -248,7 +281,7 @@ public class AdminReservationPanel extends JPanel {
                     manager.deleteReservation(reservationToDelete);
                     JOptionPane.showMessageDialog(this, "Reserva deletada com sucesso!", "Sucesso",
                             JOptionPane.INFORMATION_MESSAGE);
-                    refreshReservationsList(); // Atualiza a lista
+                    refreshReservationsList();
                     if (SwingUtilities.getWindowAncestor(this) instanceof MainFrame) {
                         ((MainFrame) SwingUtilities.getWindowAncestor(this)).refreshPanels();
                     }

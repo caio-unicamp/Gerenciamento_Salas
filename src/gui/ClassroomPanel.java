@@ -8,11 +8,19 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.List;
 
+/**
+ * Painel para visualização das salas cadastradas no sistema.
+ */
 public class ClassroomPanel extends JPanel {  
     private ReservationManager manager;
     private JTable classroomTable;
     private DefaultTableModel classroomTableModel;
 
+    /**
+     * Construtor do painel de salas.
+     *
+     * @param manager Gerenciador de reservas e salas.
+     */
     public ClassroomPanel(ReservationManager manager) {
         this.manager = manager;
         setLayout(new BorderLayout());
@@ -20,6 +28,9 @@ public class ClassroomPanel extends JPanel {
         refreshClassroomList();
     }
 
+    /**
+     * Inicializa os componentes gráficos do painel de salas.
+     */
     private void initComponents() {
         // Configuração da tabela de salas
         String[] columnNames = {"Nome", "Capacidade", "Localização", "Projetor", "Características"};
@@ -35,6 +46,9 @@ public class ClassroomPanel extends JPanel {
         add(scrollPane, BorderLayout.CENTER);
     }
 
+    /**
+     * Atualiza a tabela exibindo todas as salas cadastradas.
+     */
     public void refreshClassroomList() {
         classroomTableModel.setRowCount(0); // Limpa a tabela
         List<Classroom> classrooms = manager.getAllClassrooms();
@@ -49,6 +63,11 @@ public class ClassroomPanel extends JPanel {
         }
     }
 
+    /**
+     * Retorna o modelo da tabela de salas.
+     *
+     * @return DefaultTableModel utilizado pela tabela de salas.
+     */
     public DefaultTableModel getClassroomTableModel() {
         return classroomTableModel;
     }
