@@ -2,7 +2,6 @@
 package gui;
 
 import manager.ReservationManager;
-import model.Administrator;
 import model.Student;
 import model.User;
 
@@ -171,12 +170,6 @@ public class ForgotPasswordDialog extends JDialog {
         if (user instanceof Student) {
             Student student = (Student) user;
             matches = matches && student.getStudentId().equalsIgnoreCase(ra);
-        } else if (user instanceof Administrator) {
-            // Para administradores, o campo RA/Matrícula não é relevante.
-            // Se o usuário digitou algo no RA, pode ser um erro ou confusão.
-            // Poderíamos adicionar uma validação mais rigorosa aqui se quisermos que RA seja estritamente vazio para admins.
-            // Por simplicidade, assumimos que se é admin e o RA está preenchido, ele será ignorado na comparação.
-            // Ou, poderíamos fazer: matches = matches && ra.isEmpty();
         }
 
         if (matches) {

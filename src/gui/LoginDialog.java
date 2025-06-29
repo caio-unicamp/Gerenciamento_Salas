@@ -58,7 +58,7 @@ public class LoginDialog extends JDialog {
         createAccountButton = new JButton("Criar Conta");
         createAccountButton.addActionListener(e -> openRegisterDialog());
 
-        forgotPasswordButton = new JButton("Esqueci Minha Senha");
+        forgotPasswordButton = new JButton("Esqueci Minha Senha?");
         forgotPasswordButton.addActionListener(e -> openForgotPasswordDialog());
 
         JPanel buttonPanel = new JPanel();
