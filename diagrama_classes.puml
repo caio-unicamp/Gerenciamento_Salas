@@ -4,36 +4,38 @@ skinparam classAttributeIconSize 0 ' Esconde ícones de visibilidade (preferênc
 hide empty members
 left to right direction
 
-
 ' Classes de Modelo
 abstract class User {
+    # password: String
     - username: String
-    - password: String
-    - name: String
     - email: String
-    + authenticate(enteredPassword: String): boolean
-    {abstract} + getRole(): String
+    - name: String
+    - authenticate(enteredPassword: String): boolean
 }
 
 class Student {
     - studentId: String
+    + toString(): String
 }
 
 class Administrator {
-    + getRole(): String
-    + manageClassroomDetails(): void
+    + toString(): String
 }
 
 class Classroom {
+    {static} - _serialVersionUID: long
     - name: String
     - capacity: int
     - location: String
     - hasProjector: boolean
     - features: List<String>
+    + equals(other: Object): boolean
+    + hashCode(): int
     + hasProjector(): boolean
     + addFeature(feature: String): void
     + removeFeature(feature: String): void
-    + isAvailable(date: LocalDate, startTime: LocalTime, endTime: LocalTime): boolean ' Método sugerido para checagem interna, mas a lógica está no Manager
+    + toString(): String
+    
 }
 
 enum ReservationStatus {
@@ -43,6 +45,8 @@ enum ReservationStatus {
 }
 
 class Reservation {
+    {static} - _serialVersionUID: long
+    {static} - nextReservationId: int
     - id: int
     - classroom: Classroom
     - reservedBy: User
@@ -51,33 +55,36 @@ class Reservation {
     - endTime: LocalTime
     - purpose: String
     - status: ReservationStatus
-    --
-    {static} - nextReservationId: int
-    + conflictsWith(other: Reservation): boolean
+    - observation: String
     {static} - generateNextId(): int
+    - toString(): String
+    - equals(other: Object): boolean
+    - hashCode(): int
+    {static} -  generateNextId(): int
+    + conflictsWith(other: Reservation): boolean
 }
 
 ' Classes de Gerenciamento e Utilitários
 class ReservationManager {
+    {static} - _serialVersionUID: long
     - classrooms: List<Classroom>
     - reservations: List<Reservation>
     - users: List<User>
-    {static} - _serialVersionUID: long
-    {static} - CLASSROOMS_FILE: String
-    {static} - RESERVATIONS_FILE: String
-    {static} - USERS_FILE: String
     + addClassroom(classroom: Classroom): void
+    + removeClassroom(classroom: Classroom): void
     + addUser(user: User): void
-    + makeReservation(classroom: Classroom, reservedBy: User, date: LocalDate, startTime: LocalTime, endTime: LocalTime, purpose: String): void
+    + makeReservation(classroom: Classroom, reservedBy: User, date LocalDate, startTime: LocalTime, endTime LocalTime, purpose String): void
     + findAvailableClassrooms(date: LocalDate, startTime: LocalTime, endTime: LocalTime): List<Classroom>
     + findAvailableClassrooms(date: LocalDate, startTime: LocalTime, endTime: LocalTime, minCapacity: int): List<Classroom>
+    + confirmReservation( reservation: Reservation): void
+    + rejectReservation(reservation: Reservation, observation: String): void
     + cancelReservation(reservation: Reservation): void
+    + deleteReservation(reservation: Reservation): void
     + loadData(): void
     + saveData(): void
 }
 
 class FileUtil {
-    --
     {static} + writeObjectToFile(objects: List<T>, filename: String): void
     {static} + readObjectFromFile(filename: String): List<T>
 }
@@ -86,10 +93,17 @@ class FileUtil {
 class MainFrame {
     - manager: ReservationManager
     - loggedInUser: User
+    - parentLoginDialog: LoginDialog
     - tabbedPane: JTabbedPane
     - classroomPanel: ClassroomPanel
     - reservationPanel: ReservationPanel
+    - calendarPanel: CalendarPanel
+    - adminReservationPanel: AdminReservationPanel
+    - adminClassroomPanel: AdminClassroomPanel
+    - logoutButton: JButton
     - initUI(): void
+    - performLogout(): void
+    - performExit(): void
     + refreshPanels(): void
 }
 
@@ -97,11 +111,20 @@ class LoginDialog {
     - usernameField: JTextField
     - passwordField: JPasswordField
     - loginButton: JButton
+    - createAccountButton: JButton
+    - forgotPasswordButton: JButton
     - manager: ReservationManager
     - authenticatedUser: User
+    - loginListener: LoginListener
     - initUI(): void
     - performLogin(): void
-    + getAuthenticatedUser(): User
+    - openRegisterDialog(): void
+    - openForgotPasswordDialog(): void
+    + clearFields(): void
+}
+
+interface LoginListener {
+    + onLoginSuccess(user: User): void
 }
 
 class ClassroomPanel {
@@ -142,14 +165,78 @@ class AdminReservationPanel {
     - reservationTable: JTable
     - reservationTableModel: DefaultTableModel
     - confirmButton: JButton
-    - cancelButton: JButton
     - rejectButton: JButton
+    - cancelButton: JButton
+    - deleteButton: JButton
     - refreshButton: JButton
     - initComponents(): void
     - confirmSelectedReservation(): void
     - rejectSelectedReservation(): void
     - cancelSelectedReservation(): void
+    - deleteSelectedReservation(): void
     + refreshReservationList(): void
+}
+
+class AdminClassroomPanel {
+    - manager: ReservationManager
+    - classroomTable: JTable
+    - classroomTableModel: DefaultTableModel
+    - addButton: JButton
+    - removeButton: JButton
+    - mainframe: Frame
+    - initComponents(): void
+    - addSelectedClassroom(): void
+    - removeSelectedClassroom(): void
+    + refreshClassroomList(): void
+}
+
+class CalendarPanel {
+    - manager: ReservationManager
+    - calendarGridPanel: JPanel
+    - monthYearLabel: JLabel
+    - prevMonthButton: JButton
+    - nextMonthButton: JButton
+    - reservationsForDayTable: JTable
+    - reservationsForDayTableModel: DefaultTableModel
+    - currentMonth: YearMonth
+    - selectedDate: LocalDate
+    - initComponents(): void
+    - navigateMonth(months: int): void
+    - updateCalendarGrid(): void
+    - displayReservationsForSelectedDate(): void
+    - refreshReservationsForSelectedDate(): void
+}
+
+class ForgotPasswordDialog {
+    - usernameField: JTextField
+    - fullNameField: JTextField
+    - emailField: JTextField
+    - raField : JTextField
+    - newPassowrdField: JPasswordField
+    - confirmPasswordField: JPasswordField
+    - resetPasswordButton: JButton
+    - userTypeComboBox: JComboBox<String>
+    - manager: ReservationManager
+    - foundUser: User
+    - initUI(): void
+    - updateFieldsVisibility(): void
+    - validateAndResetPassword(): void
+    - resetUserPassword(): void
+}
+
+class RegisterDialog {
+    - usernameField: JTextField
+    - passwordField: JPasswordField
+    - fullNameField: JTextField
+    - emailField: JTextField
+    - raField: JTextField
+    - userTypeComboBox: JComboBox<String>
+    - registerButton: JButton
+    - manager: ReservationManager
+    - initUI(): void
+    - updateFieldsVisibility(): void
+    - validateFields(): void
+    - perforRegistration(): void
 }
 
 ' Classes de Exceção
@@ -158,35 +245,75 @@ class ReservationConflictException << (E,red) >> extends Exception {
     + ReservationConflictException(message: String, cause: Throwable)
 }
 
+class ConflictException << (E,red) >> extends Exception {
+    + UserConflictException(message: String)
+    + UserConflictException(message: String, cause: Throwable)
+}
+
 ' Relacionamentos
 
 ' Herança (Generalização)
 User <|-- Student
 User <|-- Administrator
+ReservationConflictException --|> RuntimeException
+UserConflictException --|> RuntimeException
 
-' Associação (composição/agregação)
-ReservationManager "1" o-- "*" Classroom : gerencia >
-ReservationManager "1" o-- "*" Reservation : gerencia >
-ReservationManager "1" o-- "*" User : gerencia >
+' Relações de Associação/Agregação/Composição
+ReservationManager "1" o-- "0..*" Classroom : contains
+ReservationManager "1" o-- "0..*" Reservation : manages
+ReservationManager "1" o-- "0..*" User : manages
 
-Reservation "1" -- "1" Classroom : reserva >
-Reservation "1" -- "1" User : feita por >
-Reservation "1" --> "1" ReservationStatus : <<usa>>
+Reservation "1" -- "1" Classroom
+Reservation "1" -- "1" User
+Reservation "1" -- "1" ReservationStatus
 
-' Dependência/Uso
-ReservationManager ..> FileUtil : <<usa>>
-ReservationManager ..> ReservationConflictException : <<lança>>
+' Relações de Dependência (GUI para Manager)
+LoginDialog ..> ReservationManager
+MainFrame ..> ReservationManager
+AddClassroomDialog ..> ReservationManager
+AdminClassroomPanel ..> ReservationManager
+AdminReservationPanel ..> ReservationManager
+CalendarPanel ..> ReservationManager
+ClassroomPanel ..> ReservationManager
+ForgotPasswordDialog ..> ReservationManager
+RegisterDialog ..> ReservationManager
+ReservationPanel ..> ReservationManager
 
-MainFrame "1" -- "1" ReservationManager : <<usa>>
-MainFrame "1" -- "1" User : <<associa>>
-LoginDialog "1" -- "1" ReservationManager : <<usa>>
-LoginDialog "1" ..> User : <<retorna>>
+' Relações de Dependência (GUI para Classes de Modelo)
+AddClassroomDialog ..> Classroom
+AdminClassroomPanel ..> Classroom
+AdminReservationPanel ..> Reservation
+CalendarPanel ..> Reservation
+CalendarPanel ..> ReservationStatus
+ClassroomPanel ..> Classroom
+ReservationPanel ..> Classroom
+ReservationPanel ..> Reservation
+ReservationPanel ..> User
+ForgotPasswordDialog ..> User
+ForgotPasswordDialog ..> Student
+RegisterDialog ..> User
+RegisterDialog ..> Administrator
+RegisterDialog ..> Student
+LoginDialog ..> User
+MainFrame ..> User
 
-ClassroomPanel "1" -- "1" ReservationManager : <<usa>>
-ReservationPanel "1" -- "1" ReservationManager : <<usa>>
-ReservationPanel "1" -- "1" User : <<associa>>
-ReservationPanel "1" ..> ReservationConflictException : <<lança>>
-AddClassroomDialog "1" -- "1" ReservationManager : <<usa>>
+' Relações de Dependência (Manager para Exceções e Utilitários)
+ReservationManager ..> ReservationConflictException
+ReservationManager ..> UserConflictException
+ReservationManager ..> FileUtil
 
+' Relações GUI-GUI
+LoginDialog ..> RegisterDialog
+LoginDialog ..> ForgotPasswordDialog
+MainFrame ..> LoginDialog
+MainFrame ..> ClassroomPanel
+MainFrame ..> ReservationPanel
+MainFrame ..> CalendarPanel
+MainFrame ..> AdminClassroomPanel
+MainFrame ..> AdminReservationPanel
+AdminClassroomPanel ..> AddClassroomDialog
+
+' Interface LoginListener (LoginDialog implements LoginListener)
+LoginDialog .up.|> LoginListener
 
 @enduml
