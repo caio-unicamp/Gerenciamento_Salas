@@ -17,11 +17,15 @@ import java.util.stream.Collectors;
 
 public class ReservationManager implements Serializable {
     private static final long serialVersionUID = 1L;
-
+    
     private List<Classroom> classrooms;
     private List<Reservation> reservations;
     private List<User> users;
-
+    
+    private static final String CLASSROOMS_FILE = "../data/classrooms.txt";
+    private static final String RESERVATIONS_FILE = "../data/reservations.txt";
+    private static final String USERS_FILE = "../data/users.txt";
+    
     public ReservationManager() {
         this.classrooms = new ArrayList<>();
         this.reservations = new ArrayList<>();
@@ -231,9 +235,6 @@ public class ReservationManager implements Serializable {
 
     // --- Métodos de Persistência de Dados (Leitura e Gravação de Arquivos) ---
 
-    private static final String CLASSROOMS_FILE = "../data/classrooms.txt";
-    private static final String RESERVATIONS_FILE = "../data/reservations.txt";
-    private static final String USERS_FILE = "../data/users.txt";
 
     @SuppressWarnings("unchecked")
     public void loadData() {

@@ -12,8 +12,8 @@ public class AdminClassroomPanel extends JPanel {
     private ReservationManager manager;
     private JTable classroomTable;
     private DefaultTableModel classroomTableModel;
-    private JButton removeButton;
     private JButton addButton;
+    private JButton removeButton;
     private Frame mainFrame;
 
     public AdminClassroomPanel(Frame mainFrame, ReservationManager manager) {

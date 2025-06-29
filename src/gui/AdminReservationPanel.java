@@ -182,7 +182,6 @@ public class AdminReservationPanel extends JPanel {
         }
     }
 
-    // NOVO MÉTODO PARA CANCELAR RESERVAS
     private void cancelSelectedReservation() {
         int selectedRow = reservationsTable.getSelectedRow();
         if (selectedRow == -1) {
