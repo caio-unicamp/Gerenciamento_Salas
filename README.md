@@ -32,28 +32,11 @@ O projeto incorpora os seguintes conceitos de programação orientada a objetos:
 * **Tratamento de exceções:** Trata exceções, incluindo pelo menos uma exceção definida pelo grupo (`ReservationConflictException`).
 * **Arquivos (leitura e gravação):** O sistema realiza operações de leitura e escrita em arquivos relevantes ao projeto (`data/classrooms.txt`, `data/reservations.txt`, `data/users.txt`).
 
-## 4. Estrutura do Projeto
-
-A estrutura de diretórios do projeto é a seguinte:
-
-.
-├── src/
-│   ├── model/                  # Classes de modelo (Classroom, Reservation, User, Student, Administrator)
-│   ├── manager/                # Classe para gerenciar a lógica de negócios (ReservationManager)
-│   ├── exception/              # Classes de exceção personalizadas (ReservationConflictException)
-│   ├── gui/                    # Classes da interface gráfica do usuário (Swing)
-│   ├── util/                   # Classes utilitárias (FileUtil)
-│   └── Main.java               # Ponto de entrada principal da aplicação
-├── data/                       # Diretório para arquivos de persistência de dados (classrooms.txt, reservations.txt, users.txt)
-├── MEMBROS.txt                 # Lista dos membros do grupo
-├── Video.txt                   # Link para o vídeo de apresentação do projeto
-└── README.md                   # Este arquivo (descrição do projeto)
-
-## 5. Como Configurar e Rodar o Projeto
+## 4. Como Configurar e Rodar o Projeto
 
 Siga os passos abaixo para preparar seu ambiente e executar a aplicação.
 
-### 5.1. Instalação do JDK
+### 4.1. Instalação do JDK
 
 Certifique-se de ter o JDK instalado. Você pode baixá-lo do site da Oracle ou usar uma distribuição OpenJDK (como Adoptium Temurin, Amazon Corretto, etc.).
 
@@ -63,7 +46,7 @@ Para verificar a instalação, abra um terminal (Prompt de Comando no Windows, T
 java -version
 javac -version
 
-### 5.2. Configuração para Usuários WSL (Windows Subsystem for Linux)
+### 4.2. Configuração para Usuários WSL (Windows Subsystem for Linux)
 Se você estiver rodando o projeto dentro do WSL e quiser que a interface gráfica apareça no Windows, siga estes passos adicionais:
 
 Instale um Servidor X no Windows:
