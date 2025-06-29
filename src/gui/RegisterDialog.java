@@ -98,6 +98,7 @@ public class RegisterDialog extends JDialog {
 
         // Botão de Registro
         registerButton = new JButton("Registrar");
+        getRootPane().setDefaultButton(registerButton);
         registerButton.addActionListener(e -> performRegistration());
 
         JPanel buttonPanel = new JPanel();
