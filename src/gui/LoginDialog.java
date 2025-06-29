@@ -68,4 +68,10 @@ public class LoginDialog extends JDialog { // Interface gráfica
     public User getAuthenticatedUser() {
         return authenticatedUser;
     }
+    // Método para limpar os campos e resetar o estado para um novo login
+    public void clearFields() {
+        usernameField.setText("");
+        passwordField.setText("");
+        authenticatedUser = null; // Reseta o usuário autenticado
+    }
 }
