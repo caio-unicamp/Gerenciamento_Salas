@@ -108,6 +108,7 @@ public class ReservationPanel extends JPanel { // Interface gráfica
         dialog.add(purposeField);
 
         JButton confirmButton = new JButton("Confirmar Reserva");
+        getRootPane().setDefaultButton(confirmButton);
         confirmButton.addActionListener(e -> {
             try {
                 Classroom selectedClassroom = (Classroom) manager.getAllClassrooms().get(classroomComboBox.getSelectedIndex());
