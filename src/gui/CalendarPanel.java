@@ -33,23 +33,21 @@ public class CalendarPanel extends JPanel {
 
     private static final Locale BRAZIL_LOCALE = Locale.of("pt", "BR");
 
-    // Cores personalizadas
-    private static final Color HEADER_BG_COLOR = new Color(70, 130, 180); // SteelBlue
+    private static final Color HEADER_BG_COLOR = new Color(70, 130, 180);
     private static final Color HEADER_TEXT_COLOR = Color.WHITE;
-    private static final Color WEEKDAY_COLOR = new Color(50, 50, 50); // Cinza escuro
-    private static final Color SELECTED_DAY_COLOR = new Color(173, 216, 230); // LightBlue
-    private static final Color TODAY_COLOR = new Color(255, 223, 186); // Pêssego claro (para o dia atual)
-    private static final Color RESERVATION_DAY_BORDER_COLOR = new Color(0, 100, 0); // DarkGreen
+    private static final Color WEEKDAY_COLOR = new Color(50, 50, 50);
+    private static final Color SELECTED_DAY_COLOR = new Color(173, 216, 230);
+    private static final Color TODAY_COLOR = new Color(255, 223, 186);
+    private static final Color RESERVATION_DAY_BORDER_COLOR = new Color(0, 100, 0);
 
     public CalendarPanel(ReservationManager manager) {
         this.manager = manager;
         this.currentMonth = YearMonth.now();
         this.selectedDate = LocalDate.now();
 
-        // Aumenta o espaçamento entre os componentes e as margens
-        setLayout(new BorderLayout(15, 15));
-        setBorder(new EmptyBorder(15, 15, 15, 15)); // Margens maiores
-        setBackground(new Color(240, 240, 240)); // Fundo cinza claro para o painel principal
+        setLayout(new BorderLayout(10, 10));
+        setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        setBackground(new Color(240, 240, 240));
 
         initComponents();
         updateCalendar();
@@ -57,20 +55,19 @@ public class CalendarPanel extends JPanel {
     }
 
     private void initComponents() {
-        // --- Painel de Navegação do Mês (Top) ---
-        JPanel monthNavPanel = new JPanel(new BorderLayout(10, 0)); // Espaçamento horizontal
-        monthNavPanel.setBackground(HEADER_BG_COLOR); // Cor de fundo do cabeçalho
-        monthNavPanel.setBorder(new EmptyBorder(5, 10, 5, 10)); // Padding interno
+        JPanel monthNavPanel = new JPanel(new BorderLayout(5, 1));
+        monthNavPanel.setBackground(HEADER_BG_COLOR);
+        monthNavPanel.setBorder(new EmptyBorder(1, 10, 1, 10));
 
-        prevMonthButton = new JButton("<<"); // Ícones ou texto mais curto
+        prevMonthButton = new JButton("<<");
         prevMonthButton.setFont(new Font("SansSerif", Font.BOLD, 14));
         prevMonthButton.setForeground(HEADER_TEXT_COLOR);
         prevMonthButton.setBackground(HEADER_BG_COLOR);
-        prevMonthButton.setBorderPainted(false); // Remove borda padrão
-        prevMonthButton.setFocusPainted(false); // Remove foco ao clicar
+        prevMonthButton.setBorderPainted(false);
+        prevMonthButton.setFocusPainted(false);
         prevMonthButton.addActionListener(e -> navigateMonth(-1));
 
-        nextMonthButton = new JButton(">>"); // Ícones ou texto mais curto
+        nextMonthButton = new JButton(">>");
         nextMonthButton.setFont(new Font("SansSerif", Font.BOLD, 14));
         nextMonthButton.setForeground(HEADER_TEXT_COLOR);
         nextMonthButton.setBackground(HEADER_BG_COLOR);
@@ -79,36 +76,36 @@ public class CalendarPanel extends JPanel {
         nextMonthButton.addActionListener(e -> navigateMonth(1));
 
         monthYearLabel = new JLabel("", SwingConstants.CENTER);
-        monthYearLabel.setFont(new Font("SansSerif", Font.BOLD, 22)); // Fonte maior e negrito
-        monthYearLabel.setForeground(HEADER_TEXT_COLOR); // Cor do texto
+        monthYearLabel.setFont(new Font("SansSerif", Font.BOLD, 22));
+        monthYearLabel.setForeground(HEADER_TEXT_COLOR);
 
         monthNavPanel.add(prevMonthButton, BorderLayout.WEST);
         monthNavPanel.add(monthYearLabel, BorderLayout.CENTER);
         monthNavPanel.add(nextMonthButton, BorderLayout.EAST);
         add(monthNavPanel, BorderLayout.NORTH);
 
-        // --- Grade do Calendário ---
-        calendarGridPanel = new JPanel(new GridLayout(0, 7, 5, 5)); // Aumenta o espaçamento entre as células
-        calendarGridPanel.setBackground(Color.WHITE); // Fundo branco para o grid do calendário
+        // ALTERAÇÃO AQUI: Aumentar ainda mais o espaçamento vertical
+        // Isso dá mais "liberdade" para os botões expandirem verticalmente.
+        calendarGridPanel = new JPanel(new GridLayout(0, 7, 5, 1)); // VGap de 20
+        calendarGridPanel.setBackground(Color.WHITE);
         calendarGridPanel.setBorder(BorderFactory.createCompoundBorder(
-                new EmptyBorder(5, 5, 5, 5), // Padding interno para a grade
-                new LineBorder(Color.LIGHT_GRAY, 1) // Borda ao redor da grade
+            new EmptyBorder(1, 5, 1, 5),
+            new LineBorder(Color.LIGHT_GRAY, 1)
         ));
         add(calendarGridPanel, BorderLayout.CENTER);
 
-        // --- Painel de Reservas para o Dia Selecionado ---
-        JPanel reservationsPanel = new JPanel(new BorderLayout(5, 5));
+        JPanel reservationsPanel = new JPanel(new BorderLayout(5, 1));
         reservationsPanel.setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createLineBorder(Color.GRAY, 1), // Borda cinza para o título
-                "Reservas para o dia selecionado", // Título
-                javax.swing.border.TitledBorder.LEFT, // Alinhamento do título
-                javax.swing.border.TitledBorder.TOP, // Posição do título
-                new Font("SansSerif", Font.BOLD, 16), // Fonte do título
-                WEEKDAY_COLOR // Cor do título
+            BorderFactory.createLineBorder(Color.GRAY, 1),
+            "Reservas para o dia selecionado",
+            javax.swing.border.TitledBorder.LEFT,
+            javax.swing.border.TitledBorder.TOP,
+            new Font("SansSerif", Font.BOLD, 16),
+            WEEKDAY_COLOR
         ));
-        reservationsPanel.setBackground(Color.WHITE); // Fundo branco
+        reservationsPanel.setBackground(Color.WHITE);
 
-        String[] tableColumnNames = { "Sala", "Horário", "Usuário", "Propósito" };
+        String[] tableColumnNames = {"Sala", "Horário", "Usuário", "Propósito"};
         reservationsForDayTableModel = new DefaultTableModel(tableColumnNames, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -117,12 +114,10 @@ public class CalendarPanel extends JPanel {
         };
         reservationsForDayTable = new JTable(reservationsForDayTableModel);
         reservationsForDayTable.setFillsViewportHeight(true);
-        reservationsForDayTable.setRowHeight(25); // Altura das linhas da tabela
-        reservationsForDayTable.setFont(new Font("SansSerif", Font.PLAIN, 13)); // Fonte da tabela
-        reservationsForDayTable.getTableHeader().setFont(new Font("SansSerif", Font.BOLD, 13)); // Fonte do cabeçalho da
-                                                                                                // tabela
-        reservationsForDayTable.getTableHeader().setBackground(new Color(220, 220, 220)); // Fundo do cabeçalho da
-                                                                                          // tabela
+        reservationsForDayTable.setRowHeight(25);
+        reservationsForDayTable.setFont(new Font("SansSerif", Font.PLAIN, 13));
+        reservationsForDayTable.getTableHeader().setFont(new Font("SansSerif", Font.BOLD, 13));
+        reservationsForDayTable.getTableHeader().setBackground(new Color(220, 220, 220));
 
         reservationsPanel.add(new JScrollPane(reservationsForDayTable), BorderLayout.CENTER);
 
@@ -132,13 +127,9 @@ public class CalendarPanel extends JPanel {
     private void navigateMonth(int months) {
         currentMonth = currentMonth.plusMonths(months);
         updateCalendar();
-        // Não reseta selectedDate para o primeiro dia do mês ao navegar,
-        // mas tenta manter o mesmo dia, se possível.
         try {
             selectedDate = currentMonth.atDay(selectedDate.getDayOfMonth());
         } catch (java.time.DateTimeException e) {
-            // Se o dia não existir no novo mês (ex: 31 de janeiro para fevereiro),
-            // vai para o último dia do novo mês.
             selectedDate = currentMonth.atEndOfMonth();
         }
         displayReservationsForSelectedDay();
@@ -147,14 +138,13 @@ public class CalendarPanel extends JPanel {
     private void updateCalendar() {
         calendarGridPanel.removeAll();
 
-        monthYearLabel.setText(
-                currentMonth.getMonth().getDisplayName(TextStyle.FULL, BRAZIL_LOCALE) + " " + currentMonth.getYear());
+        monthYearLabel.setText(currentMonth.getMonth().getDisplayName(TextStyle.FULL, BRAZIL_LOCALE) + " " + currentMonth.getYear());
 
-        String[] dayNames = { "Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb" };
+        String[] dayNames = {"Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"};
         for (String dayName : dayNames) {
             JLabel label = new JLabel(dayName, SwingConstants.CENTER);
             label.setFont(new Font("SansSerif", Font.BOLD, 12));
-            label.setForeground(WEEKDAY_COLOR); // Cor dos nomes dos dias da semana
+            label.setForeground(WEEKDAY_COLOR);
             calendarGridPanel.add(label);
         }
 
@@ -176,30 +166,29 @@ public class CalendarPanel extends JPanel {
             LocalDate date = currentMonth.atDay(day);
             JButton dayButton = new JButton(String.valueOf(day));
             dayButton.setFont(new Font("SansSerif", Font.PLAIN, 14));
-            dayButton.setFocusPainted(false); // Remove o quadrado de foco
-            dayButton.setBackground(Color.WHITE); // Cor de fundo padrão dos dias
-            dayButton.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); // Padding interno para o texto do dia
+            dayButton.setFocusPainted(false);
+            dayButton.setBackground(Color.WHITE);
+            // ALTERAÇÃO AQUI: Aumentar o padding interno do botão para dar mais altura
+            dayButton.setBorder(BorderFactory.createEmptyBorder(1, 5, 1, 5)); // Aumentado padding vertical para 10
 
-            // Estilos de destaque para o dia
             if (date.equals(selectedDate)) {
-                dayButton.setBackground(SELECTED_DAY_COLOR); // Dia selecionado
-                dayButton.setBorder(new LineBorder(Color.DARK_GRAY, 2)); // Borda mais escura
+                dayButton.setBackground(SELECTED_DAY_COLOR);
+                dayButton.setBorder(new LineBorder(Color.DARK_GRAY, 2));
             } else if (date.equals(LocalDate.now())) {
-                dayButton.setBackground(TODAY_COLOR); // Dia atual
-                dayButton.setBorder(new LineBorder(Color.ORANGE, 2)); // Borda laranja
+                dayButton.setBackground(TODAY_COLOR);
+                dayButton.setBorder(new LineBorder(Color.ORANGE, 2));
             } else {
-                dayButton.setBackground(Color.WHITE); // Dias normais
-                dayButton.setBorder(new LineBorder(Color.LIGHT_GRAY, 1)); // Borda fina clara
+                dayButton.setBackground(Color.WHITE);
+                dayButton.setBorder(new LineBorder(Color.LIGHT_GRAY, 1));
             }
 
-            // Destaque para dias com reservas confirmadas (borda extra)
             boolean hasConfirmedReservations = manager.getAllReservations().stream()
-                    .filter(r -> r.getStatus().equals(ReservationStatus.CONFIRMED))
-                    .anyMatch(r -> r.getDate().equals(date));
+                .filter(r -> r.getStatus().equals(ReservationStatus.CONFIRMED))
+                .anyMatch(r -> r.getDate().equals(date));
             if (hasConfirmedReservations) {
                 dayButton.setBorder(BorderFactory.createCompoundBorder(
-                        new LineBorder(RESERVATION_DAY_BORDER_COLOR, 2), // Borda de reserva
-                        dayButton.getBorder() // Mantém a borda original (selecionado, hoje, normal)
+                    new LineBorder(RESERVATION_DAY_BORDER_COLOR, 2),
+                    dayButton.getBorder()
                 ));
             }
 
@@ -224,18 +213,17 @@ public class CalendarPanel extends JPanel {
         }
 
         List<Reservation> reservations = manager.getAllReservations().stream()
-                .filter(r -> r.getDate().equals(selectedDate))
-                .filter(r -> r.getStatus().equals(ReservationStatus.CONFIRMED))
-                .sorted(Comparator.comparing(Reservation::getStartTime))
-                .collect(Collectors.toList());
+            .filter(r -> r.getDate().equals(selectedDate))
+            .filter(r -> r.getStatus().equals(ReservationStatus.CONFIRMED))
+            .sorted(Comparator.comparing(Reservation::getStartTime))
+            .collect(Collectors.toList());
 
         for (Reservation res : reservations) {
-            reservationsForDayTableModel.addRow(new Object[] {
-                    res.getClassroom().getName(),
-                    res.getStartTime().format(DateTimeFormatter.ofPattern("HH:mm")) + " - "
-                            + res.getEndTime().format(DateTimeFormatter.ofPattern("HH:mm")),
-                    res.getReservedBy().getName(),
-                    res.getPurpose()
+            reservationsForDayTableModel.addRow(new Object[]{
+                res.getClassroom().getName(),
+                res.getStartTime().format(DateTimeFormatter.ofPattern("HH:mm")) + " - " + res.getEndTime().format(DateTimeFormatter.ofPattern("HH:mm")),
+                res.getReservedBy().getName(),
+                res.getPurpose()
             });
         }
     }
