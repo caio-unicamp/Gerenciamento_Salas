@@ -1,3 +1,4 @@
+// src/Main.java
 import gui.LoginDialog;
 import gui.MainFrame;
 import manager.ReservationManager;
@@ -6,8 +7,7 @@ import model.Classroom;
 import model.Student;
 import model.User;
 
-
-import javax.swing.*; // Interface gráfica 
+import javax.swing.*;
 import java.awt.*;
 
 public class Main {
@@ -16,7 +16,6 @@ public class Main {
         ReservationManager manager = new ReservationManager();
 
         // Adicionar alguns dados de teste iniciais se os arquivos estiverem vazios/não existirem
-        // Isso só acontecerá na primeira execução ou se os arquivos forem apagados
         if (manager.getAllClassrooms().isEmpty()) {
             manager.addClassroom(new Classroom("Sala A101", 30, "Prédio A", true));
             manager.addClassroom(new Classroom("Laboratório B205", 20, "Prédio B", true));
@@ -30,26 +29,27 @@ public class Main {
             manager.addUser(new Student("aluno2", "aluno123", "Maria Oliveira", "maria.oliveria@unicamp.br", "RA654321"));
         }
 
-
         // Garante que a GUI será iniciada na Event Dispatch Thread (EDT)
         SwingUtilities.invokeLater(() -> {
-            // Cria um Frame "fantasma" que será o pai do LoginDialog para centralizá-lo corretamente.
             JFrame dummyFrame = new JFrame();
-            dummyFrame.setVisible(false); // Nunca visível
-            dummyFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Sai se o dummyFrame for fechado (não deve acontecer)
-            
+            dummyFrame.setVisible(false);
+            dummyFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
             LoginDialog loginDialog = new LoginDialog(dummyFrame, manager);
+
+            // Adiciona o listener para lidar com o sucesso do login
+            loginDialog.setLoginListener(user -> {
+                // Quando o login for bem-sucedido, cria e exibe a MainFrame
+                MainFrame mainFrame = new MainFrame(manager, user, loginDialog);
+                mainFrame.setVisible(true);
+                mainFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            });
+
             loginDialog.setVisible(true);
 
-            User authenticatedUser = loginDialog.getAuthenticatedUser();
-            if (authenticatedUser == null) {
+            if (loginDialog.getAuthenticatedUser() == null) {
                 JOptionPane.showMessageDialog(null, "Login cancelado ou falhou. Encerrando o sistema.", "Sair", JOptionPane.INFORMATION_MESSAGE);
                 System.exit(0);
-            } else {
-                MainFrame mainFrame = new MainFrame(manager, authenticatedUser, loginDialog);
-                mainFrame.setVisible(true);
-                
-                mainFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             }
         });
     }

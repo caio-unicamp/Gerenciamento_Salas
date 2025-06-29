@@ -1,20 +1,26 @@
+// src/gui/LoginDialog.java
 package gui;
 
 import manager.ReservationManager;
 import model.User;
 
-import javax.swing.*; // Interface gráfica 
+import javax.swing.*;
 import java.awt.*;
 
-public class LoginDialog extends JDialog { // Interface gráfica 
+public class LoginDialog extends JDialog {
     private JTextField usernameField;
     private JPasswordField passwordField;
     private JButton loginButton;
     private ReservationManager manager;
     private User authenticatedUser;
 
+    public interface LoginListener {
+        void onLoginSuccess(User user);
+    }
+    private LoginListener loginListener;
+
     public LoginDialog(Frame parent, ReservationManager manager) {
-        super(parent, "Login", true); // Modal
+        super(parent, "Login", true);
         this.manager = manager;
         this.authenticatedUser = null;
 
@@ -23,6 +29,10 @@ public class LoginDialog extends JDialog { // Interface gráfica
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
         initUI();
+    }
+
+    public void setLoginListener(LoginListener listener) {
+        this.loginListener = listener;
     }
 
     private void initUI() {
@@ -60,6 +70,9 @@ public class LoginDialog extends JDialog { // Interface gráfica
             authenticatedUser = user;
             JOptionPane.showMessageDialog(this, "Login bem-sucedido!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
             setVisible(false);
+            if (loginListener != null) {
+                loginListener.onLoginSuccess(authenticatedUser);
+            }
         } else {
             JOptionPane.showMessageDialog(this, "Usuário ou senha inválidos.", "Erro de Login", JOptionPane.ERROR_MESSAGE);
         }
