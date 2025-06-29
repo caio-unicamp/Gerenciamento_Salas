@@ -99,7 +99,7 @@ public class Reservation implements Serializable {
     }
 
     public String getObservation() {
-        return observation;
+        return observation != null ? observation : "";
     }
 
     public void setObservation(String observation) {
