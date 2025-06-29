@@ -128,4 +128,33 @@ Se você estiver rodando o projeto dentro do WSL e quiser que a interface gráfi
 
 Ao iniciar o sistema pela primeira vez, ele pode carregar alguns dados de exemplo (salas e usuários) se os arquivos de dados na pasta `data/` estiverem vazios ou não existirem.
 
-* **Usuários de Teste (se gerados automaticamente no `Main.java`):
+* **Usuários de Teste (se gerados automaticamente no `Main.java`):**
+    * **Administrador:**
+        * **Usuário:** `admin`
+        * **Senha:** `admin123`
+    * **Aluno:**
+        * **Usuário:** `aluno1`
+        * **Senha:** `aluno123`
+        * **Usuário:** `aluno2`
+        * **Senha:** `aluno123`
+
+## 6. Funcionalidades da Aplicação
+
+O sistema oferece as seguintes funcionalidades principais:
+
+* **Login de Usuários:** Autenticação como aluno ou administrador.
+* **Visualização de Salas:** Lista todas as salas cadastradas com seus detalhes.
+* **Gerenciamento de Reservas (Alunos):**
+    * Permite fazer novas reservas de salas.
+    * Permite visualizar suas próprias reservas.
+    * Permite cancelar reservas existentes.
+* **Gerenciamento de Salas (Administradores):**
+    * Funcionalidades adicionais para adicionar novas salas (acessível via uma aba específica na interface).
+* **Persistência de Dados:** As informações de salas, usuários e reservas são salvas e carregadas automaticamente de arquivos (`.txt`) localizados na pasta `data/`, garantindo a persistência dos dados entre as sessões.
+
+## 7. Problemas Comuns e Soluções
+
+* **`java.awt.AWTError: Can't connect to X11 window server...`:** Este erro indica que o ambiente gráfico não foi configurado corretamente ou o servidor X não está acessível.
+    * **Solução:** Revise a Seção 5.2 "Configuração para Usuários WSL", garantindo que o VcXsrv (ou Xming) esteja rodando, que a opção "Disable access control" esteja marcada, que o Firewall do Windows permita a comunicação, e que a variável `DISPLAY` no seu WSL esteja apontando para o IP correto do host Windows (e que o WSL tenha sido reiniciado após as configurações).
+* **`Error: Could not find or load main class Main`:**
+    * **Solução:** Verifique se você está executando o comando `java -cp src Main` a partir do diretório raiz do projeto e se a compilação (`javac`) foi bem-sucedida sem erros.
