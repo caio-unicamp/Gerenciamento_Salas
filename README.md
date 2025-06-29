@@ -48,40 +48,84 @@ javac -version
 ```
 
 ### 4.2. Configuração para Usuários WSL (Windows Subsystem for Linux)
+
 Se você estiver rodando o projeto dentro do WSL e quiser que a interface gráfica apareça no Windows, siga estes passos adicionais:
 
-Instale um Servidor X no Windows:
+1.  **Instale um Servidor X no Windows:**
+    * Recomenda-se o **VcXsrv**.
+    * **Download:** Baixe o VcXsrv (procure por "VcXsrv Windows X Server" no SourceForge).
+    * **Instalação:** Execute o instalador e siga as instruções.
+    * **Configuração e Inicialização:**
+        * Após a instalação, procure por "XLaunch" no menu Iniciar do Windows e execute-o.
+        * Na primeira tela ("Display settings"), escolha "Multiple windows" (ou "One large window").
+        * **CRÍTICO:** Marque a opção "**Disable access control**". Isso permite que o WSL se conecte ao servidor X sem problemas de permissão.
+        * Prossiga com as configurações padrão nas próximas telas e clique em "Finish". Um ícone do VcXsrv aparecerá na bandeja do sistema do Windows, indicando que está em execução.
 
-Recomenda-se o VcXsrv.
+2.  **Configurar Firewall do Windows:**
+    * Certifique-se de que o Firewall do Windows não está bloqueando o VcXsrv.
+    * No Windows, pesquise por "Permitir um aplicativo através do Firewall do Windows".
+    * Clique em "Alterar configurações" e procure por "VcXsrv".
+    * Marque as caixas "Privado" e "Público" para VcXsrv. Se não estiver na lista, clique em "Permitir outro aplicativo...", navegue até o executável (`C:\Program Files\VcXsrv\vcxsrv.exe`) e adicione-o.
+    * Alternativamente, você pode adicionar uma regra de entrada para a porta TCP `6000` (porta padrão do X11) diretamente no "Firewall do Windows Defender com Segurança Avançada".
 
-Download: Baixe o VcXsrv (procure por "VcXsrv Windows X Server" no SourceForge).
+3.  **Configurar Variável `DISPLAY` no WSL:**
+    * Abra seu terminal WSL (ex: Ubuntu).
+    * Adicione as seguintes linhas ao seu arquivo de configuração do shell (`~/.bashrc` para Bash, ou `~/.zshrc` para Zsh):
+        ```bash
+        echo "export DISPLAY=\$(grep nameserver /etc/resolv.conf | awk '{print \$2}'):0.0" >> ~/.bashrc
+        echo "export LIBGL_ALWAYS_INDIRECT=1" >> ~/.bashrc # Pode ser necessário para alguns apps
+        ```
+    * Recarregue o arquivo de configuração para aplicar as mudanças imediatamente:
+        ```bash
+        source ~/.bashrc
+        ```
+    * **Confirme o IP:** Digite `echo $DISPLAY` para verificar se a variável foi definida corretamente com um IP do seu host Windows (ex: `10.255.255.254:0.0`).
 
-Instalação: Execute o instalador e siga as instruções.
+4.  **Instalar Bibliotecas X11 no WSL (se necessário):**
+    ```bash
+    sudo apt update
+    sudo apt install -y libxext6 libxrender1 libxtst6 libfontconfig1 libxi6
+    ```
 
-Configuração e Inicialização:
+5.  **Reiniciar o WSL (Altamente Recomendado):**
+    * No PowerShell (ou Prompt de Comando) do Windows, execute:
+        ```powershell
+        wsl --shutdown
+        ```
+    * Espere alguns segundos para que o WSL pare completamente e então reabra seu terminal WSL.
 
-Após a instalação, procure por "XLaunch" no menu Iniciar do Windows e execute-o.
+**Observação para Windows 11 / WSLg:** Se você estiver usando Windows 11 com WSLg (Windows Subsystem for Linux GUI), a configuração do servidor X e da variável `DISPLAY` é automática. Você não precisaria realizar os passos de 5.2.1 a 5.2.5; basta ter o WSLg instalado e rodar a aplicação Java diretamente no WSL.
 
-Na primeira tela ("Display settings"), escolha "Multiple windows" (ou "One large window").
+### 4.3. Compilando e Executando o Projeto
 
-CRÍTICO: Marque a opção "Disable access control". Isso permite que o WSL se conecte ao servidor X sem problemas de permissão.
+1.  **Navegue até o Diretório do Projeto:**
+    * Abra um terminal (Prompt de Comando, PowerShell, Terminal Linux/macOS ou Terminal WSL).
+    * Navegue até a raiz do diretório do projeto (onde está o `src` e este `README.md`).
+    * Exemplo no Windows (se o projeto estiver em `C:\Projetos\MC322`):
+        ```bash
+        cd C:\Projetos\MC322
+        ```
+    * Exemplo no WSL (se o projeto estiver em `C:\Projetos\MC322`):
+        ```bash
+        cd /mnt/c/Projetos/MC322
+        ```
 
-Prossiga com as configurações padrão nas próximas telas e clique em "Finish". Um ícone do VcXsrv aparecerá na bandeja do sistema do Windows, indicando que está em execução.
+2.  **Compile os Arquivos Java:**
+    * Execute o comando de compilação a partir do diretório raiz do projeto:
+        ```bash
+        javac src/Main.java src/model/*.java src/manager/*.java src/exception/*.java src/gui/*.java src/util/*.java
+        ```
+    * Este comando compilará todos os arquivos `.java` nos subdiretórios listados.
 
-Configurar Firewall do Windows:
+3.  **Execute a Aplicação:**
+    * Após a compilação, execute o programa principal:
+        ```bash
+        java -cp src Main
+        ```
+    * A aplicação GUI deve iniciar, exibindo uma tela de login.
 
-Certifique-se de que o Firewall do Windows não está bloqueando o VcXsrv.
+## 5. Primeiros Acessos e Credenciais Padrão
 
-No Windows, pesquise por "Permitir um aplicativo através do Firewall do Windows".
+Ao iniciar o sistema pela primeira vez, ele pode carregar alguns dados de exemplo (salas e usuários) se os arquivos de dados na pasta `data/` estiverem vazios ou não existirem.
 
-Clique em "Alterar configurações" e procure por "VcXsrv".
-
-Marque as caixas "Privado" e "Público" para VcXsrv. Se não estiver na lista, clique em "Permitir outro aplicativo...", navegue até o executável (C:\Program Files\VcXsrv\vcxsrv.exe) e adicione-o.
-
-Alternativamente, você pode adicionar uma regra de entrada para a porta TCP 6000 (porta padrão do X11) diretamente no "Firewall do Windows Defender com Segurança Avançada".
-
-Configurar Variável DISPLAY no WSL:
-
-Abra seu terminal WSL (ex: Ubuntu).
-
-Adicione as seguintes linhas ao seu arquivo de configuração do shell (~/.bashrc para Bash, ou ~/.zshrc para Zsh):
+* **Usuários de Teste (se gerados automaticamente no `Main.java`):
