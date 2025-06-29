@@ -35,7 +35,7 @@ public class MainFrame extends JFrame { // Interface gráfica
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                performLogout();
+                performExit();
             }
         });
     }
@@ -82,6 +82,15 @@ public class MainFrame extends JFrame { // Interface gráfica
             dispose(); // Fecha a MainFrame
             parentLoginDialog.clearFields(); // Limpa os campos do diálogo de login
             parentLoginDialog.setVisible(true); // Torna o diálogo de login visível novamente
+        }
+    }
+    private void performExit() {
+        int confirm = JOptionPane.showConfirmDialog(MainFrame.this,
+                        "Tem certeza que deseja sair do sistema?", "Sair",
+                        JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) {
+            manager.saveData(); // Save data before exiting
+            System.exit(0); // Terminate the application
         }
     }
     // Método para atualizar as abas quando necessário (ex: após uma reserva)
