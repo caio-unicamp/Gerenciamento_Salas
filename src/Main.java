@@ -39,7 +39,7 @@ public class Main {
             User authenticatedUser = loginDialog.getAuthenticatedUser();
 
             if (authenticatedUser != null) {
-                MainFrame mainFrame = new MainFrame(manager, authenticatedUser);
+                MainFrame mainFrame = new MainFrame(manager, authenticatedUser, loginDialog);
                 mainFrame.setVisible(true);
             } else {
                 JOptionPane.showMessageDialog(null, "Login cancelado ou falhou. Encerrando o sistema.", "Sair", JOptionPane.INFORMATION_MESSAGE);

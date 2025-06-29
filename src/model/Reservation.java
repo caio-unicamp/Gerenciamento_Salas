@@ -5,10 +5,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Objects;
 
-
-
-// Exemplo de classe 
-// Exemplo de relacionamento (associação): Reservation 'tem' um Classroom e um User [cite: 8]
 public class Reservation implements Serializable {
     private static final long serialVersionUID = 1L; // Para serialização
     private static int nextReservationId = 1; // Variável estática 

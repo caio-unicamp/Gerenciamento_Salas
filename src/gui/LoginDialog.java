@@ -42,7 +42,7 @@ public class LoginDialog extends JDialog { // Interface gráfica
         loginButton = new JButton("Login");
         loginButton.addActionListener(e -> performLogin());
         getRootPane().setDefaultButton(loginButton);
-        
+
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(loginButton);
 
@@ -64,7 +64,7 @@ public class LoginDialog extends JDialog { // Interface gráfica
             JOptionPane.showMessageDialog(this, "Usuário ou senha inválidos.", "Erro de Login", JOptionPane.ERROR_MESSAGE);
         }
     }
-
+    
     public User getAuthenticatedUser() {
         return authenticatedUser;
     }

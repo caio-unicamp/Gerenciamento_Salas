@@ -5,6 +5,7 @@ import model.Classroom;
 import model.Reservation;
 import model.Administrator;
 import model.User;
+import model.Administrator;
 
 import javax.swing.*; // Interface gráfica 
 
@@ -69,62 +70,8 @@ public class MainFrame extends JFrame { // Interface gráfica
         tabbedPane.addTab("Minhas Reservas", reservationPanel);
 
         if (loggedInUser.getRole().equals("Administrator")) {
-            // Adicionar aba de administração de salas se for administrador
-            JPanel adminPanel = new JPanel(new BorderLayout());
-            JPanel buttonPanel = new JPanel();
-            JButton addClassroomButton = new JButton("Adicionar Nova Sala");
-            addClassroomButton.addActionListener(e -> {
-                AddClassroomDialog dialog = new AddClassroomDialog(this, manager);
-                dialog.setVisible(true);
-                classroomPanel.refreshClassroomList(); // Atualiza a lista após adicionar
-            });
-            buttonPanel.add(addClassroomButton);
-            // Reutiliza a tabela de salas
-
-            JButton removeClassroomButton = new JButton("Remover Sala");
-            JTable classroomTable = new JTable(classroomPanel.getClassroomTableModel());
-            removeClassroomButton.addActionListener(e -> {
-                int selectedRow = classroomTable.getSelectedRow();
-                if (selectedRow == -1) {
-                    JOptionPane.showMessageDialog(this, "Selecione uma sala para confirmar.", "Nenhuma Seleção",
-                            JOptionPane.WARNING_MESSAGE);
-                    return;
-                }
-                int confirm = JOptionPane.showConfirmDialog(this, "Tem certeza que deseja remover esta sala?", "Confirmar removimento de sala", JOptionPane.YES_NO_OPTION);
-                if (confirm == JOptionPane.YES_OPTION) {
-                    String classroomName = (String) classroomPanel.getClassroomTableModel().getValueAt(selectedRow, 0);
-                    Classroom classroomToRemove = manager.getAllClassrooms().stream()
-                            .filter(r -> r.getName() == classroomName)
-                            .findFirst()
-                            .orElse(null);
-                    if (classroomToRemove != null) {
-                        try {
-                            manager.removeClassroom(classroomToRemove);
-                            JOptionPane.showMessageDialog(this, "Sala removida com sucesso!", "Sucesso",
-                                    JOptionPane.INFORMATION_MESSAGE);
-                            classroomPanel.refreshClassroomList();
-                            if (SwingUtilities.getWindowAncestor(this) instanceof MainFrame) {
-                                ((MainFrame) SwingUtilities.getWindowAncestor(this)).refreshPanels();
-                            }
-                        } catch (IllegalArgumentException ex) {
-                            JOptionPane.showMessageDialog(this, "Erro: " + ex.getMessage(), "Erro",
-                                    JOptionPane.ERROR_MESSAGE);
-                        } catch (Exception ex) {
-                            JOptionPane.showMessageDialog(this, "Ocorreu um erro inesperado: " + ex.getMessage(), "Erro",
-                                    JOptionPane.ERROR_MESSAGE);
-                            ex.printStackTrace();
-                        }
-                    } else {
-                        JOptionPane.showMessageDialog(this, "Sala não encontrada para confirmação.", "Erro",
-                                JOptionPane.ERROR_MESSAGE);
-                    }
-                }
-            });
-            buttonPanel.add(removeClassroomButton);
-            adminPanel.add(buttonPanel, BorderLayout.NORTH);
-            adminPanel.add(new JScrollPane(classroomTable), BorderLayout.CENTER);
-
-            tabbedPane.addTab("Administração de Salas", adminPanel);
+            JPanel adminClassroomPanel = new AdminClassroomPanel(this,manager);
+            tabbedPane.addTab("Administração de Salas", adminClassroomPanel);
 
             JPanel adminReservationPanel = new AdminReservationPanel(manager);
             tabbedPane.addTab("Gerenciar Reservas", adminReservationPanel);
