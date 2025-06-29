@@ -21,7 +21,7 @@ public class RegisterDialog extends JDialog {
 
     private ReservationManager manager;
 
-    public RegisterDialog(Frame parent, ReservationManager manager) {
+    public RegisterDialog(LoginDialog parent, ReservationManager manager) {
         super(parent, "Criar Nova Conta", true);
         this.manager = manager;
 

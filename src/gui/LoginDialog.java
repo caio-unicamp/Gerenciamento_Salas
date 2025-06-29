@@ -11,6 +11,8 @@ public class LoginDialog extends JDialog {
     private JTextField usernameField;
     private JPasswordField passwordField;
     private JButton loginButton;
+    // Novo: Botão para criar conta
+    private JButton createAccountButton;
     private ReservationManager manager;
     private User authenticatedUser;
 
@@ -24,7 +26,7 @@ public class LoginDialog extends JDialog {
         this.manager = manager;
         this.authenticatedUser = null;
 
-        setSize(300, 180);
+        setSize(300, 220); // Aumentei um pouco o tamanho para o novo botão
         setLocationRelativeTo(parent);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
@@ -53,8 +55,14 @@ public class LoginDialog extends JDialog {
         loginButton.addActionListener(e -> performLogin());
         getRootPane().setDefaultButton(loginButton);
 
+        // Novo: Botão Criar Conta
+        createAccountButton = new JButton("Criar Conta");
+        createAccountButton.addActionListener(e -> openRegisterDialog());
+
+
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(loginButton);
+        buttonPanel.add(createAccountButton); // Adiciona o novo botão ao painel
 
         add(formPanel, BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);
@@ -77,14 +85,22 @@ public class LoginDialog extends JDialog {
             JOptionPane.showMessageDialog(this, "Usuário ou senha inválidos.", "Erro de Login", JOptionPane.ERROR_MESSAGE);
         }
     }
-    
+
+    // Novo: Método para abrir o diálogo de registro
+    private void openRegisterDialog() {
+        RegisterDialog registerDialog = new RegisterDialog(this, manager);
+        registerDialog.setVisible(true);
+        // Opcional: Após o registro, o usuário é fechado, e o LoginDialog permanece aberto.
+        // O usuário precisará inserir as novas credenciais para logar.
+    }
+
     public User getAuthenticatedUser() {
         return authenticatedUser;
     }
-    // Método para limpar os campos e resetar o estado para um novo login
+    
     public void clearFields() {
         usernameField.setText("");
         passwordField.setText("");
-        authenticatedUser = null; // Reseta o usuário autenticado
+        authenticatedUser = null; 
     }
 }
