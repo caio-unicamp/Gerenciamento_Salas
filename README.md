@@ -11,7 +11,7 @@ Estudar e implementar os conceitos de programação orientada a objetos abordado
 Para compilar e executar este projeto, você precisará dos seguintes softwares:
 
 * **Java Development Kit (JDK):** Versão 11 ou superior (preferencialmente a versão LTS mais recente, como JDK 17).
-* **Ambiente Gráfico:** O sistema possui uma interface gráfica (GUI)10], portanto, ele deve ser executado em um ambiente que suporte a exibição de janelas (como Windows, macOS, ou um ambiente de desktop Linux).
+* **Ambiente Gráfico:** O sistema possui uma interface gráfica (GUI)10, portanto, ele deve ser executado em um ambiente que suporte a exibição de janelas (como Windows, macOS, ou um ambiente de desktop Linux).
     * Se estiver utilizando **WSL (Windows Subsystem for Linux)**, um servidor X no Windows é necessário.
 
 ## 3. Tópicos de POO Abordados
@@ -19,18 +19,18 @@ Para compilar e executar este projeto, você precisará dos seguintes softwares:
 O projeto incorpora os seguintes conceitos de programação orientada a objetos:
 
 * **Classes, variáveis e métodos:** O sistema contempla classes, seus atributos e métodos, incluindo sobrecarga.
-* **Visibilidade:** Aplicação correta de modificadores de visibilidade (public, private, protected)4].
-* **Herança:** Ao menos uma estrutura de herança foi implementada (ex: `User` com `Student` e `Administrator`)5].
-* **Variáveis e métodos estáticos:** Inclui pelo menos uma variável e um método de classe (ex: `nextReservationId` em `Reservation`)6].
-* **Arrays:** Utilizado quando necessário (ex: `ArrayList` para armazenar coleções de objetos)6].
-* **Enumerações:** Incluído ao menos um exemplo de uso (ex: `ReservationStatus`)7].
+* **Visibilidade:** Aplicação correta de modificadores de visibilidade (public, private, protected).
+* **Herança:** Ao menos uma estrutura de herança foi implementada (ex: `User` com `Student` e `Administrator`).
+* **Variáveis e métodos estáticos:** Inclui pelo menos uma variável e um método de classe (ex: `nextReservationId` em `Reservation`).
+* **Arrays:** Utilizado quando necessário (ex: `ArrayList` para armazenar coleções de objetos).
+* **Enumerações:** Incluído ao menos um exemplo de uso (ex: `ReservationStatus`).
 * **Entrada e saída de dados:** Permite entrada e/ou saída de dados via GUI e arquivos.
-* **Relacionamentos (associação, agregação ou composição):** Contempla ao menos um tipo de relacionamento (ex: `ReservationManager` agrega `Classroom` e `Reservation`)8].
-* **Classes abstratas:** Implementada ao menos uma (ex: `User`)8].
-* **Polimorfismo:** Inclui exemplos de polimorfismo de tipo e de método (ex: `User` e seus subtipos, sobrecarga de `findAvailableClassrooms`)9].
-* **Interface gráfica:** O sistema é controlado por interface gráfica (GUI)10].
-* **Tratamento de exceções:** Trata exceções, incluindo pelo menos uma exceção definida pelo grupo (`ReservationConflictException`)11].
-* **Arquivos (leitura e gravação):** O sistema realiza operações de leitura e escrita em arquivos relevantes ao projeto (`data/classrooms.txt`, `data/reservations.txt`, `data/users.txt`)12].
+* **Relacionamentos (associação, agregação ou composição):** Contempla ao menos um tipo de relacionamento (ex: `ReservationManager` agrega `Classroom` e `Reservation`).
+* **Classes abstratas:** Implementada ao menos uma (ex: `User`).
+* **Polimorfismo:** Inclui exemplos de polimorfismo de tipo e de método (ex: `User` e seus subtipos, sobrecarga de `findAvailableClassrooms`).
+* **Interface gráfica:** O sistema é controlado por interface gráfica (GUI).
+* **Tratamento de exceções:** Trata exceções, incluindo pelo menos uma exceção definida pelo grupo (`ReservationConflictException`).
+* **Arquivos (leitura e gravação):** O sistema realiza operações de leitura e escrita em arquivos relevantes ao projeto (`data/classrooms.txt`, `data/reservations.txt`, `data/users.txt`).
 
 ## 4. Estrutura do Projeto
 
