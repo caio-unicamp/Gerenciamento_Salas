@@ -8,6 +8,8 @@ import model.User;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class ForgotPasswordDialog extends JDialog {
     private JTextField usernameField;
@@ -17,6 +19,8 @@ public class ForgotPasswordDialog extends JDialog {
     private JPasswordField newPasswordField;
     private JPasswordField confirmNewPasswordField;
     private JButton resetPasswordButton;
+    private JComboBox<String> userTypeComboBox;
+
 
     private ReservationManager manager;
     private User foundUser; // Para armazenar o usuário encontrado após a validação
@@ -43,7 +47,21 @@ public class ForgotPasswordDialog extends JDialog {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.anchor = GridBagConstraints.WEST;
 
-        // Campo: Nome de Usuário
+        // Linha 0: Tipo de Usuário
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        formPanel.add(new JLabel("Tipo de Usuário:"), gbc);
+        gbc.gridx = 1;
+        userTypeComboBox = new JComboBox<>(new String[]{"Estudante", "Administrador"});
+        userTypeComboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                updateFieldsVisibility();
+            }
+        });
+        formPanel.add(userTypeComboBox, gbc);
+
+        // Linha 1: Nome de Usuário
         gbc.gridx = 0;
         gbc.gridy = 0;
         formPanel.add(new JLabel("Nome de Usuário:"), gbc);
@@ -51,7 +69,7 @@ public class ForgotPasswordDialog extends JDialog {
         usernameField = new JTextField(20);
         formPanel.add(usernameField, gbc);
 
-        // Campo: Nome Completo
+        // Linha 2: Nome Completo
         gbc.gridx = 0;
         gbc.gridy = 1;
         formPanel.add(new JLabel("Nome Completo:"), gbc);
@@ -59,7 +77,7 @@ public class ForgotPasswordDialog extends JDialog {
         fullNameField = new JTextField(20);
         formPanel.add(fullNameField, gbc);
 
-        // Campo: Email
+        // Linha 3: Email
         gbc.gridx = 0;
         gbc.gridy = 2;
         formPanel.add(new JLabel("Email:"), gbc);
@@ -67,10 +85,10 @@ public class ForgotPasswordDialog extends JDialog {
         emailField = new JTextField(20);
         formPanel.add(emailField, gbc);
 
-        // Campo: RA/Matrícula (opcional, visível apenas para estudantes)
+        // Linha 4: RA/Matrícula (opcional, visível apenas para estudantes)
         gbc.gridx = 0;
         gbc.gridy = 3;
-        JLabel raLabel = new JLabel("RA/Matrícula (se estudante):");
+        JLabel raLabel = new JLabel("RA/Matrícula:");
         formPanel.add(raLabel, gbc);
         gbc.gridx = 1;
         raField = new JTextField(20);
@@ -80,7 +98,7 @@ public class ForgotPasswordDialog extends JDialog {
         JSeparator separator = new JSeparator(SwingConstants.HORIZONTAL);
         gbc.gridx = 0;
         gbc.gridy = 4;
-        gbc.gridwidth = 2;
+        gbc.gridwidth = 5;
         formPanel.add(separator, gbc);
 
         // Campo: Nova Senha
@@ -104,6 +122,7 @@ public class ForgotPasswordDialog extends JDialog {
 
         // Botão: Redefinir Senha
         resetPasswordButton = new JButton("Validar e Redefinir Senha");
+        getRootPane().setDefaultButton(resetPasswordButton); // Define o botão padrão para Enter
         resetPasswordButton.addActionListener(e -> validateAndResetPassword());
 
         JPanel buttonPanel = new JPanel();
@@ -111,6 +130,21 @@ public class ForgotPasswordDialog extends JDialog {
 
         add(formPanel, BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);
+    }
+    
+    private void updateFieldsVisibility() {
+        String selectedType = (String) userTypeComboBox.getSelectedItem();
+        boolean isStudent = "Estudante".equals(selectedType);
+
+        raField.setVisible(isStudent);
+        // Oculta/mostra o label correspondente
+        for (Component comp : raField.getParent().getComponents()) {
+            if (comp instanceof JLabel && ((JLabel) comp).getText().equals("RA/Matrícula:")) {
+                comp.setVisible(isStudent);
+                break;
+            }
+        }
+        pack(); // Ajusta o tamanho do diálogo após mudar a visibilidade
     }
 
     private void validateAndResetPassword() {

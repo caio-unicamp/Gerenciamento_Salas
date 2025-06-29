@@ -11,7 +11,6 @@ public class LoginDialog extends JDialog {
     private JTextField usernameField;
     private JPasswordField passwordField;
     private JButton loginButton;
-    // Novo: Botão para criar conta
     private JButton createAccountButton;
     private JButton forgotPasswordButton;
     private ReservationManager manager;
@@ -56,19 +55,25 @@ public class LoginDialog extends JDialog {
         loginButton.addActionListener(e -> performLogin());
         getRootPane().setDefaultButton(loginButton);
 
-        // Novo: Botão Criar Conta
         createAccountButton = new JButton("Criar Conta");
         createAccountButton.addActionListener(e -> openRegisterDialog());
 
-        forgotPasswordButton = new JButton("Esqueci Minha Senha?");
+        forgotPasswordButton = new JButton("Esqueci Minha Senha");
         forgotPasswordButton.addActionListener(e -> openForgotPasswordDialog());
 
         JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5)); // Ajustar layout para os botões
-        buttonPanel.add(loginButton);
-        buttonPanel.add(createAccountButton); // Adiciona o novo botão ao painel
+        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS)); 
+        JPanel topButtonsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
+
+        topButtonsPanel.add(loginButton);
+        topButtonsPanel.add(createAccountButton); // Adiciona o botão de criar conta
+        
+        buttonPanel.add(topButtonsPanel);
         buttonPanel.add(forgotPasswordButton); // Adiciona o botão de esqueci minha senha
 
+        forgotPasswordButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        
         add(formPanel, BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);
     }

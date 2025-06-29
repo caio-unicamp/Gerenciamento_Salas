@@ -40,6 +40,7 @@ public class RegisterDialog extends JDialog {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
         gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.WEST;
 
         // Linha 0: Tipo de Usuário
         gbc.gridx = 0;
