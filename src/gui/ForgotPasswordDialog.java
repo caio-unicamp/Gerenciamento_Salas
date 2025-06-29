@@ -29,7 +29,7 @@ public class ForgotPasswordDialog extends JDialog {
         this.manager = manager;
         this.foundUser = null;
 
-        setSize(400, 350);
+        setSize(400, 450);
         setLocationRelativeTo(parent);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
@@ -62,7 +62,7 @@ public class ForgotPasswordDialog extends JDialog {
 
         // Linha 1: Nome de Usuário
         gbc.gridx = 0;
-        gbc.gridy = 0;
+        gbc.gridy = 1;
         formPanel.add(new JLabel("Nome de Usuário:"), gbc);
         gbc.gridx = 1;
         usernameField = new JTextField(20);
@@ -70,7 +70,7 @@ public class ForgotPasswordDialog extends JDialog {
 
         // Linha 2: Nome Completo
         gbc.gridx = 0;
-        gbc.gridy = 1;
+        gbc.gridy = 2;
         formPanel.add(new JLabel("Nome Completo:"), gbc);
         gbc.gridx = 1;
         fullNameField = new JTextField(20);
@@ -78,7 +78,7 @@ public class ForgotPasswordDialog extends JDialog {
 
         // Linha 3: Email
         gbc.gridx = 0;
-        gbc.gridy = 2;
+        gbc.gridy = 3;
         formPanel.add(new JLabel("Email:"), gbc);
         gbc.gridx = 1;
         emailField = new JTextField(20);
@@ -86,7 +86,7 @@ public class ForgotPasswordDialog extends JDialog {
 
         // Linha 4: RA/Matrícula (opcional, visível apenas para estudantes)
         gbc.gridx = 0;
-        gbc.gridy = 3;
+        gbc.gridy = 4;
         JLabel raLabel = new JLabel("RA/Matrícula:");
         formPanel.add(raLabel, gbc);
         gbc.gridx = 1;
@@ -96,13 +96,13 @@ public class ForgotPasswordDialog extends JDialog {
         // Separador para as senhas
         JSeparator separator = new JSeparator(SwingConstants.HORIZONTAL);
         gbc.gridx = 0;
-        gbc.gridy = 4;
+        gbc.gridy = 5;
         gbc.gridwidth = 5;
         formPanel.add(separator, gbc);
 
         // Campo: Nova Senha
         gbc.gridx = 0;
-        gbc.gridy = 5;
+        gbc.gridy = 6;
         gbc.gridwidth = 1;
         formPanel.add(new JLabel("Nova Senha:"), gbc);
         gbc.gridx = 1;
@@ -112,7 +112,7 @@ public class ForgotPasswordDialog extends JDialog {
 
         // Campo: Confirmar Nova Senha
         gbc.gridx = 0;
-        gbc.gridy = 6;
+        gbc.gridy = 7;
         formPanel.add(new JLabel("Confirmar Senha:"), gbc);
         gbc.gridx = 1;
         confirmNewPasswordField = new JPasswordField(20);
