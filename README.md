@@ -4,33 +4,33 @@ Este projeto implementa um sistema de gerenciamento de reservas de salas de aula
 
 ## 1. Objetivo
 
-[cite_start]Estudar e implementar os conceitos de programação orientada a objetos abordados na disciplina, por meio do desenvolvimento de um sistema definido pelo grupo[cite: 1]. [cite_start]Este trabalho contempla a proposta, modelagem e implementação de um sistema orientado a objetos[cite: 2]. [cite_start]O sistema foi descrito e desenvolvido em sua versão completa, estando pronto para manipulação por parte do usuário[cite: 3].
+Estudar e implementar os conceitos de programação orientada a objetos abordados na disciplina, por meio do desenvolvimento de um sistema definido pelo grupo[cite: 1]. Este trabalho contempla a proposta, modelagem e implementação de um sistema orientado a objetos[cite: 2]. O sistema foi descrito e desenvolvido em sua versão completa, estando pronto para manipulação por parte do usuário[cite: 3].
 
 ## 2. Requisitos do Sistema
 
 Para compilar e executar este projeto, você precisará dos seguintes softwares:
 
 * **Java Development Kit (JDK):** Versão 11 ou superior (preferencialmente a versão LTS mais recente, como JDK 17).
-* [cite_start]**Ambiente Gráfico:** O sistema possui uma interface gráfica (GUI)[cite: 10], portanto, ele deve ser executado em um ambiente que suporte a exibição de janelas (como Windows, macOS, ou um ambiente de desktop Linux).
+* **Ambiente Gráfico:** O sistema possui uma interface gráfica (GUI)[cite: 10], portanto, ele deve ser executado em um ambiente que suporte a exibição de janelas (como Windows, macOS, ou um ambiente de desktop Linux).
     * Se estiver utilizando **WSL (Windows Subsystem for Linux)**, um servidor X no Windows é necessário.
 
 ## 3. Tópicos de POO Abordados
 
-[cite_start]O projeto incorpora os seguintes conceitos de programação orientada a objetos[cite: 4]:
+O projeto incorpora os seguintes conceitos de programação orientada a objetos[cite: 4]:
 
-* [cite_start]**Classes, variáveis e métodos:** O sistema contempla classes, seus atributos e métodos, incluindo sobrecarga[cite: 4].
-* [cite_start]**Visibilidade:** Aplicação correta de modificadores de visibilidade (public, private, protected)[cite: 4].
-* [cite_start]**Herança:** Ao menos uma estrutura de herança foi implementada (ex: `User` com `Student` e `Administrator`)[cite: 5].
-* [cite_start]**Variáveis e métodos estáticos:** Inclui pelo menos uma variável e um método de classe (ex: `nextReservationId` em `Reservation`)[cite: 6].
-* [cite_start]**Arrays:** Utilizado quando necessário (ex: `ArrayList` para armazenar coleções de objetos)[cite: 6].
-* [cite_start]**Enumerações:** Incluído ao menos um exemplo de uso (ex: `ReservationStatus`)[cite: 7].
-* [cite_start]**Entrada e saída de dados:** Permite entrada e/ou saída de dados via GUI e arquivos[cite: 7].
-* [cite_start]**Relacionamentos (associação, agregação ou composição):** Contempla ao menos um tipo de relacionamento (ex: `ReservationManager` agrega `Classroom` e `Reservation`)[cite: 8].
-* [cite_start]**Classes abstratas:** Implementada ao menos uma (ex: `User`)[cite: 8].
-* [cite_start]**Polimorfismo:** Inclui exemplos de polimorfismo de tipo e de método (ex: `User` e seus subtipos, sobrecarga de `findAvailableClassrooms`)[cite: 9].
-* [cite_start]**Interface gráfica:** O sistema é controlado por interface gráfica (GUI)[cite: 10].
-* [cite_start]**Tratamento de exceções:** Trata exceções, incluindo pelo menos uma exceção definida pelo grupo (`ReservationConflictException`)[cite: 11].
-* [cite_start]**Arquivos (leitura e gravação):** O sistema realiza operações de leitura e escrita em arquivos relevantes ao projeto (`data/classrooms.txt`, `data/reservations.txt`, `data/users.txt`)[cite: 12].
+* **Classes, variáveis e métodos:** O sistema contempla classes, seus atributos e métodos, incluindo sobrecarga[cite: 4].
+* **Visibilidade:** Aplicação correta de modificadores de visibilidade (public, private, protected)[cite: 4].
+* **Herança:** Ao menos uma estrutura de herança foi implementada (ex: `User` com `Student` e `Administrator`)[cite: 5].
+* **Variáveis e métodos estáticos:** Inclui pelo menos uma variável e um método de classe (ex: `nextReservationId` em `Reservation`)[cite: 6].
+* **Arrays:** Utilizado quando necessário (ex: `ArrayList` para armazenar coleções de objetos)[cite: 6].
+* **Enumerações:** Incluído ao menos um exemplo de uso (ex: `ReservationStatus`)[cite: 7].
+* **Entrada e saída de dados:** Permite entrada e/ou saída de dados via GUI e arquivos[cite: 7].
+* **Relacionamentos (associação, agregação ou composição):** Contempla ao menos um tipo de relacionamento (ex: `ReservationManager` agrega `Classroom` e `Reservation`)[cite: 8].
+* **Classes abstratas:** Implementada ao menos uma (ex: `User`)[cite: 8].
+* **Polimorfismo:** Inclui exemplos de polimorfismo de tipo e de método (ex: `User` e seus subtipos, sobrecarga de `findAvailableClassrooms`)[cite: 9].
+* **Interface gráfica:** O sistema é controlado por interface gráfica (GUI)[cite: 10].
+* **Tratamento de exceções:** Trata exceções, incluindo pelo menos uma exceção definida pelo grupo (`ReservationConflictException`)[cite: 11].
+* **Arquivos (leitura e gravação):** O sistema realiza operações de leitura e escrita em arquivos relevantes ao projeto (`data/classrooms.txt`, `data/reservations.txt`, `data/users.txt`)[cite: 12].
 
 ## 4. Estrutura do Projeto
 
