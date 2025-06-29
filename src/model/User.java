@@ -5,7 +5,7 @@ import java.io.Serializable;
 // Exemplo de classe abstrata [cite: 8]
 public abstract class User implements Serializable {
     private String username;
-    private String password; // Simplificado para o exemplo, em um sistema real usaria hash
+    protected String password; // Simplificado para o exemplo, em um sistema real usaria hash
     private String name;
     private String email;
 
@@ -32,8 +32,11 @@ public abstract class User implements Serializable {
         return email;
     }
 
-    // Exemplo de polimorfismo de método (overriding)
     public abstract String getRole();
+
+    public void setPassword(String newPassword) {
+        this.password = newPassword;
+    }
 
     public boolean authenticate(String enteredPassword) {
         return this.password.equals(enteredPassword);

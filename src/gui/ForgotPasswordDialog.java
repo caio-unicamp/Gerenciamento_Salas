@@ -8,8 +8,6 @@ import model.User;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class ForgotPasswordDialog extends JDialog {
     private JTextField usernameField;
@@ -23,7 +21,7 @@ public class ForgotPasswordDialog extends JDialog {
     private ReservationManager manager;
     private User foundUser; // Para armazenar o usuário encontrado após a validação
 
-    public ForgotPasswordDialog(Frame parent, ReservationManager manager) {
+    public ForgotPasswordDialog(LoginDialog parent, ReservationManager manager) {
         super(parent, "Esqueci Minha Senha", true);
         this.manager = manager;
         this.foundUser = null;
@@ -134,11 +132,11 @@ public class ForgotPasswordDialog extends JDialog {
         }
 
         // Verifica as informações adicionais
-        boolean matches = user.getFullName().equalsIgnoreCase(fullName) && user.getEmail().equalsIgnoreCase(email);
+        boolean matches = user.getName().equalsIgnoreCase(fullName) && user.getEmail().equalsIgnoreCase(email);
 
         if (user instanceof Student) {
             Student student = (Student) user;
-            matches = matches && student.getRa().equalsIgnoreCase(ra);
+            matches = matches && student.getStudentId().equalsIgnoreCase(ra);
         } else if (user instanceof Administrator) {
             // Para administradores, o campo RA/Matrícula não é relevante.
             // Se o usuário digitou algo no RA, pode ser um erro ou confusão.

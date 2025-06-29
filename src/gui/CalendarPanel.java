@@ -6,7 +6,6 @@ import model.ReservationStatus;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumnModel;
 import java.awt.*;
 import java.time.DayOfWeek;
 import java.time.LocalDate;

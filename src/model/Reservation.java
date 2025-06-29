@@ -16,7 +16,7 @@ public class Reservation implements Serializable {
     private LocalTime startTime;
     private LocalTime endTime;
     private String purpose;
-    private ReservationStatus status; 
+    private ReservationStatus status;
     private String observation;
 
     public Reservation(Classroom classroom, User reservedBy, LocalDate date, LocalTime startTime, LocalTime endTime, String purpose) {

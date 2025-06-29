@@ -5,10 +5,8 @@ import manager.ReservationManager;
 import model.Administrator;
 import model.Classroom;
 import model.Student;
-import model.User;
 
 import javax.swing.*;
-import java.awt.*;
 
 public class Main {
     public static void main(String[] args) {

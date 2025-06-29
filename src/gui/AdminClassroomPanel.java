@@ -10,8 +10,8 @@ import java.util.List;
 
 public class AdminClassroomPanel extends JPanel {
     private ReservationManager manager;
-    private JTable classroomTable; // Renomeado para refletir que exibe todas
-    private DefaultTableModel classroomTableModel; // Renomeado
+    private JTable classroomTable;
+    private DefaultTableModel classroomTableModel;
     private JButton removeButton;
     private JButton addButton;
     private Frame mainFrame;
