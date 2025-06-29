@@ -25,18 +25,11 @@ public class ReservationManager implements Serializable {
     private List<Classroom> classrooms;
     private List<Reservation> reservations;
     private List<User> users;
-<<<<<<< HEAD
     
     private static final String CLASSROOMS_FILE = "../data/classrooms.txt";
     private static final String RESERVATIONS_FILE = "../data/reservations.txt";
     private static final String USERS_FILE = "../data/users.txt";
     
-=======
-
-    /**
-     * Construtor padrão. Inicializa as listas e carrega os dados persistidos.
-     */
->>>>>>> 3d08e3f913bc2cc9b87f52bd9423501f79380acd
     public ReservationManager() {
         this.classrooms = new ArrayList<>();
         this.reservations = new ArrayList<>();
