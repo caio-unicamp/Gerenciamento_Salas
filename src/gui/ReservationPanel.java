@@ -16,6 +16,10 @@ import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 
+/**
+ * Painel para visualização e gerenciamento das reservas do usuário logado.
+ * Permite criar novas reservas e cancelar reservas existentes.
+ */
 public class ReservationPanel extends JPanel { 
     private ReservationManager manager;
     private User loggedInUser;
@@ -25,6 +29,12 @@ public class ReservationPanel extends JPanel {
     private JButton newReservationButton;
     private JButton cancelReservationButton;
 
+    /**
+     * Construtor do painel de reservas.
+     *
+     * @param manager Gerenciador de reservas.
+     * @param loggedInUser Usuário atualmente logado.
+     */
     public ReservationPanel(ReservationManager manager, User loggedInUser) {
         this.manager = manager;
         this.loggedInUser = loggedInUser;
@@ -33,6 +43,9 @@ public class ReservationPanel extends JPanel {
         refreshReservationList();
     }
 
+    /**
+     * Inicializa os componentes gráficos do painel de reservas.
+     */
     private void initComponents() {
         // Tabela de reservas
         String[] columnNames = { "ID", "Sala", "Data", "Início", "Término", "Propósito", "Status", "Observações" };
@@ -69,6 +82,9 @@ public class ReservationPanel extends JPanel {
         add(buttonPanel, BorderLayout.SOUTH);
     }
 
+    /**
+     * Atualiza a tabela exibindo todas as reservas do usuário logado.
+     */
     public void refreshReservationList() {
         reservationTableModel.setRowCount(0); // Limpa a tabela
         List<Reservation> reservations = manager.getReservationsByUser(loggedInUser); // Exibe apenas as reservas do usuário logado
@@ -86,6 +102,10 @@ public class ReservationPanel extends JPanel {
         }
     }
 
+    /**
+     * Abre o diálogo para criação de uma nova reserva.
+     * Realiza validações e trata conflitos de reserva.
+     */
     private void openNewReservationDialog() {
         JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Nova Reserva", true);
         dialog.setLayout(new GridLayout(0, 2, 5, 5));
@@ -165,6 +185,10 @@ public class ReservationPanel extends JPanel {
         dialog.setVisible(true);
     }
 
+    /**
+     * Cancela a reserva selecionada pelo usuário, após confirmação.
+     * Exibe mensagens de erro caso não haja seleção ou ocorra algum problema.
+     */
     private void cancelSelectedReservation() {
         int selectedRow = reservationTable.getSelectedRow();
         if (selectedRow == -1) {

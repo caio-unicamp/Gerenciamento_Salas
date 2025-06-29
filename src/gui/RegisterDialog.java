@@ -13,6 +13,10 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * Diálogo para criação de nova conta de usuário.
+ * Permite registrar estudantes ou administradores no sistema.
+ */
 public class RegisterDialog extends JDialog {
     private JTextField usernameField;
     private JPasswordField passwordField;
@@ -24,6 +28,12 @@ public class RegisterDialog extends JDialog {
 
     private ReservationManager manager;
 
+    /**
+     * Construtor do diálogo de registro de usuário.
+     *
+     * @param parent  Janela pai (LoginDialog) para modalidade.
+     * @param manager Gerenciador de reservas para adicionar o novo usuário.
+     */
     public RegisterDialog(LoginDialog parent, ReservationManager manager) {
         super(parent, "Criar Nova Conta", true);
         this.manager = manager;
@@ -35,6 +45,9 @@ public class RegisterDialog extends JDialog {
         initUI();
     }
 
+    /**
+     * Inicializa os componentes gráficos do diálogo de registro.
+     */
     private void initUI() {
         setLayout(new BorderLayout());
 
@@ -115,6 +128,9 @@ public class RegisterDialog extends JDialog {
         updateFieldsVisibility();
     }
 
+    /**
+     * Atualiza a visibilidade do campo RA/Matrícula de acordo com o tipo de usuário selecionado.
+     */
     private void updateFieldsVisibility() {
         String selectedType = (String) userTypeComboBox.getSelectedItem();
         boolean isStudent = "Estudante".equals(selectedType);
@@ -130,6 +146,11 @@ public class RegisterDialog extends JDialog {
         pack(); // Ajusta o tamanho do diálogo após mudar a visibilidade
     }
 
+    /**
+     * Valida os campos obrigatórios do formulário de registro.
+     *
+     * @return true se todos os campos obrigatórios estiverem preenchidos, false caso contrário.
+     */
     private boolean validateFields() {
         String username = usernameField.getText().trim();
         String password = new String(passwordField.getPassword()).trim();
@@ -151,6 +172,10 @@ public class RegisterDialog extends JDialog {
         return true;
     }
 
+    /**
+     * Realiza o registro do novo usuário após validação dos campos.
+     * Exibe mensagens de erro em caso de conflito ou falha inesperada.
+     */
     private void performRegistration() {
         if (!validateFields()) return;
 

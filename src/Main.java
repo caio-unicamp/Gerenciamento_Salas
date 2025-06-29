@@ -9,7 +9,17 @@ import javax.swing.*;
 
 import exception.UserConflictException;
 
+/**
+ * Classe principal para inicialização do sistema de gerenciamento de reservas de salas.
+ * Responsável por carregar dados iniciais, criar o gerenciador e exibir a interface de login.
+ */
 public class Main {
+    /**
+     * Método principal de entrada da aplicação.
+     * 
+     * @param args Argumentos de linha de comando.
+     * @throws UserConflictException Caso ocorra conflito ao adicionar usuários de teste.
+     */
     public static void main(String[] args) throws UserConflictException {
         // Criar o gerenciador de reservas
         ReservationManager manager = new ReservationManager();
