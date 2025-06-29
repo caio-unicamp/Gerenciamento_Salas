@@ -1,0 +1,177 @@
+@startuml diagrama_classes
+' Configurações gerais para o diagrama
+skinparam classAttributeIconSize 0 ' Esconde ícones de visibilidade (preferência pessoal para diagramas mais limpos)
+hide empty members
+left to right direction
+
+
+' Classes de Modelo
+abstract class User {
+    - username: String
+    - password: String
+    - name: String
+    - email: String
+    + authenticate(enteredPassword: String): boolean
+    {abstract} + getRole(): String
+}
+
+class Student {
+    - studentId: String
+}
+
+class Administrator {
+    + getRole(): String
+    + manageClassroomDetails(): void
+}
+
+class Classroom {
+    - name: String
+    - capacity: int
+    - location: String
+    - hasProjector: boolean
+    - features: List<String>
+    + hasProjector(): boolean
+    + addFeature(feature: String): void
+    + removeFeature(feature: String): void
+    + isAvailable(date: LocalDate, startTime: LocalTime, endTime: LocalTime): boolean ' Método sugerido para checagem interna, mas a lógica está no Manager
+}
+
+enum ReservationStatus {
+    CONFIRMED
+    PENDING
+    CANCELLED
+}
+
+class Reservation {
+    - id: int
+    - classroom: Classroom
+    - reservedBy: User
+    - date: LocalDate
+    - startTime: LocalTime
+    - endTime: LocalTime
+    - purpose: String
+    - status: ReservationStatus
+    --
+    {static} - nextReservationId: int
+    + conflictsWith(other: Reservation): boolean
+    {static} - generateNextId(): int
+}
+
+' Classes de Gerenciamento e Utilitários
+class ReservationManager {
+    - classrooms: List<Classroom>
+    - reservations: List<Reservation>
+    - users: List<User>
+    {static} - _serialVersionUID: long
+    {static} - CLASSROOMS_FILE: String
+    {static} - RESERVATIONS_FILE: String
+    {static} - USERS_FILE: String
+    + addClassroom(classroom: Classroom): void
+    + addUser(user: User): void
+    + makeReservation(classroom: Classroom, reservedBy: User, date: LocalDate, startTime: LocalTime, endTime: LocalTime, purpose: String): void
+    + findAvailableClassrooms(date: LocalDate, startTime: LocalTime, endTime: LocalTime): List<Classroom>
+    + findAvailableClassrooms(date: LocalDate, startTime: LocalTime, endTime: LocalTime, minCapacity: int): List<Classroom>
+    + cancelReservation(reservation: Reservation): void
+    + loadData(): void
+    + saveData(): void
+}
+
+class FileUtil {
+    --
+    {static} + writeObjectToFile(objects: List<T>, filename: String): void
+    {static} + readObjectFromFile(filename: String): List<T>
+}
+
+' Classes da GUI (representação simplificada para o diagrama de classes)
+class MainFrame {
+    - manager: ReservationManager
+    - loggedInUser: User
+    - tabbedPane: JTabbedPane
+    - classroomPanel: ClassroomPanel
+    - reservationPanel: ReservationPanel
+    - initUI(): void
+    + refreshPanels(): void
+}
+
+class LoginDialog {
+    - usernameField: JTextField
+    - passwordField: JPasswordField
+    - loginButton: JButton
+    - manager: ReservationManager
+    - authenticatedUser: User
+    - initUI(): void
+    - performLogin(): void
+    + getAuthenticatedUser(): User
+}
+
+class ClassroomPanel {
+    - manager: ReservationManager
+    - classroomTable: JTable
+    - classroomTableModel: DefaultTableModel
+    - initComponents(): void
+    + refreshClassroomList(): void
+}
+
+class ReservationPanel {
+    - manager: ReservationManager
+    - loggedInUser: User
+    - reservationTable: JTable
+    - reservationTableModel: DefaultTableModel
+    - newReservationButton: JButton
+    - cancelReservationButton: JButton
+    - initComponents(): void
+    - openNewReservationDialog(): void
+    - cancelSelectedReservation(): void
+    + refreshReservationList(): void
+}
+
+class AddClassroomDialog {
+    - nameField: JTextField
+    - capacitySpinner : JSpinner
+    - locationField: JTextField
+    - projectorCheckBox: JCheckBox
+    - featuresField: JTextField
+    - addButton: JButton
+    - manager: ReservationManager
+    - initUI(): void
+    + addClassroom(): void
+}
+
+' Classes de Exceção
+class ReservationConflictException << (E,red) >> extends Exception {
+    + ReservationConflictException(message: String)
+    + ReservationConflictException(message: String, cause: Throwable)
+}
+
+' Relacionamentos
+
+' Herança (Generalização)
+User <|-- Student
+User <|-- Administrator
+
+' Associação (composição/agregação)
+ReservationManager "1" o-- "*" Classroom : gerencia >
+ReservationManager "1" o-- "*" Reservation : gerencia >
+ReservationManager "1" o-- "*" User : gerencia >
+
+Reservation "1" -- "1" Classroom : reserva >
+Reservation "1" -- "1" User : feita por >
+Reservation "1" --> "1" ReservationStatus : <<usa>>
+
+' Dependência/Uso
+ReservationManager ..> FileUtil : <<usa>>
+ReservationManager ..> ReservationConflictException : <<lança>>
+
+MainFrame "1" -- "1" ReservationManager : <<usa>>
+MainFrame "1" -- "1" User : <<associa>>
+LoginDialog "1" -- "1" ReservationManager : <<usa>>
+LoginDialog "1" ..> User : <<retorna>>
+
+ClassroomPanel "1" -- "1" ReservationManager : <<usa>>
+ReservationPanel "1" -- "1" ReservationManager : <<usa>>
+ReservationPanel "1" -- "1" User : <<associa>>
+ReservationPanel "1" ..> ReservationConflictException : <<lança>>
+AddClassroomDialog "1" -- "1" ReservationManager : <<usa>>
+
+
+@enduml
