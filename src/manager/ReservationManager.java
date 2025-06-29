@@ -97,6 +97,7 @@ public class ReservationManager implements Serializable {
         // Reservas pendentes não causam conflito neste estágio.
         for (Reservation existingReservation : reservations) {
             if (existingReservation.getStatus().equals(ReservationStatus.CONFIRMED) && newReservation.conflictsWith(existingReservation)) {
+                Reservation.setNextReservationId(Reservation.getNextId()-1);
                 throw new ReservationConflictException(
                     "Conflito de reserva! A sala " + classroom.getName() +
                     " já está confirmada para " + existingReservation.getReservedBy().getUsername() +
@@ -247,6 +248,16 @@ public class ReservationManager implements Serializable {
                 this.reservations = (List<Reservation>) loadedReservations;
                 System.out.println("Reservas carregadas: " + this.reservations.size());
             }
+
+            int maxId = reservations.stream()
+                                    .mapToInt(Reservation::getId)
+                                    .max()
+                                    .orElse(0); // Se não houver reservas, o maior ID é 0
+
+            
+            Reservation.setNextReservationId(maxId + 1);
+            System.out.println("Próximo ID de reserva inicializado para: " + (maxId + 1));
+
 
         } catch (Exception e) {
             System.err.println("Erro ao carregar dados: " + e.getMessage());

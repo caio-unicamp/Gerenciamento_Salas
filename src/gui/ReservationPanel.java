@@ -8,6 +8,8 @@ import exception.ReservationConflictException;
 
 import javax.swing.*; // Interface gráfica 
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumnModel;
+
 import java.awt.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -42,6 +44,15 @@ public class ReservationPanel extends JPanel { // Interface gráfica
         };
         reservationTable = new JTable(reservationTableModel);
         reservationTable.setFillsViewportHeight(true);
+
+        reservationTable.setAutoCreateColumnsFromModel(true); // Garante que a tabela use o modelo de colunas
+        TableColumnModel tcm = reservationTable.getColumnModel();
+        tcm.getColumn(0).setMinWidth(0);
+        tcm.getColumn(0).setMaxWidth(0);
+        tcm.getColumn(0).setWidth(0);
+        tcm.getColumn(0).setPreferredWidth(0);
+        tcm.getColumn(0).setResizable(false); // Impede que o usuário redimensione para ver
+
         JScrollPane scrollPane = new JScrollPane(reservationTable);
         add(scrollPane, BorderLayout.CENTER);
 
