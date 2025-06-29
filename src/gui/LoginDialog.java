@@ -59,7 +59,7 @@ public class LoginDialog extends JDialog { // Interface gráfica
         if (user != null && user.authenticate(password)) {
             authenticatedUser = user;
             JOptionPane.showMessageDialog(this, "Login bem-sucedido!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
-            dispose(); // Fecha a janela de login
+            setVisible(false);
         } else {
             JOptionPane.showMessageDialog(this, "Usuário ou senha inválidos.", "Erro de Login", JOptionPane.ERROR_MESSAGE);
         }

@@ -1,15 +1,9 @@
 package gui;
 
 import manager.ReservationManager;
-import model.Classroom;
-import model.Reservation;
-import model.Administrator;
 import model.User;
-import model.Administrator;
 
 import javax.swing.*; // Interface gráfica 
-
-import exception.ReservationConflictException;
 
 import java.awt.*;
 import java.awt.event.WindowAdapter;
@@ -94,5 +88,8 @@ public class MainFrame extends JFrame { // Interface gráfica
     public void refreshPanels() {
         classroomPanel.refreshClassroomList();
         reservationPanel.refreshReservationList();
+        if (adminReservationPanel != null){
+            adminReservationPanel.refreshReservationsList();
+        }
     }
 }

@@ -2,9 +2,6 @@ package gui;
 
 import manager.ReservationManager;
 import model.Classroom;
-import model.Reservation;
-import model.ReservationStatus;
-import exception.ReservationConflictException;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;

@@ -42,23 +42,15 @@ public class Main {
             loginDialog.setVisible(true);
 
             User authenticatedUser = loginDialog.getAuthenticatedUser();
-            do{
-                if (authenticatedUser == null) {
-                    JOptionPane.showMessageDialog(null, "Login cancelado ou falhou. Encerrando o sistema.", "Sair", JOptionPane.INFORMATION_MESSAGE);
-                    System.exit(0);
-                } else {
-                    MainFrame mainFrame = new MainFrame(manager, authenticatedUser, loginDialog);
-                    mainFrame.setVisible(true);
-                    while (mainFrame.isVisible()) {
-                        try{
-                            Thread.sleep(100);
-                        }catch(Exception e){
-                            Thread.currentThread().interrupt();
-                            System.err.println("MainFrame loop interrompido.");
-                        }
-                    }
-                }
-            }while (authenticatedUser != null);
+            if (authenticatedUser == null) {
+                JOptionPane.showMessageDialog(null, "Login cancelado ou falhou. Encerrando o sistema.", "Sair", JOptionPane.INFORMATION_MESSAGE);
+                System.exit(0);
+            } else {
+                MainFrame mainFrame = new MainFrame(manager, authenticatedUser, loginDialog);
+                mainFrame.setVisible(true);
+                
+                mainFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            }
         });
     }
 }
