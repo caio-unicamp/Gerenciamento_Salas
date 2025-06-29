@@ -45,6 +45,7 @@ Para verificar a instalação, abra um terminal (Prompt de Comando no Windows, T
 ```bash
 java -version
 javac -version
+```
 
 ### 4.2. Configuração para Usuários WSL (Windows Subsystem for Linux)
 Se você estiver rodando o projeto dentro do WSL e quiser que a interface gráfica apareça no Windows, siga estes passos adicionais:
