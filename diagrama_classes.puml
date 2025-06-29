@@ -137,6 +137,21 @@ class AddClassroomDialog {
     + addClassroom(): void
 }
 
+class AdminReservationPanel {
+    - manager: ReservationManager
+    - reservationTable: JTable
+    - reservationTableModel: DefaultTableModel
+    - confirmButton: JButton
+    - cancelButton: JButton
+    - rejectButton: JButton
+    - refreshButton: JButton
+    - initComponents(): void
+    - confirmSelectedReservation(): void
+    - rejectSelectedReservation(): void
+    - cancelSelectedReservation(): void
+    + refreshReservationList(): void
+}
+
 ' Classes de Exceção
 class ReservationConflictException << (E,red) >> extends Exception {
     + ReservationConflictException(message: String)
