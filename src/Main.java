@@ -8,8 +8,10 @@ import model.Student;
 
 import javax.swing.*;
 
+import exception.UserConflictException;
+
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws UserConflictException {
         // Criar o gerenciador de reservas
         ReservationManager manager = new ReservationManager();
 
