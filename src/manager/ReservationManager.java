@@ -5,6 +5,7 @@ import model.Reservation;
 import model.ReservationStatus; // Importar o enum
 import model.User;
 import exception.ReservationConflictException;
+import exception.UserConflictException;
 import util.FileUtil;
 
 import java.io.Serializable;
@@ -61,12 +62,13 @@ public class ReservationManager implements Serializable {
 
     // --- Métodos de Gerenciamento de Usuários ---
 
-    public void addUser(User user) {
+    public void addUser(User user) throws UserConflictException {
         if (!users.stream().anyMatch(u -> u.getUsername().equalsIgnoreCase(user.getUsername()))) {
             users.add(user);
             saveData();
         } else {
-            System.out.println("Usuário " + user.getUsername() + " já existe.");
+            throw new UserConflictException("Nome de usuário já existe. Por favor, escolha outro.");
+
         }
     }
 
@@ -83,28 +85,30 @@ public class ReservationManager implements Serializable {
 
     // --- Métodos de Gerenciamento de Reservas ---
 
-    public void makeReservation(Classroom classroom, User reservedBy, LocalDate date, LocalTime startTime, LocalTime endTime, String purpose) throws ReservationConflictException {
+    public void makeReservation(Classroom classroom, User reservedBy, LocalDate date, LocalTime startTime,
+            LocalTime endTime, String purpose) throws ReservationConflictException {
         if (startTime.isAfter(endTime) || startTime.equals(endTime)) {
             throw new IllegalArgumentException("Hora de início deve ser anterior à hora de término.");
         }
         if (date.isBefore(LocalDate.now())) {
-             throw new IllegalArgumentException("Não é possível reservar para uma data passada.");
+            throw new IllegalArgumentException("Não é possível reservar para uma data passada.");
         }
 
         Reservation newReservation = new Reservation(classroom, reservedBy, date, startTime, endTime, purpose);
 
-        // Ao fazer uma nova reserva, verificar conflitos APENAS com reservas JÁ CONFIRMADAS.
+        // Ao fazer uma nova reserva, verificar conflitos APENAS com reservas JÁ
+        // CONFIRMADAS.
         // Reservas pendentes não causam conflito neste estágio.
         for (Reservation existingReservation : reservations) {
-            if (existingReservation.getStatus().equals(ReservationStatus.CONFIRMED) && newReservation.conflictsWith(existingReservation)) {
-                Reservation.setNextReservationId(Reservation.getNextId()-1);
+            if (existingReservation.getStatus().equals(ReservationStatus.CONFIRMED)
+                    && newReservation.conflictsWith(existingReservation)) {
+                Reservation.setNextReservationId(Reservation.getNextId() - 1);
                 throw new ReservationConflictException(
-                    "Conflito de reserva! A sala " + classroom.getName() +
-                    " já está confirmada para " + existingReservation.getReservedBy().getUsername() +
-                    " das " + existingReservation.getStartTime() +
-                    " às " + existingReservation.getEndTime() +
-                    " em " + existingReservation.getDate() + "."
-                );
+                        "Conflito de reserva! A sala " + classroom.getName() +
+                                " já está confirmada para " + existingReservation.getReservedBy().getUsername() +
+                                " das " + existingReservation.getStartTime() +
+                                " às " + existingReservation.getEndTime() +
+                                " em " + existingReservation.getDate() + ".");
             }
         }
 
@@ -113,10 +117,12 @@ public class ReservationManager implements Serializable {
     }
 
     /**
-     * Busca salas disponíveis para um determinado período, considerando apenas reservas CONFIRMADAS.
-     * @param date Data desejada.
+     * Busca salas disponíveis para um determinado período, considerando apenas
+     * reservas CONFIRMADAS.
+     * 
+     * @param date      Data desejada.
      * @param startTime Horário de início desejado.
-     * @param endTime Horário de término desejado.
+     * @param endTime   Horário de término desejado.
      * @return Lista de salas disponíveis.
      */
     public List<Classroom> findAvailableClassrooms(LocalDate date, LocalTime startTime, LocalTime endTime) {
@@ -125,14 +131,16 @@ public class ReservationManager implements Serializable {
         for (Reservation res : reservations) {
             // Apenas reservas CONFIRMADAS afetam a disponibilidade
             if (res.getStatus().equals(ReservationStatus.CONFIRMED) && res.getDate().equals(date) &&
-                !(endTime.isBefore(res.getStartTime()) || startTime.isAfter(res.getEndTime()) || startTime.equals(res.getEndTime()))) {
+                    !(endTime.isBefore(res.getStartTime()) || startTime.isAfter(res.getEndTime())
+                            || startTime.equals(res.getEndTime()))) {
                 available.remove(res.getClassroom());
             }
         }
         return available;
     }
 
-    public List<Classroom> findAvailableClassrooms(LocalDate date, LocalTime startTime, LocalTime endTime, int minCapacity) {
+    public List<Classroom> findAvailableClassrooms(LocalDate date, LocalTime startTime, LocalTime endTime,
+            int minCapacity) {
         return findAvailableClassrooms(date, startTime, endTime).stream()
                 .filter(c -> c.getCapacity() >= minCapacity)
                 .collect(Collectors.toList());
@@ -162,8 +170,10 @@ public class ReservationManager implements Serializable {
 
     /**
      * Confirma uma reserva pendente.
+     * 
      * @param reservation A reserva a ser confirmada.
-     * @throws ReservationConflictException Se a confirmação causar conflito com uma reserva CONFIRMED existente.
+     * @throws ReservationConflictException Se a confirmação causar conflito com uma
+     *                                      reserva CONFIRMED existente.
      */
     public void confirmReservation(Reservation reservation) throws ReservationConflictException {
         // Verificar se a reserva já está confirmada ou cancelada/rejeitada
@@ -173,20 +183,20 @@ public class ReservationManager implements Serializable {
 
         // Antes de confirmar, VERIFICAR NOVAMENTE se a confirmação causaria conflito
         // com OUTRAS reservas JÁ CONFIRMADAS.
-        // A reserva 'reservation' que estamos tentando confirmar NÃO deve ser verificada contra si mesma.
+        // A reserva 'reservation' que estamos tentando confirmar NÃO deve ser
+        // verificada contra si mesma.
         for (Reservation existingReservation : reservations) {
             if (existingReservation.equals(reservation)) {
                 continue; // Pula a própria reserva
             }
             if (existingReservation.getStatus().equals(ReservationStatus.CONFIRMED) &&
-                reservation.conflictsWith(existingReservation)) { // Reutiliza a lógica de conflito
+                    reservation.conflictsWith(existingReservation)) { // Reutiliza a lógica de conflito
                 throw new ReservationConflictException(
-                    "Não foi possível confirmar. Conflito com reserva já existente: Sala " +
-                    existingReservation.getClassroom().getName() +
-                    " das " + existingReservation.getStartTime() +
-                    " às " + existingReservation.getEndTime() +
-                    " em " + existingReservation.getDate() + "."
-                );
+                        "Não foi possível confirmar. Conflito com reserva já existente: Sala " +
+                                existingReservation.getClassroom().getName() +
+                                " das " + existingReservation.getStartTime() +
+                                " às " + existingReservation.getEndTime() +
+                                " em " + existingReservation.getDate() + ".");
             }
         }
 
@@ -203,19 +213,20 @@ public class ReservationManager implements Serializable {
         reservation.setStatus(ReservationStatus.REJECTED);
         saveData();
         System.out.println("Reserva " + reservation.getId() + " rejeitada com sucesso. Obs: " + observation);
-    
+
     }
 
-
     public void cancelReservation(Reservation reservation, String observation) {
-        if (reservation.getStatus().equals(ReservationStatus.REJECTED) || reservation.getStatus().equals(ReservationStatus.CANCELLED)) {
-            throw new IllegalArgumentException("Não é possível cancelar uma reserva que já foi rejeitada ou cancelada.");
+        if (reservation.getStatus().equals(ReservationStatus.REJECTED)
+                || reservation.getStatus().equals(ReservationStatus.CANCELLED)) {
+            throw new IllegalArgumentException(
+                    "Não é possível cancelar uma reserva que já foi rejeitada ou cancelada.");
         }
         reservation.setObservation(observation); // Define a observação
         reservation.setStatus(ReservationStatus.CANCELLED);
         saveData();
         System.out.println("Reserva " + reservation.getId() + " cancelada com sucesso. Obs: " + observation);
-    
+
     }
 
     public void deleteReservation(Reservation reservation) {
@@ -252,14 +263,12 @@ public class ReservationManager implements Serializable {
             }
 
             int maxId = reservations.stream()
-                                    .mapToInt(Reservation::getId)
-                                    .max()
-                                    .orElse(0); // Se não houver reservas, o maior ID é 0
+                    .mapToInt(Reservation::getId)
+                    .max()
+                    .orElse(0); // Se não houver reservas, o maior ID é 0
 
-            
             Reservation.setNextReservationId(maxId + 1);
             System.out.println("Próximo ID de reserva inicializado para: " + (maxId + 1));
-
 
         } catch (Exception e) {
             System.err.println("Erro ao carregar dados: " + e.getMessage());

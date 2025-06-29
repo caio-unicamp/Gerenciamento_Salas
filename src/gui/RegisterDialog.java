@@ -6,6 +6,10 @@ import model.Student;
 import model.User;
 
 import javax.swing.*;
+
+import exception.ReservationConflictException;
+import exception.UserConflictException;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -47,7 +51,7 @@ public class RegisterDialog extends JDialog {
         gbc.gridy = 0;
         formPanel.add(new JLabel("Tipo de Usuário:"), gbc);
         gbc.gridx = 1;
-        userTypeComboBox = new JComboBox<>(new String[]{"Estudante", "Administrador"});
+        userTypeComboBox = new JComboBox<>(new String[] { "Estudante", "Administrador" });
         userTypeComboBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -127,7 +131,7 @@ public class RegisterDialog extends JDialog {
         pack(); // Ajusta o tamanho do diálogo após mudar a visibilidade
     }
 
-    private void performRegistration() {
+    private boolean validateFields() {
         String username = usernameField.getText().trim();
         String password = new String(passwordField.getPassword()).trim();
         String fullName = fullNameField.getText().trim();
@@ -136,30 +140,44 @@ public class RegisterDialog extends JDialog {
 
         if (username.isEmpty() || password.isEmpty() || fullName.isEmpty() || email.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Todos os campos obrigatórios devem ser preenchidos.", "Erro de Registro", JOptionPane.ERROR_MESSAGE);
-            return;
+            return false;
         }
-
-        if (manager.getUserByUsername(username) != null) {
-            JOptionPane.showMessageDialog(this, "Nome de usuário já existe. Por favor, escolha outro.", "Erro de Registro", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        User newUser;
         if ("Estudante".equals(userType)) {
             String ra = raField.getText().trim();
             if (ra.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "O campo RA/Matrícula é obrigatório para estudantes.", "Erro de Registro", JOptionPane.ERROR_MESSAGE);
-                return;
+                return false;
             }
-            newUser = new Student(username, password, fullName, email, ra);
-        } else { // Administrador
-            // Em um sistema de produção, a criação de administradores não seria feita via UI pública.
-            // Para fins de demonstração, estamos permitindo.
-            newUser = new Administrator(username, password, fullName, email);
         }
+        return true;
+    }
 
-        manager.addUser(newUser); // Este método já chama saveData() internamente
-        JOptionPane.showMessageDialog(this, "Usuário " + username + " registrado com sucesso!", "Registro Concluído", JOptionPane.INFORMATION_MESSAGE);
-        dispose(); // Fecha o diálogo de registro
+    private void performRegistration() {
+        if (!validateFields()) return;
+
+        String username = usernameField.getText().trim();
+        String password = new String(passwordField.getPassword()).trim();
+        String fullName = fullNameField.getText().trim();
+        String email = emailField.getText().trim();
+        String userType = (String) userTypeComboBox.getSelectedItem();
+
+        try {
+            User newUser;
+            if ("Estudante".equals(userType)) {
+                String ra = raField.getText().trim();
+                newUser = new Student(username, password, fullName, email, ra);
+            } else {
+                newUser = new Administrator(username, password, fullName, email);
+            }
+
+            manager.addUser(newUser); // Lança UserConflictException se já existir
+            JOptionPane.showMessageDialog(this, "Usuário " + username + " registrado com sucesso!", "Registro Concluído", JOptionPane.INFORMATION_MESSAGE);
+            dispose();
+        } catch (UserConflictException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Conflito de Usuário", JOptionPane.WARNING_MESSAGE);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Erro inesperado: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+            ex.printStackTrace();
+        }
     }
 }
