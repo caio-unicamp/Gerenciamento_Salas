@@ -69,7 +69,7 @@ public class ReservationPanel extends JPanel { // Interface gráfica
                 reservation.getStartTime().toString(),
                 reservation.getEndTime().toString(),
                 reservation.getPurpose(),
-                reservation.getStatus()
+                reservation.getStatus().getName()
             });
         }
     }
@@ -164,6 +164,9 @@ public class ReservationPanel extends JPanel { // Interface gráfica
                 manager.cancelReservation(reservationToCancel);
                 JOptionPane.showMessageDialog(this, "Reserva cancelada com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
                 refreshReservationList();
+                if (SwingUtilities.getWindowAncestor(this) instanceof MainFrame) {
+                    ((MainFrame) SwingUtilities.getWindowAncestor(this)).refreshPanels();
+                }
             } else {
                 JOptionPane.showMessageDialog(this, "Erro ao encontrar a reserva para cancelar.", "Erro", JOptionPane.ERROR_MESSAGE);
             }

@@ -1,0 +1,5 @@
+/out/
+src/out/
+*.in
+*.txt
+*.class

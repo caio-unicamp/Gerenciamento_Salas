@@ -5,10 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Objects;
 
-// Exemplo de enumeração 
-enum ReservationStatus {
-    CONFIRMADA, PENDENTE, CANCELADA
-}
+
 
 // Exemplo de classe 
 // Exemplo de relacionamento (associação): Reservation 'tem' um Classroom e um User [cite: 8]
@@ -33,7 +30,7 @@ public class Reservation implements Serializable {
         this.startTime = startTime;
         this.endTime = endTime;
         this.purpose = purpose;
-        this.status = ReservationStatus.PENDENTE; // Status inicial
+        this.status = ReservationStatus.PENDING; // Status inicial
     }
 
     // Método estático para gerar IDs únicos 
@@ -101,6 +98,10 @@ public class Reservation implements Serializable {
      * @return true se houver sobreposição, false caso contrário.
      */
     public boolean conflictsWith(Reservation other) {
+       if (!other.getStatus().equals(ReservationStatus.CONFIRMED)) {
+            return false; // Reservas que não estão confirmadas não causam conflito para novas reservas pendentes.
+        }
+
         if (!this.classroom.equals(other.classroom) || !this.date.equals(other.date)) {
             return false; // Salas ou datas diferentes, não há conflito
         }

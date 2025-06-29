@@ -62,6 +62,9 @@ public class MainFrame extends JFrame { // Interface gráfica
             adminPanel.add(new JScrollPane(new JTable(classroomPanel.getClassroomTableModel())), BorderLayout.CENTER); // Reutiliza a tabela de salas
 
             tabbedPane.addTab("Administração de Salas", adminPanel);
+
+            JPanel adminReservationPanel = new AdminReservationPanel(manager);
+            tabbedPane.addTab("Gerenciar Reservas", adminReservationPanel);
         }
 
         add(tabbedPane, BorderLayout.CENTER);
