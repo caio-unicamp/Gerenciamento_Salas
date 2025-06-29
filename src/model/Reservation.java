@@ -16,7 +16,8 @@ public class Reservation implements Serializable {
     private LocalTime startTime;
     private LocalTime endTime;
     private String purpose;
-    private ReservationStatus status; // Exemplo de enumeração 
+    private ReservationStatus status; 
+    private String observation;
 
     public Reservation(Classroom classroom, User reservedBy, LocalDate date, LocalTime startTime, LocalTime endTime, String purpose) {
         this.id = generateNextId(); // Utiliza método estático 
@@ -27,6 +28,7 @@ public class Reservation implements Serializable {
         this.endTime = endTime;
         this.purpose = purpose;
         this.status = ReservationStatus.PENDING; // Status inicial
+        this.observation = "";
     }
 
     // Método estático para gerar IDs únicos 
@@ -96,6 +98,14 @@ public class Reservation implements Serializable {
         this.purpose = purpose;
     }
 
+    public String getObservation() {
+        return observation;
+    }
+
+    public void setObservation(String observation) {
+        this.observation = observation;
+    }
+
     /**
      * Verifica se esta reserva se sobrepõe a outra reserva.
      * @param other A outra reserva para verificar.
@@ -125,7 +135,8 @@ public class Reservation implements Serializable {
                ", startTime=" + startTime +
                ", endTime=" + endTime +
                ", purpose='" + purpose + '\'' +
-               ", status=" + status +
+               ", status=" + status.getName() +
+               ", observation='" + observation + '\'' + 
                '}';
     }
 
