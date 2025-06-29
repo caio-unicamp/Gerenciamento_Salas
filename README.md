@@ -36,6 +36,7 @@ O projeto incorpora os seguintes conceitos de programação orientada a objetos:
 
 A estrutura de diretórios do projeto é a seguinte:
 
+.
 ├── src/
 │   ├── model/                  # Classes de modelo (Classroom, Reservation, User, Student, Administrator)
 │   ├── manager/                # Classe para gerenciar a lógica de negócios (ReservationManager)
