@@ -176,9 +176,9 @@ public class ReservationManager implements Serializable {
     // --- Métodos de Persistência de Dados (Leitura e Gravação de Arquivos) ---
 
     // Leitura e gravação de arquivos 
-    private static final String CLASSROOMS_FILE = "data/classrooms.txt";
-    private static final String RESERVATIONS_FILE = "data/reservations.txt";
-    private static final String USERS_FILE = "data/users.txt";
+    private static final String CLASSROOMS_FILE = "../data/classrooms.txt";
+    private static final String RESERVATIONS_FILE = "../data/reservations.txt";
+    private static final String USERS_FILE = "../data/users.txt";
 
     @SuppressWarnings("unchecked")
     public void loadData() {
