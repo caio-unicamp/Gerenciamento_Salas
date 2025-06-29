@@ -99,7 +99,7 @@ public class ReservationManager implements Serializable {
             if (existingReservation.getStatus().equals(ReservationStatus.CONFIRMED) && newReservation.conflictsWith(existingReservation)) {
                 throw new ReservationConflictException(
                     "Conflito de reserva! A sala " + classroom.getName() +
-                    " já está **confirmada** para " + existingReservation.getReservedBy().getUsername() +
+                    " já está confirmada para " + existingReservation.getReservedBy().getUsername() +
                     " das " + existingReservation.getStartTime() +
                     " às " + existingReservation.getEndTime() +
                     " em " + existingReservation.getDate() + "."

@@ -33,18 +33,32 @@ public class Main {
 
         // Garante que a GUI será iniciada na Event Dispatch Thread (EDT)
         SwingUtilities.invokeLater(() -> {
-            LoginDialog loginDialog = new LoginDialog(null, manager);
+            // Cria um Frame "fantasma" que será o pai do LoginDialog para centralizá-lo corretamente.
+            JFrame dummyFrame = new JFrame();
+            dummyFrame.setVisible(false); // Nunca visível
+            dummyFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Sai se o dummyFrame for fechado (não deve acontecer)
+            
+            LoginDialog loginDialog = new LoginDialog(dummyFrame, manager);
             loginDialog.setVisible(true);
 
             User authenticatedUser = loginDialog.getAuthenticatedUser();
-
-            if (authenticatedUser != null) {
-                MainFrame mainFrame = new MainFrame(manager, authenticatedUser, loginDialog);
-                mainFrame.setVisible(true);
-            } else {
-                JOptionPane.showMessageDialog(null, "Login cancelado ou falhou. Encerrando o sistema.", "Sair", JOptionPane.INFORMATION_MESSAGE);
-                System.exit(0);
-            }
+            do{
+                if (authenticatedUser == null) {
+                    JOptionPane.showMessageDialog(null, "Login cancelado ou falhou. Encerrando o sistema.", "Sair", JOptionPane.INFORMATION_MESSAGE);
+                    System.exit(0);
+                } else {
+                    MainFrame mainFrame = new MainFrame(manager, authenticatedUser, loginDialog);
+                    mainFrame.setVisible(true);
+                    while (mainFrame.isVisible()) {
+                        try{
+                            Thread.sleep(10);
+                        }catch(Exception e){
+                            Thread.currentThread().interrupt();
+                            System.err.println("MainFrame loop interrompido.");
+                        }
+                    }
+                }
+            }while (authenticatedUser != null);
         });
     }
 }
