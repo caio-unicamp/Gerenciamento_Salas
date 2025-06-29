@@ -1,0 +1,4 @@
+--patch-module
+com.feec.reservas=_
+--add-reads
+com.feec.reservas=ALL-UNNAMED

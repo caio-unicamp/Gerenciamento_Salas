@@ -1,160 +1,119 @@
-# Sistema de Gerenciamento de Reservas de Salas de Aula
+# Sistema de Reserva de Salas e Equipamentos
 
-Este projeto implementa um sistema de gerenciamento de reservas de salas de aula utilizando conceitos de Programação Orientada a Objetos (POO) em Java, com uma interface gráfica (GUI) desenvolvida em Swing. O sistema permite cadastrar salas, usuários (administradores e alunos) e realizar/cancelar reservas, com persistência de dados em arquivos.
+Este é um projeto de um sistema desktop para gerenciamento de reservas de salas e equipamentos, desenvolvido como parte de atividades acadêmicas. O objetivo é permitir que alunos solicitem reservas e que a secretaria possa aprovar ou negar esses pedidos de forma centralizada.
 
-## 1. Objetivo
+## Tecnologias Principais
 
-Estudar e implementar os conceitos de programação orientada a objetos abordados na disciplina, por meio do desenvolvimento de um sistema definido pelo grupo. Este trabalho contempla a proposta, modelagem e implementação de um sistema orientado a objetos. O sistema foi descrito e desenvolvido em sua versão completa, estando pronto para manipulação por parte do usuário.
+  * **Java 17+**: Linguagem principal da aplicação.
+  * **JavaFX 21+**: Framework para a construção da interface gráfica (GUI).
+  * **SQLite**: Banco de dados leve e baseado em arquivo para persistência de dados.
+  * **Maven**: Ferramenta para gerenciamento de dependências e automação do build do projeto.
 
-## 2. Requisitos do Sistema
+## Estrutura do Projeto
 
-Para compilar e executar este projeto, você precisará dos seguintes softwares:
+O projeto segue uma arquitetura que visa separar as responsabilidades em diferentes camadas, facilitando a manutenção e a adição de novas funcionalidades.
 
-* **Java Development Kit (JDK):** Versão 11 ou superior (preferencialmente a versão LTS mais recente, como JDK 17).
-* **Ambiente Gráfico:** O sistema possui uma interface gráfica (GUI)10, portanto, ele deve ser executado em um ambiente que suporte a exibição de janelas (como Windows, macOS, ou um ambiente de desktop Linux).
-    * Se estiver utilizando **WSL (Windows Subsystem for Linux)**, um servidor X no Windows é necessário.
-
-## 3. Tópicos de POO Abordados
-
-O projeto incorpora os seguintes conceitos de programação orientada a objetos:
-
-* **Classes, variáveis e métodos:** O sistema contempla classes, seus atributos e métodos, incluindo sobrecarga.
-* **Visibilidade:** Aplicação correta de modificadores de visibilidade (public, private, protected).
-* **Herança:** Ao menos uma estrutura de herança foi implementada (ex: `User` com `Student` e `Administrator`).
-* **Variáveis e métodos estáticos:** Inclui pelo menos uma variável e um método de classe (ex: `nextReservationId` em `Reservation`).
-* **Arrays:** Utilizado quando necessário (ex: `ArrayList` para armazenar coleções de objetos).
-* **Enumerações:** Incluído ao menos um exemplo de uso (ex: `ReservationStatus`).
-* **Entrada e saída de dados:** Permite entrada e/ou saída de dados via GUI e arquivos.
-* **Relacionamentos (associação, agregação ou composição):** Contempla ao menos um tipo de relacionamento (ex: `ReservationManager` agrega `Classroom` e `Reservation`).
-* **Classes abstratas:** Implementada ao menos uma (ex: `User`).
-* **Polimorfismo:** Inclui exemplos de polimorfismo de tipo e de método (ex: `User` e seus subtipos, sobrecarga de `findAvailableClassrooms`).
-* **Interface gráfica:** O sistema é controlado por interface gráfica (GUI).
-* **Tratamento de exceções:** Trata exceções, incluindo pelo menos uma exceção definida pelo grupo (`ReservationConflictException`).
-* **Arquivos (leitura e gravação):** O sistema realiza operações de leitura e escrita em arquivos relevantes ao projeto (`data/classrooms.txt`, `data/reservations.txt`, `data/users.txt`).
-
-## 4. Como Configurar e Rodar o Projeto
-
-Siga os passos abaixo para preparar seu ambiente e executar a aplicação.
-
-### 4.1. Instalação do JDK
-
-Certifique-se de ter o JDK instalado. Você pode baixá-lo do site da Oracle ou usar uma distribuição OpenJDK (como Adoptium Temurin, Amazon Corretto, etc.).
-
-Para verificar a instalação, abra um terminal (Prompt de Comando no Windows, Terminal no Linux/macOS, ou Terminal WSL) e digite:
-
-```bash
-java -version
-javac -version
+```
+reservas-sistema/
+├── pom.xml                     # Arquivo de configuração do Maven
+└── src/
+    └── main/
+        ├── java/
+        │   └── com/feec/reservas/
+        │       ├── controller/ # Controladores: A lógica por trás das telas
+        │       ├── dao/        # Data Access Objects: Comunicação com o BD
+        │       ├── exception/  # Exceções customizadas do sistema
+        │       ├── model/      # Classes de domínio (Aluno, Reserva, etc.) - Representam objetos do sistema
+        │       ├── service/    # Camada de lógica de negócio
+        │       ├── Launcher.java       # Classe para iniciar a aplicação empacotada
+        │       └── MainApplication.java  # Classe principal do JavaFX
+        │
+        └── resources/
+            └── com/feec/reservas/
+                └── fxml/       # Arquivos FXML que definem as interfaces (Semelhante ao HTML)
 ```
 
-### 4.2. Configuração para Usuários WSL (Windows Subsystem for Linux)
+  * `pom.xml`: Arquivo fundamental que descreve o projeto, suas dependências (como JavaFX e SQLite) e como compilá-lo, utilizando plugins como o `maven-shade-plugin` para criar o executável final.
+  * `/model`: Contém as classes que representam os dados do sistema, como `Usuario`, `Reserva`, `Sala`, etc. São os "tijolos" da nossa aplicação.
+  * `/fxml`: Define a estrutura visual de cada tela. São como o HTML para uma página web, mas para uma aplicação JavaFX.
+  * `/controller`: Faz a ponte entre as telas (`.fxml`) e os dados (`model`). Quando você clica em um botão, é um método no controller que é executado.
+  * `/dao`: Camada de Acesso a Dados. Qualquer operação que precise ler ou escrever no banco de dados SQLite passa por uma classe DAO. Elas contêm as queries SQL.
+  * `/service`: Orquestra as operações. Em vez de um controller chamar vários DAOs, ele chama um método no `GerenciadorDeReservas`, que contém a lógica de negócio mais complexa.
+  * `Launcher.java`: Uma classe auxiliar simples cujo único propósito é iniciar a aplicação corretamente quando ela está empacotada em um arquivo `.jar`.
 
-Se você estiver rodando o projeto dentro do WSL e quiser que a interface gráfica apareça no Windows, siga estes passos adicionais:
+## Como Compilar e Executar
 
-1.  **Instale um Servidor X no Windows:**
-    * Recomenda-se o **VcXsrv**.
-    * **Download:** Baixe o VcXsrv (procure por "VcXsrv Windows X Server" no SourceForge).
-    * **Instalação:** Execute o instalador e siga as instruções.
-    * **Configuração e Inicialização:**
-        * Após a instalação, procure por "XLaunch" no menu Iniciar do Windows e execute-o.
-        * Na primeira tela ("Display settings"), escolha "Multiple windows" (ou "One large window").
-        * **CRÍTICO:** Marque a opção "**Disable access control**". Isso permite que o WSL se conecte ao servidor X sem problemas de permissão.
-        * Prossiga com as configurações padrão nas próximas telas e clique em "Finish". Um ícone do VcXsrv aparecerá na bandeja do sistema do Windows, indicando que está em execução.
+### Pré-requisitos
 
-2.  **Configurar Firewall do Windows:**
-    * Certifique-se de que o Firewall do Windows não está bloqueando o VcXsrv.
-    * No Windows, pesquise por "Permitir um aplicativo através do Firewall do Windows".
-    * Clique em "Alterar configurações" e procure por "VcXsrv".
-    * Marque as caixas "Privado" e "Público" para VcXsrv. Se não estiver na lista, clique em "Permitir outro aplicativo...", navegue até o executável (`C:\Program Files\VcXsrv\vcxsrv.exe`) e adicione-o.
-    * Alternativamente, você pode adicionar uma regra de entrada para a porta TCP `6000` (porta padrão do X11) diretamente no "Firewall do Windows Defender com Segurança Avançada".
+1.  **JDK 17 ou superior** instalado.
+2.  **Apache Maven** instalado e configurado no PATH do sistema. A instalação é bem simples, para checar basta verificar se o comando `mvn --version` exibe a função do software.
 
-3.  **Configurar Variável `DISPLAY` no WSL:**
-    * Abra seu terminal WSL (ex: Ubuntu).
-    * Adicione as seguintes linhas ao seu arquivo de configuração do shell (`~/.bashrc` para Bash, ou `~/.zshrc` para Zsh):
-        ```bash
-        echo "export DISPLAY=\$(grep nameserver /etc/resolv.conf | awk '{print \$2}'):0.0" >> ~/.bashrc
-        echo "export LIBGL_ALWAYS_INDIRECT=1" >> ~/.bashrc # Pode ser necessário para alguns apps
-        ```
-    * Recarregue o arquivo de configuração para aplicar as mudanças imediatamente:
-        ```bash
-        source ~/.bashrc
-        ```
-    * **Confirme o IP:** Digite `echo $DISPLAY` para verificar se a variável foi definida corretamente com um IP do seu host Windows (ex: `10.255.255.254:0.0`).
+### Compilando o Projeto
 
-4.  **Instalar Bibliotecas X11 no WSL (se necessário):**
-    ```bash
-    sudo apt update
-    sudo apt install -y libxext6 libxrender1 libxtst6 libfontconfig1 libxi6
+Para compilar todo o código-fonte e criar um arquivo `.jar` executável e portátil, utilize o Maven. Abra um terminal na pasta raiz do projeto (onde está o `pom.xml`) e execute:
+
+```bash
+mvn clean package
+```
+
+  * `clean`: Limpa compilações anteriores.
+  * `package`: Compila o código e usa o `maven-shade-plugin` para gerar um "fat-jar" na pasta `target/`. Este JAR contém sua aplicação e todas as dependências necessárias.
+
+### Executando a Aplicação
+
+Após a compilação, o arquivo `reservas-sistema-1.0-SNAPSHOT.jar` será criado dentro da pasta `target`. Para executar o sistema, utilize o seguinte comando no terminal:
+
+```bash
+# Navegue até a pasta target
+cd target
+
+# Execute o arquivo JAR
+java -jar reservas-sistema-1.0-SNAPSHOT.jar
+```
+
+Na primeira execução, um arquivo de banco de dados chamado `reservas.db` será criado no mesmo diretório do JAR.
+
+## Como Adicionar Novas Funcionalidades
+
+A arquitetura foi projetada para facilitar a expansão. Vamos supor que você queira adicionar uma nova tela para **"Cadastrar um Novo Item"**. O fluxo seria o seguinte:
+
+#### Passo 1: Criar a View (FXML)
+
+Crie um novo arquivo em `src/main/resources/com/feec/reservas/fxml/`, por exemplo, `cadastro-item-view.fxml`. Use o Scene Builder ou edite o FXML manualmente para adicionar os campos necessários (ex: `TextField` para o nome, `ComboBox` para o tipo, etc.).
+
+#### Passo 2: Criar o Controller
+
+Crie a classe `CadastroItemController.java` em `src/main/java/com/feec/reservas/controller/`. Ligue-a ao FXML e injete os componentes da tela usando a anotação `@FXML`. Crie o método para o botão de salvar.
+
+```java
+public class CadastroItemController {
+    @FXML private TextField nomeField;
+    // ... outros campos
+
+    @FXML
+    private void handleSalvarItemAction() {
+        // Lógica para pegar os dados dos campos e chamar o service/dao
+    }
+}
+```
+
+#### Passo 3: Adicionar Lógica no DAO/Service
+
+Se necessário, adicione um novo método ao `ItemReservavelDAO.java` para inserir um novo item no banco. Por exemplo, `public void criar(ItemReservavel item)`. Se houver regras de negócio, adicione-as ao `GerenciadorDeReservas.java`.
+
+#### Passo 4: Integrar a Nova Tela
+
+Para que o usuário possa acessar a nova tela, você precisa integrá-la ao fluxo existente. A melhor forma é usar o `MainController`.
+
+1.  **Adicione um botão ou menu**: Abra o `main-view.fxml` e adicione um `MenuItem` no menu "Arquivo" com o texto "Cadastrar Novo Item" e um `onAction` apontando para um novo método, como `#handleCadastrarItem`.
+2.  **Implemente o método no `MainController`**:
+    ```java
+    // Dentro de MainController.java
+    @FXML
+    private void handleCadastrarItem() {
+        // Usa o método que já criamos para carregar qualquer tela
+        carregarTela("/com/feec/reservas/fxml/cadastro-item-view.fxml", null);
+    }
     ```
 
-5.  **Reiniciar o WSL (Altamente Recomendado):**
-    * No PowerShell (ou Prompt de Comando) do Windows, execute:
-        ```powershell
-        wsl --shutdown
-        ```
-    * Espere alguns segundos para que o WSL pare completamente e então reabra seu terminal WSL.
-
-**Observação para Windows 11 / WSLg:** Se você estiver usando Windows 11 com WSLg (Windows Subsystem for Linux GUI), a configuração do servidor X e da variável `DISPLAY` é automática. Você não precisaria realizar os passos de 5.2.1 a 5.2.5; basta ter o WSLg instalado e rodar a aplicação Java diretamente no WSL.
-
-### 4.3. Compilando e Executando o Projeto
-
-1.  **Navegue até o Diretório do Projeto:**
-    * Abra um terminal (Prompt de Comando, PowerShell, Terminal Linux/macOS ou Terminal WSL).
-    * Navegue até a raiz do diretório do projeto (onde está o `src` e este `README.md`).
-    * Exemplo no Windows (se o projeto estiver em `C:\Projetos\MC322`):
-        ```bash
-        cd C:\Projetos\MC322
-        ```
-    * Exemplo no WSL (se o projeto estiver em `C:\Projetos\MC322`):
-        ```bash
-        cd /mnt/c/Projetos/MC322
-        ```
-
-2.  **Compile os Arquivos Java:**
-    * Execute o comando de compilação a partir do diretório raiz do projeto:
-        ```bash
-        javac src/Main.java src/model/*.java src/manager/*.java src/exception/*.java src/gui/*.java src/util/*.java
-        ```
-    * Este comando compilará todos os arquivos `.java` nos subdiretórios listados.
-
-3.  **Execute a Aplicação:**
-    * Após a compilação, execute o programa principal:
-        ```bash
-        java -cp src Main
-        ```
-    * A aplicação GUI deve iniciar, exibindo uma tela de login.
-
-## 5. Primeiros Acessos e Credenciais Padrão
-
-Ao iniciar o sistema pela primeira vez, ele pode carregar alguns dados de exemplo (salas e usuários) se os arquivos de dados na pasta `data/` estiverem vazios ou não existirem.
-
-* **Usuários de Teste (se gerados automaticamente no `Main.java`):**
-    * **Administrador:**
-        * **Usuário:** `admin`
-        * **Senha:** `admin123`
-    * **Aluno:**
-        * **Usuário:** `aluno1`
-        * **Senha:** `aluno123`
-        * **Usuário:** `aluno2`
-        * **Senha:** `aluno123`
-
-## 6. Funcionalidades da Aplicação
-
-O sistema oferece as seguintes funcionalidades principais:
-
-* **Login de Usuários:** Autenticação como aluno ou administrador.
-* **Visualização de Salas:** Lista todas as salas cadastradas com seus detalhes.
-* **Gerenciamento de Reservas (Alunos):**
-    * Permite fazer novas reservas de salas.
-    * Permite visualizar suas próprias reservas.
-    * Permite cancelar reservas existentes.
-* **Gerenciamento de Salas (Administradores):**
-    * Funcionalidades adicionais para adicionar novas salas (acessível via uma aba específica na interface).
-* **Persistência de Dados:** As informações de salas, usuários e reservas são salvas e carregadas automaticamente de arquivos (`.txt`) localizados na pasta `data/`, garantindo a persistência dos dados entre as sessões.
-
-## 7. Problemas Comuns e Soluções
-
-* **`java.awt.AWTError: Can't connect to X11 window server...`:** Este erro indica que o ambiente gráfico não foi configurado corretamente ou o servidor X não está acessível.
-    * **Solução:** Revise a Seção 5.2 "Configuração para Usuários WSL", garantindo que o VcXsrv (ou Xming) esteja rodando, que a opção "Disable access control" esteja marcada, que o Firewall do Windows permita a comunicação, e que a variável `DISPLAY` no seu WSL esteja apontando para o IP correto do host Windows (e que o WSL tenha sido reiniciado após as configurações).
-* **`Error: Could not find or load main class Main`:**
-    * **Solução:** Verifique se você está executando o comando `java -cp src Main` a partir do diretório raiz do projeto e se a compilação (`javac`) foi bem-sucedida sem erros.
+Pronto\! Seguindo este padrão (View -\> Controller -\> Service/DAO -\> Integração), você pode adicionar quantas funcionalidades quiser de forma organizada e escalável.
