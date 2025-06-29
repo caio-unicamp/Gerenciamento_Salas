@@ -84,8 +84,6 @@ public class CalendarPanel extends JPanel {
         monthNavPanel.add(nextMonthButton, BorderLayout.EAST);
         add(monthNavPanel, BorderLayout.NORTH);
 
-        // ALTERAÇÃO AQUI: Aumentar ainda mais o espaçamento vertical
-        // Isso dá mais "liberdade" para os botões expandirem verticalmente.
         calendarGridPanel = new JPanel(new GridLayout(0, 7, 5, 1)); // VGap de 20
         calendarGridPanel.setBackground(Color.WHITE);
         calendarGridPanel.setBorder(BorderFactory.createCompoundBorder(
@@ -168,8 +166,7 @@ public class CalendarPanel extends JPanel {
             dayButton.setFont(new Font("SansSerif", Font.PLAIN, 14));
             dayButton.setFocusPainted(false);
             dayButton.setBackground(Color.WHITE);
-            // ALTERAÇÃO AQUI: Aumentar o padding interno do botão para dar mais altura
-            dayButton.setBorder(BorderFactory.createEmptyBorder(1, 5, 1, 5)); // Aumentado padding vertical para 10
+            dayButton.setBorder(BorderFactory.createEmptyBorder(1, 5, 1, 5)); 
 
             if (date.equals(selectedDate)) {
                 dayButton.setBackground(SELECTED_DAY_COLOR);

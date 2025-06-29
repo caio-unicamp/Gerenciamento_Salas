@@ -13,11 +13,11 @@ import java.util.List;
 
 public class AdminReservationPanel extends JPanel {
     private ReservationManager manager;
-    private JTable reservationsTable; // Renomeado para refletir que exibe todas
-    private DefaultTableModel reservationsTableModel; // Renomeado
+    private JTable reservationsTable; 
+    private DefaultTableModel reservationsTableModel; 
     private JButton confirmButton;
     private JButton rejectButton;
-    private JButton cancelButton; // NOVO BOTÃO PARA CANCELAR
+    private JButton cancelButton; 
     private JButton deleteButton;
     private JButton refreshButton;
 
@@ -29,7 +29,7 @@ public class AdminReservationPanel extends JPanel {
     }
 
     private void initComponents() {
-        // Configuração da tabela de reservas (agora exibirá todas)
+        // Configuração da tabela de reservas
         String[] columnNames = {"ID", "Sala", "Usuário", "Data", "Início", "Término", "Propósito", "Status", "Observações"}; // Adicionado "Observações"
         reservationsTableModel = new DefaultTableModel(columnNames, 0) {
             @Override
@@ -62,12 +62,12 @@ public class AdminReservationPanel extends JPanel {
         rejectButton.addActionListener(e -> rejectSelectedReservation());
         buttonPanel.add(rejectButton);
 
-        cancelButton = new JButton("Cancelar Selecionada"); // NOVO BOTÃO
-        cancelButton.addActionListener(e -> cancelSelectedReservation()); // NOVO LISTENER
+        cancelButton = new JButton("Cancelar Selecionada"); 
+        cancelButton.addActionListener(e -> cancelSelectedReservation());
         buttonPanel.add(cancelButton);
 
-        deleteButton = new JButton("Deletar Selecionada"); // NOVO BOTÃO
-        deleteButton.addActionListener(e -> deleteSelectedReservation()); // NOVO LISTENER
+        deleteButton = new JButton("Deletar Selecionada");
+        deleteButton.addActionListener(e -> deleteSelectedReservation()); 
         buttonPanel.add(deleteButton);
 
         refreshButton = new JButton("Atualizar Lista");

@@ -3,10 +3,10 @@ package gui;
 import manager.ReservationManager;
 import model.Classroom;
 
-import javax.swing.*; // Interface gráfica 
+import javax.swing.*; 
 import java.awt.*;
 
-public class AddClassroomDialog extends JDialog { // Interface gráfica 
+public class AddClassroomDialog extends JDialog { 
     private JTextField nameField;
     private JSpinner capacitySpinner;
     private JTextField locationField;
@@ -17,7 +17,7 @@ public class AddClassroomDialog extends JDialog { // Interface gráfica
     private ReservationManager manager;
 
     public AddClassroomDialog(Frame parent, ReservationManager manager) {
-        super(parent, "Adicionar Nova Sala", true); // Modal
+        super(parent, "Adicionar Nova Sala", true); 
         this.manager = manager;
 
         setSize(400, 300);

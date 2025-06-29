@@ -1,4 +1,3 @@
-// src/gui/ForgotPasswordDialog.java
 package gui;
 
 import manager.ReservationManager;
@@ -211,7 +210,7 @@ public class ForgotPasswordDialog extends JDialog {
         }
 
         // Definir a nova senha (assumindo que a classe User tem um setter para senha)
-        foundUser.setPassword(newPassword); // IMPORTANTE: Verifique se User.java tem setPassword()
+        foundUser.setPassword(newPassword); 
         manager.saveData(); // Salva as mudanças na lista de usuários (persistência)
 
         JOptionPane.showMessageDialog(this, "Senha redefinida com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);

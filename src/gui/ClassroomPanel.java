@@ -3,12 +3,12 @@ package gui;
 import manager.ReservationManager;
 import model.Classroom;
 
-import javax.swing.*; // Interface gráfica 
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.List;
 
-public class ClassroomPanel extends JPanel { // Interface gráfica 
+public class ClassroomPanel extends JPanel {  
     private ReservationManager manager;
     private JTable classroomTable;
     private DefaultTableModel classroomTableModel;

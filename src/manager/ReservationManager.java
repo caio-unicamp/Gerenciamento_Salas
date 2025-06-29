@@ -2,7 +2,7 @@ package manager;
 
 import model.Classroom;
 import model.Reservation;
-import model.ReservationStatus; // Importar o enum
+import model.ReservationStatus;
 import model.User;
 import exception.ReservationConflictException;
 import exception.UserConflictException;
