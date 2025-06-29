@@ -17,6 +17,7 @@ public class AdminReservationPanel extends JPanel {
     private JButton confirmButton;
     private JButton rejectButton;
     private JButton cancelButton; // NOVO BOTÃO PARA CANCELAR
+    private JButton deleteButton;
     private JButton refreshButton;
 
     public AdminReservationPanel(ReservationManager manager) {
@@ -53,6 +54,10 @@ public class AdminReservationPanel extends JPanel {
         cancelButton = new JButton("Cancelar Selecionada"); // NOVO BOTÃO
         cancelButton.addActionListener(e -> cancelSelectedReservation()); // NOVO LISTENER
         buttonPanel.add(cancelButton);
+
+        deleteButton = new JButton("Deletar Selecionada"); // NOVO BOTÃO
+        deleteButton.addActionListener(e -> deleteSelectedReservation()); // NOVO LISTENER
+        buttonPanel.add(deleteButton);
 
         refreshButton = new JButton("Atualizar Lista");
         refreshButton.addActionListener(e -> refreshReservationsList());
@@ -172,6 +177,40 @@ public class AdminReservationPanel extends JPanel {
                 }
             } else {
                 JOptionPane.showMessageDialog(this, "Reserva não encontrada para cancelar.", "Erro", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
+    private void deleteSelectedReservation() {
+        int selectedRow = reservationsTable.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Selecione uma reserva para deletar.", "Nenhuma Seleção", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        int confirm = JOptionPane.showConfirmDialog(this, "Tem certeza que deseja DELETAR esta reserva?", "Confirmar Cancelamento", JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) {
+            int reservationId = (int) reservationsTableModel.getValueAt(selectedRow, 0);
+            Reservation reservationToDelete = manager.getAllReservations().stream()
+                                                        .filter(r -> r.getId() == reservationId)
+                                                        .findFirst()
+                                                        .orElse(null);
+            if (reservationToDelete != null) {
+                try {
+                    manager.deleteReservation(reservationToDelete);
+                    JOptionPane.showMessageDialog(this, "Reserva deletada com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+                    refreshReservationsList(); // Atualiza a lista
+                    if (SwingUtilities.getWindowAncestor(this) instanceof MainFrame) {
+                        ((MainFrame) SwingUtilities.getWindowAncestor(this)).refreshPanels();
+                    }
+                } catch (IllegalArgumentException ex) {
+                    JOptionPane.showMessageDialog(this, "Erro: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(this, "Ocorreu um erro inesperado: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+                    ex.printStackTrace();
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Reserva não encontrada para deletar.", "Erro", JOptionPane.ERROR_MESSAGE);
             }
         }
     }

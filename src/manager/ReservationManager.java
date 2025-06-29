@@ -206,6 +206,11 @@ public class ReservationManager implements Serializable {
         System.out.println("Reserva " + reservation.getId() + " cancelada com sucesso.");
     }
 
+    public void deleteReservation(Reservation reservation) {
+        reservations.remove(reservation);
+        saveData();
+        System.out.println("Reserva " + reservation.getId() + " deletada com sucesso.");
+    }
 
     // --- Métodos de Persistência de Dados (Leitura e Gravação de Arquivos) ---
 
