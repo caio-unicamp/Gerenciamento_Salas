@@ -1,6 +1,10 @@
 @startuml diagrama_classes
 ' Configurações gerais para o diagrama
-skinparam classAttributeIconSize 0 ' Esconde ícones de visibilidade (preferência pessoal para diagramas mais limpos)
+skinparam classAttributeIconSize 0 
+skinparam ClassBackgroundColor LightBlue
+skinparam ClassFontStyle bold
+skinparam classArrowColor Navy
+skinparam ClassBorderColor Navy
 hide empty members
 left to right direction
 
