@@ -13,11 +13,13 @@ public class MainFrame extends JFrame { // Interface gráfica
     private ReservationManager manager;
     private User loggedInUser;
     private LoginDialog parentLoginDialog; // Referência ao diálogo de login que a abriu
-
+    
     private JTabbedPane tabbedPane;
     private ClassroomPanel classroomPanel;
     private ReservationPanel reservationPanel;
-    private AdminReservationPanel adminReservationPanel; // Novo painel do administrador
+    private CalendarPanel calendarPanel;
+    private AdminReservationPanel adminReservationPanel; 
+    private AdminClassroomPanel adminClassroomPanel; 
     private JButton logoutButton; // Novo botão de logout
 
     public MainFrame(ReservationManager manager, User loggedInUser, LoginDialog parentLoginDialog) {
@@ -35,7 +37,7 @@ public class MainFrame extends JFrame { // Interface gráfica
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                performLogout();
+                performExit();
             }
         });
     }
@@ -63,11 +65,14 @@ public class MainFrame extends JFrame { // Interface gráfica
         reservationPanel = new ReservationPanel(manager, loggedInUser);
         tabbedPane.addTab("Minhas Reservas", reservationPanel);
 
+        calendarPanel = new CalendarPanel(manager);
+        tabbedPane.addTab("Calendário de Reservas", calendarPanel);
+
         if (loggedInUser.getRole().equals("Administrator")) {
-            JPanel adminClassroomPanel = new AdminClassroomPanel(this,manager);
+            adminClassroomPanel = new AdminClassroomPanel(this,manager);
             tabbedPane.addTab("Administração de Salas", adminClassroomPanel);
 
-            JPanel adminReservationPanel = new AdminReservationPanel(manager);
+            adminReservationPanel = new AdminReservationPanel(manager);
             tabbedPane.addTab("Gerenciar Reservas", adminReservationPanel);
         }
 
@@ -82,6 +87,15 @@ public class MainFrame extends JFrame { // Interface gráfica
             dispose(); // Fecha a MainFrame
             parentLoginDialog.clearFields(); // Limpa os campos do diálogo de login
             parentLoginDialog.setVisible(true); // Torna o diálogo de login visível novamente
+        }
+    }
+    private void performExit() {
+        int confirm = JOptionPane.showConfirmDialog(MainFrame.this,
+                        "Tem certeza que deseja sair do sistema?", "Sair",
+                        JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) {
+            manager.saveData(); // Save data before exiting
+            System.exit(0); // Terminate the application
         }
     }
     // Método para atualizar as abas quando necessário (ex: após uma reserva)

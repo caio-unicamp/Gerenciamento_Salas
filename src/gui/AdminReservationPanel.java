@@ -6,6 +6,8 @@ import exception.ReservationConflictException;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumnModel;
+
 import java.awt.*;
 import java.util.List;
 
@@ -38,6 +40,15 @@ public class AdminReservationPanel extends JPanel {
         
         reservationsTable = new JTable(reservationsTableModel);
         reservationsTable.setFillsViewportHeight(true);
+
+        reservationsTable.setAutoCreateColumnsFromModel(true); // Garante que a tabela use o modelo de colunas
+        TableColumnModel tcm = reservationsTable.getColumnModel();
+        tcm.getColumn(0).setMinWidth(0);
+        tcm.getColumn(0).setMaxWidth(0);
+        tcm.getColumn(0).setWidth(0);
+        tcm.getColumn(0).setPreferredWidth(0);
+        tcm.getColumn(0).setResizable(false); // Impede que o usuário redimensione para ver
+
         JScrollPane scrollPane = new JScrollPane(reservationsTable);
         add(scrollPane, BorderLayout.CENTER);
 
