@@ -34,6 +34,14 @@ public class Reservation implements Serializable {
         return nextReservationId++;
     }
 
+    public static synchronized void setNextReservationId(int newId) {
+        nextReservationId = newId;
+    }
+
+    public static synchronized int getNextId() {
+        return nextReservationId;
+    }
+
     // Getters 
     public int getId() {
         return id;

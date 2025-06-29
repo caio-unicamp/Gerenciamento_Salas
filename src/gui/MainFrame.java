@@ -13,7 +13,7 @@ public class MainFrame extends JFrame { // Interface gráfica
     private ReservationManager manager;
     private User loggedInUser;
     private LoginDialog parentLoginDialog; // Referência ao diálogo de login que a abriu
-
+    
     private JTabbedPane tabbedPane;
     private ClassroomPanel classroomPanel;
     private ReservationPanel reservationPanel;
