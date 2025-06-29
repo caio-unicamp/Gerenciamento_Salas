@@ -177,13 +177,6 @@ public class ReservationPanel extends JPanel { // Interface gráfica
         int confirm = JOptionPane.showConfirmDialog(this, "Tem certeza que deseja cancelar esta reserva?",
                 "Confirmar Cancelamento", JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
-            String observation = JOptionPane.showInputDialog(this, "Insira a justificativa para o cancelamento:",
-                    "Justificativa do Cancelamento", JOptionPane.QUESTION_MESSAGE);
-            if (observation == null || observation.trim().isEmpty()) {
-                JOptionPane.showMessageDialog(this, "A justificativa é obrigatória para cancelar a reserva.", "Aviso",
-                        JOptionPane.WARNING_MESSAGE);
-                return;
-            }
             int reservationId = (int) reservationTableModel.getValueAt(selectedRow, 0);
             // Encontrar a reserva correta pelo ID (ou por objeto, se tiver uma referência)
             Reservation reservationToCancel = manager.getAllReservations().stream()
@@ -191,7 +184,7 @@ public class ReservationPanel extends JPanel { // Interface gráfica
                     .findFirst()
                     .orElse(null);
             if (reservationToCancel != null) {
-                manager.cancelReservation(reservationToCancel, observation);
+                manager.cancelReservation(reservationToCancel, "");
                 JOptionPane.showMessageDialog(this, "Reserva cancelada com sucesso!", "Sucesso",
                         JOptionPane.INFORMATION_MESSAGE);
                 refreshReservationList();
