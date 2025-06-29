@@ -197,7 +197,7 @@ public class ReservationManager implements Serializable {
 
     public void cancelReservation(Reservation reservation) {
         // Permitir cancelar qualquer reserva, independente do status, mas geralmente se cancela CONFIRMED ou PENDING
-        if (!reservation.getStatus().equals(ReservationStatus.PENDING) || !reservation.getStatus().equals(ReservationStatus.CONFIRMED)) {
+        if (!reservation.getStatus().equals(ReservationStatus.PENDING) && !reservation.getStatus().equals(ReservationStatus.CONFIRMED)) {
             throw new IllegalArgumentException("Reserva não está no status Pendente ou Confirmada para ser cancelada.");
         }
 
