@@ -17,7 +17,9 @@ public class MainFrame extends JFrame { // Interface gráfica
     private JTabbedPane tabbedPane;
     private ClassroomPanel classroomPanel;
     private ReservationPanel reservationPanel;
-    private AdminReservationPanel adminReservationPanel; // Novo painel do administrador
+    private CalendarPanel calendarPanel;
+    private AdminReservationPanel adminReservationPanel; 
+    private AdminClassroomPanel adminClassroomPanel; 
     private JButton logoutButton; // Novo botão de logout
 
     public MainFrame(ReservationManager manager, User loggedInUser, LoginDialog parentLoginDialog) {
@@ -63,11 +65,14 @@ public class MainFrame extends JFrame { // Interface gráfica
         reservationPanel = new ReservationPanel(manager, loggedInUser);
         tabbedPane.addTab("Minhas Reservas", reservationPanel);
 
+        calendarPanel = new CalendarPanel(manager);
+        tabbedPane.addTab("Calendário de Reservas", calendarPanel);
+
         if (loggedInUser.getRole().equals("Administrator")) {
-            JPanel adminClassroomPanel = new AdminClassroomPanel(this,manager);
+            adminClassroomPanel = new AdminClassroomPanel(this,manager);
             tabbedPane.addTab("Administração de Salas", adminClassroomPanel);
 
-            JPanel adminReservationPanel = new AdminReservationPanel(manager);
+            adminReservationPanel = new AdminReservationPanel(manager);
             tabbedPane.addTab("Gerenciar Reservas", adminReservationPanel);
         }
 
