@@ -28,7 +28,6 @@ public class MainFrame extends JFrame implements LoginListener {
         initializeDefaultData();
 
         setTitle("Sistema de Gerenciamento de Salas");
-        setSize(1200, 800); // Aumentado para melhor visualização
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
@@ -80,6 +79,8 @@ public class MainFrame extends JFrame implements LoginListener {
         LoginPanel loginPanel = new LoginPanel(manager, this);
         mainPanel.add(loginPanel, BorderLayout.CENTER);
         loginPanel.clearFields();
+        pack(); // Ajusta o tamanho da janela ao conteúdo do painel de login
+        setLocationRelativeTo(null); // Centraliza a janela menor
         revalidate();
         repaint();
     }
@@ -89,6 +90,8 @@ public class MainFrame extends JFrame implements LoginListener {
         mainPanel.removeAll();
         JPanel appContentPanel = createAppPanel(loggedInUser);
         mainPanel.add(appContentPanel, BorderLayout.CENTER);
+        setSize(1200, 800); // Define o tamanho maior para a tela principal
+        setLocationRelativeTo(null); // Centraliza a janela maior
         revalidate();
         repaint();
     }

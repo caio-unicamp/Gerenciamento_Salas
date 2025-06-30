@@ -184,11 +184,10 @@ public class CalendarPanel extends JPanel {
         for (int day = 1; day <= currentMonth.lengthOfMonth(); day++) {
             LocalDate date = currentMonth.atDay(day);
             JButton dayButton = new JButton(String.valueOf(day));
-            dayButton.setFont(new Font("SansSerif", Font.PLAIN, 14));
+            dayButton.setFont(new Font("SansSerif", Font.BOLD, 18)); // Fonte aumentada
             dayButton.setFocusPainted(false);
             dayButton.setBackground(Color.WHITE);
-            dayButton.setBorder(BorderFactory.createEmptyBorder(1, 5, 1, 5)); 
-
+            dayButton.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
             if (date.equals(selectedDate)) {
                 dayButton.setBackground(SELECTED_DAY_COLOR);
                 dayButton.setBorder(new LineBorder(Color.DARK_GRAY, 2));
@@ -203,11 +202,20 @@ public class CalendarPanel extends JPanel {
             boolean hasConfirmedReservations = manager.getAllReservations().stream()
                 .filter(r -> r.getStatus().equals(ReservationStatus.CONFIRMED))
                 .anyMatch(r -> r.getDate().equals(date));
+
             if (hasConfirmedReservations) {
                 dayButton.setBorder(BorderFactory.createCompoundBorder(
-                    new LineBorder(RESERVATION_DAY_BORDER_COLOR, 2),
+                    new LineBorder(RESERVATION_DAY_BORDER_COLOR, 2), // Borda mais visível
                     dayButton.getBorder()
                 ));
+
+                // Adiciona um tooltip com a lista de salas reservadas
+                String tooltipText = manager.getAllReservations().stream()
+                    .filter(r -> r.getStatus().equals(ReservationStatus.CONFIRMED) && r.getDate().equals(date))
+                    .map(r -> r.getClassroom().getName())
+                    .distinct()
+                    .collect(Collectors.joining(", "));
+                dayButton.setToolTipText("Reservas em: " + tooltipText);
             }
 
             final LocalDate clickedDate = date;
