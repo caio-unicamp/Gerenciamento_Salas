@@ -129,7 +129,11 @@ public class CalendarPanel extends JPanel {
         reservationsForDayTable.getTableHeader().setFont(new Font("SansSerif", Font.BOLD, 13));
         reservationsForDayTable.getTableHeader().setBackground(new Color(220, 220, 220));
 
-        reservationsPanel.add(new JScrollPane(reservationsForDayTable), BorderLayout.CENTER);
+        // Cria o scroll pane e define um tamanho preferencial fixo para ele
+        JScrollPane reservationsScrollPane = new JScrollPane(reservationsForDayTable);
+        reservationsScrollPane.setPreferredSize(new Dimension(0, 150)); // A altura será fixa em 150 pixels
+
+        reservationsPanel.add(reservationsScrollPane, BorderLayout.CENTER);
 
         add(reservationsPanel, BorderLayout.SOUTH);
     }
