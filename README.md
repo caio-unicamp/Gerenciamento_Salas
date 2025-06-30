@@ -51,6 +51,12 @@ A interface foi construída utilizando a biblioteca Swing.
 * **Painéis (`JPanel`):** O conteúdo é organizado em painéis modulares, como `ClassroomPanel`, `ReservationPanel` e `CalendarPanel`, cada um com sua responsabilidade específica.
 * **Diálogos (`JDialog`):** Janelas modais como `AddClassroomDialog` e `RegisterDialog` são usadas para entrada de dados focada, melhorando a experiência do usuário.
 
+## Diagrama de Classes (UML)
+
+O diagrama de classes a seguir ilustra a arquitetura do sistema, mostrando as principais classes, seus atributos, métodos e os relacionamentos (herança, associação, etc.) entre elas. Ele serve como uma representação visual da estrutura do código.
+
+![Diagrama de Classes do Projeto](./UML/diagrama_classes.png)
+
 ## Como Executar (Linux/macOS)
 
 ### Pré-requisitos
