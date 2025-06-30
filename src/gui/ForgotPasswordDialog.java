@@ -10,40 +10,38 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
- * Diálogo para recuperação de senha de usuários.
- * Permite validar informações do usuário e redefinir a senha.
+ * Diálogo para redefinição de senha.
  */
 public class ForgotPasswordDialog extends JDialog {
     private JTextField usernameField;
     private JTextField fullNameField;
     private JTextField emailField;
-    private JTextField raField; // Campo específico para estudantes
+    private JTextField raField;
     private JPasswordField newPasswordField;
     private JPasswordField confirmNewPasswordField;
     private JButton resetPasswordButton;
     private JComboBox<String> userTypeComboBox;
 
     private ReservationManager manager;
-    private User foundUser; // Para armazenar o usuário encontrado após a validação
+    private User foundUser;
 
     /**
-     * Construtor do diálogo de recuperação de senha.
+     * Construtor do diálogo de esqueci a senha.
+     * @param parent O frame pai.
+     * @param manager O gerenciador de reservas.
      */
     public ForgotPasswordDialog(Frame parent, ReservationManager manager) {
         super(parent, "Recuperar Senha", true);
         this.manager = manager;
         
-        // [CORRIGIDO] A inicialização e o dimensionamento agora são feitos no initUI.
         initUI();
-        // Centraliza a janela APÓS ela ter o tamanho correto.
         setLocationRelativeTo(parent);
     }
 
     /**
-     * Inicializa e dimensiona os componentes gráficos do diálogo.
+     * Inicializa os componentes da UI.
      */
     private void initUI() {
-        // [NOVO] Painel de conteúdo principal com uma borda para espaçamento interno.
         JPanel contentPanel = new JPanel(new BorderLayout(10, 10));
         contentPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
         setContentPane(contentPanel);
@@ -54,9 +52,6 @@ public class ForgotPasswordDialog extends JDialog {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.anchor = GridBagConstraints.WEST;
 
-        // --- Adição de todos os componentes ao formPanel ---
-        
-        // Linha 0: Tipo de Usuário
         gbc.gridx = 0;
         gbc.gridy = 0;
         formPanel.add(new JLabel("Tipo de Usuário:"), gbc);
@@ -65,7 +60,6 @@ public class ForgotPasswordDialog extends JDialog {
         userTypeComboBox.addActionListener(e -> updateFieldsVisibility());
         formPanel.add(userTypeComboBox, gbc);
 
-        // Linha 1: Nome de Usuário
         gbc.gridx = 0;
         gbc.gridy = 1;
         formPanel.add(new JLabel("Nome de Usuário:"), gbc);
@@ -73,7 +67,6 @@ public class ForgotPasswordDialog extends JDialog {
         usernameField = new JTextField(20);
         formPanel.add(usernameField, gbc);
 
-        // Linha 2: Nome Completo
         gbc.gridx = 0;
         gbc.gridy = 2;
         formPanel.add(new JLabel("Nome Completo:"), gbc);
@@ -81,7 +74,6 @@ public class ForgotPasswordDialog extends JDialog {
         fullNameField = new JTextField(20);
         formPanel.add(fullNameField, gbc);
 
-        // Linha 3: Email
         gbc.gridx = 0;
         gbc.gridy = 3;
         formPanel.add(new JLabel("Email:"), gbc);
@@ -89,7 +81,6 @@ public class ForgotPasswordDialog extends JDialog {
         emailField = new JTextField(20);
         formPanel.add(emailField, gbc);
 
-        // Linha 4: RA/Matrícula (opcional)
         gbc.gridx = 0;
         gbc.gridy = 4;
         JLabel raLabel = new JLabel("RA/Matrícula:");
@@ -98,16 +89,14 @@ public class ForgotPasswordDialog extends JDialog {
         raField = new JTextField(20);
         formPanel.add(raField, gbc);
 
-        // Linha 5: Separador
         JSeparator separator = new JSeparator(SwingConstants.HORIZONTAL);
         gbc.gridx = 0;
         gbc.gridy = 5;
-        gbc.gridwidth = 2; // Ocupa duas colunas
+        gbc.gridwidth = 2;
         formPanel.add(separator, gbc);
 
-        // Linha 6: Nova Senha
         gbc.gridy = 6;
-        gbc.gridwidth = 1; // Volta a ocupar uma coluna
+        gbc.gridwidth = 1;
         gbc.gridx = 0;
         formPanel.add(new JLabel("Nova Senha:"), gbc);
         gbc.gridx = 1;
@@ -115,7 +104,6 @@ public class ForgotPasswordDialog extends JDialog {
         newPasswordField.setEnabled(false);
         formPanel.add(newPasswordField, gbc);
 
-        // Linha 7: Confirmar Senha
         gbc.gridy = 7;
         gbc.gridx = 0;
         formPanel.add(new JLabel("Confirmar Senha:"), gbc);
@@ -124,63 +112,56 @@ public class ForgotPasswordDialog extends JDialog {
         confirmNewPasswordField.setEnabled(false);
         formPanel.add(confirmNewPasswordField, gbc);
 
-        // --- Painel do Botão ---
         resetPasswordButton = new JButton("Validar e Redefinir Senha");
         getRootPane().setDefaultButton(resetPasswordButton);
         resetPasswordButton.addActionListener(e -> validateAndResetPassword());
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(resetPasswordButton);
 
-        // Adiciona os painéis de formulário e botão ao painel de conteúdo principal
         contentPanel.add(formPanel, BorderLayout.CENTER);
         contentPanel.add(buttonPanel, BorderLayout.SOUTH);
         
-        // [ESSENCIAL] Chama o método para definir a visibilidade inicial e ajustar o tamanho
         updateFieldsVisibility();
     }
     
     /**
-     * Atualiza a visibilidade dos campos.
+     * Atualiza a visibilidade dos campos com base no tipo de usuário.
      */
     private void updateFieldsVisibility() {
         String selectedType = (String) userTypeComboBox.getSelectedItem();
         boolean isStudent = "Estudante".equals(selectedType);
 
         raField.setVisible(isStudent);
-        // Oculta/mostra o label correspondente
         for (Component comp : raField.getParent().getComponents()) {
             if (comp instanceof JLabel && ((JLabel) comp).getText().equals("RA/Matrícula:")) {
                 comp.setVisible(isStudent);
                 break;
             }
         }
-        // [ESSENCIAL] Ajusta o tamanho da janela sempre que a visibilidade muda.
         pack();
     }
 
     /**
-     * Valida as informações fornecidas pelo usuário e, se corretas, habilita a redefinição de senha.
-     * Exibe mensagens de erro caso as informações não coincidam com o cadastro.
+     * Valida as informações do usuário e redefine a senha.
      */
     private void validateAndResetPassword() {
         String username = usernameField.getText().trim();
         String fullName = fullNameField.getText().trim();
         String email = emailField.getText().trim();
-        String ra = raField.getText().trim(); // Pode ser vazio para administradores
+        String ra = raField.getText().trim();
 
         if (username.isEmpty() || fullName.isEmpty() || email.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Nome de usuário, nome completo e email são obrigatórios.", "Erro de Validação", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Nome de usuário, nome completo e email são obrigatórios.", "Erro de Validaçã-o", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
         User user = manager.getUserByUsername(username);
 
         if (user == null) {
-            JOptionPane.showMessageDialog(this, "Usuário não encontrado.", "Erro de Validação", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Usuário não encontrado.", "Erro de Validaçã-o", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        // Verifica as informações adicionais
         boolean matches = user.getName().equalsIgnoreCase(fullName) && user.getEmail().equalsIgnoreCase(email);
 
         if (user instanceof Student) {
@@ -189,27 +170,25 @@ public class ForgotPasswordDialog extends JDialog {
         }
 
         if (matches) {
-            // Informações de identificação corretas, agora permitir redefinir a senha
             foundUser = user;
             usernameField.setEnabled(false);
             fullNameField.setEnabled(false);
             emailField.setEnabled(false);
             raField.setEnabled(false);
             resetPasswordButton.setText("Redefinir Senha");
-            resetPasswordButton.removeActionListener(e -> validateAndResetPassword()); // Remove o listener anterior
-            resetPasswordButton.addActionListener(e -> resetUserPassword()); // Adiciona o novo listener
+            resetPasswordButton.removeActionListener(e -> validateAndResetPassword());
+            resetPasswordButton.addActionListener(e -> resetUserPassword());
             
             newPasswordField.setEnabled(true);
             confirmNewPasswordField.setEnabled(true);
             JOptionPane.showMessageDialog(this, "Informações validadas. Por favor, insira sua nova senha.", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
         } else {
-            JOptionPane.showMessageDialog(this, "As informações fornecidas não correspondem aos registros do usuário.", "Erro de Validação", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "As informações fornecidas não correspondem aos registros do usuário.", "Erro de Validaçã-o", JOptionPane.ERROR_MESSAGE);
         }
     }
 
     /**
-     * Redefine a senha do usuário validado, após confirmação dos campos de senha.
-     * Exibe mensagens de erro caso as senhas não coincidam ou estejam vazias.
+     * Redefine a senha do usuário.
      */
     private void resetUserPassword() {
         if (foundUser == null) {
@@ -230,11 +209,10 @@ public class ForgotPasswordDialog extends JDialog {
             return;
         }
 
-        // Definir a nova senha 
         foundUser.setPassword(newPassword); 
-        manager.saveData(); // Salva as mudanças na lista de usuários (persistência)
+        manager.saveData();
 
         JOptionPane.showMessageDialog(this, "Senha redefinida com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
-        dispose(); // Fecha o diálogo após a redefinição
+        dispose();
     }
 }

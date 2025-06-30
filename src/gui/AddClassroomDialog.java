@@ -7,7 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * Diálogo para adicionar uma nova sala de aula ao sistema.
+ * Diálogo para adicionar uma nova sala de aula.
  */
 public class AddClassroomDialog extends JDialog {
     private JTextField nameField;
@@ -20,10 +20,9 @@ public class AddClassroomDialog extends JDialog {
     private ReservationManager manager;
 
     /**
-     * Construtor do diálogo de adição de sala.
-     *
-     * @param parent  Janela pai (Frame) para modalidade.
-     * @param manager Gerenciador de reservas para adicionar a sala criada.
+     * Construtor do diálogo de adição de sala de aula.
+     * @param parent O frame pai.
+     * @param manager O gerenciador de reservas.
      */
     public AddClassroomDialog(Frame parent, ReservationManager manager) {
         super(parent, "Adicionar Nova Sala", true); 
@@ -37,7 +36,7 @@ public class AddClassroomDialog extends JDialog {
     }
 
     /**
-     * Inicializa os componentes gráficos do diálogo.
+     * Inicializa os componentes da UI.
      */
     private void initUI() {
         setLayout(new BorderLayout());
@@ -76,9 +75,7 @@ public class AddClassroomDialog extends JDialog {
     }
 
     /**
-     * Realiza a validação dos campos e adiciona a nova sala ao sistema.
-     * Exibe mensagens de erro caso algum campo obrigatório não seja preenchido.
-     * Fecha o diálogo ao adicionar com sucesso.
+     * Adiciona a nova sala de aula.
      */
     private void addClassroom() {
         String name = nameField.getText().trim();
@@ -102,6 +99,6 @@ public class AddClassroomDialog extends JDialog {
 
         manager.addClassroom(newClassroom);
         JOptionPane.showMessageDialog(this, "Sala adicionada com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
-        dispose(); // Fecha a janela após adicionar
+        dispose();
     }
 }

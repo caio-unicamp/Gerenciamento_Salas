@@ -1,20 +1,19 @@
 package model;
 
 /**
- * Representa um usuário do tipo Estudante no sistema.
- * Estudantes podem realizar reservas de salas e possuem um RA/Matrícula.
+ * Representa um usuário do tipo Estudante.
  */
 public class Student extends User {
     private String studentId;
 
     /**
-     * Construtor do estudante.
+     * Construtor para a classe Student.
      *
-     * @param username  Nome de usuário.
-     * @param password  Senha.
-     * @param name      Nome completo.
-     * @param email     Email do estudante.
-     * @param studentId RA/Matrícula do estudante.
+     * @param username O nome de usuário.
+     * @param password A senha.
+     * @param name O nome completo.
+     * @param email O email.
+     * @param studentId O ID do estudante.
      */
     public Student(String username, String password, String name, String email, String studentId) {
         super(username, password, name, email);
@@ -22,16 +21,18 @@ public class Student extends User {
     }
 
     /**
-     * Retorna o RA/Matrícula do estudante.
-     * @return RA/Matrícula.
+     * Obtém o ID do estudante.
+     *
+     * @return O ID do estudante.
      */
     public String getStudentId() {
         return studentId;
     }
 
     /**
-     * Retorna o papel do usuário.
-     * @return String "Student".
+     * Obtém a função do usuário.
+     *
+     * @return A string "Student".
      */
     @Override
     public String getRole() {
@@ -39,8 +40,9 @@ public class Student extends User {
     }
 
     /**
-     * Retorna uma representação em string do estudante.
-     * @return String representando o estudante.
+     * Retorna uma representação em string do objeto Student.
+     *
+     * @return Uma representação em string do objeto.
      */
     @Override
     public String toString() {

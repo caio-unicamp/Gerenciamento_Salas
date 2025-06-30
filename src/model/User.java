@@ -3,22 +3,20 @@ package model;
 import java.io.Serializable;
 
 /**
- * Classe abstrata que representa um usuário do sistema.
- * Pode ser estendida para diferentes tipos de usuários, como Estudante ou Administrador.
+ * Classe abstrata para um usuário.
  */
 public abstract class User implements Serializable {
     private String username;
-    protected String password; // Simplificado para o exemplo, em um sistema real usaria hash
+    protected String password;
     private String name;
     private String email;
 
     /**
-     * Construtor do usuário.
-     *
-     * @param username Nome de usuário.
-     * @param password Senha do usuário.
-     * @param name     Nome completo.
-     * @param email    Email do usuário.
+     * Construtor para um usuário.
+     * @param username O nome de usuário.
+     * @param password A senha.
+     * @param name O nome.
+     * @param email O email.
      */
     public User(String username, String password, String name, String email) {
         this.username = username;
@@ -28,54 +26,54 @@ public abstract class User implements Serializable {
     }
 
     /**
-     * Retorna o nome de usuário.
-     * @return Nome de usuário.
+     * Obtém o nome de usuário.
+     * @return O nome de usuário.
      */
     public String getUsername() {
         return username;
     }
 
     /**
-     * Retorna a senha do usuário.
-     * @return Senha.
+     * Obtém a senha.
+     * @return A senha.
      */
     public String getPassword() {
         return password;
     }
 
     /**
-     * Retorna o nome completo do usuário.
-     * @return Nome completo.
+     * Obtém o nome.
+     * @return O nome.
      */
     public String getName() {
         return name;
     }
 
     /**
-     * Retorna o email do usuário.
-     * @return Email.
+     * Obtém o email.
+     * @return O email.
      */
     public String getEmail() {
         return email;
     }
 
     /**
-     * Retorna o papel do usuário (deve ser implementado pelas subclasses).
-     * @return Papel do usuário.
+     * Obtém a função do usuário.
+     * @return A função.
      */
     public abstract String getRole();
 
     /**
-     * Altera a senha do usuário.
-     * @param newPassword Nova senha.
+     * Define a senha.
+     * @param newPassword A nova senha.
      */
     public void setPassword(String newPassword) {
         this.password = newPassword;
     }
 
     /**
-     * Autentica o usuário comparando a senha informada.
-     * @param enteredPassword Senha informada.
+     * Autentica o usuário.
+     * @param enteredPassword A senha inserida.
      * @return true se a senha estiver correta, false caso contrário.
      */
     public boolean authenticate(String enteredPassword) {
@@ -84,7 +82,7 @@ public abstract class User implements Serializable {
 
     /**
      * Retorna uma representação em string do usuário.
-     * @return String representando o usuário.
+     * @return A representação em string.
      */
     @Override
     public String toString() {
@@ -96,9 +94,9 @@ public abstract class User implements Serializable {
     }
 
     /**
-     * Compara dois usuários pelo nome de usuário (case insensitive).
-     * @param o Objeto a ser comparado.
-     * @return true se os nomes de usuário forem iguais.
+     * Verifica se dois objetos User são iguais.
+     * @param o O objeto a ser comparado.
+     * @return true se os objetos forem iguais, false caso contrário.
      */
     @Override
     public boolean equals(Object o) {
@@ -111,8 +109,8 @@ public abstract class User implements Serializable {
     }
 
     /**
-     * Retorna o hash code baseado no nome de usuário (case insensitive).
-     * @return Hash code.
+     * Retorna o código hash para o objeto.
+     * @return O código hash.
      */
     @Override
     public int hashCode() {

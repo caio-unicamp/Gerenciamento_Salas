@@ -1,11 +1,7 @@
 package model;
 
 /**
- * Enumeração dos possíveis status de uma reserva de sala.
- * - CONFIRMED: Reserva confirmada.
- * - PENDING: Reserva pendente de confirmação.
- * - CANCELLED: Reserva cancelada.
- * - REJECTED: Reserva rejeitada.
+ * Enumeração para os status de reserva.
  */
 public enum ReservationStatus {
     CONFIRMED("Confirmada"),
@@ -16,16 +12,16 @@ public enum ReservationStatus {
     private String name;
 
     /**
-     * Construtor do status da reserva.
-     * @param name Nome legível do status.
+     * Construtor para o enum ReservationStatus.
+     * @param name O nome do status.
      */
     ReservationStatus(String name){
         this.name = name;
     }
 
     /**
-     * Retorna o nome legível do status.
-     * @return Nome do status.
+     * Obtém o nome do status.
+     * @return O nome do status.
      */
     public String getName(){
         return name;

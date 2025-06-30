@@ -13,7 +13,7 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
- * Painel de administração para gerenciamento de reservas, com estilo aprimorado.
+ * Painel de administração para gerenciamento de reservas.
  */
 public class AdminReservationPanel extends JPanel {
     private ReservationManager manager;
@@ -21,6 +21,10 @@ public class AdminReservationPanel extends JPanel {
     private DefaultTableModel reservationsTableModel;
     private TableRowSorter<DefaultTableModel> sorter;
 
+    /**
+     * Construtor do painel de administração de reservas.
+     * @param manager O gerenciador de reservas.
+     */
     public AdminReservationPanel(ReservationManager manager) {
         this.manager = manager;
         setLayout(new BorderLayout(10, 10));
@@ -29,6 +33,9 @@ public class AdminReservationPanel extends JPanel {
         refreshReservationsList();
     }
 
+    /**
+     * Inicializa os componentes da interface gráfica.
+     */
     private void initComponents() {
         String[] columnNames = {"ID", "Sala", "Usuário", "Data", "Início", "Término", "Propósito", "Status", "Observações"};
         reservationsTableModel = new DefaultTableModel(columnNames, 0) {
@@ -45,7 +52,6 @@ public class AdminReservationPanel extends JPanel {
         reservationsTable.setShowVerticalLines(false);
         reservationsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-        // Sorter para a tabela
         sorter = new TableRowSorter<>(reservationsTableModel);
         reservationsTable.setRowSorter(sorter);
 
@@ -54,40 +60,38 @@ public class AdminReservationPanel extends JPanel {
         JScrollPane scrollPane = new JScrollPane(reservationsTable);
         add(scrollPane, BorderLayout.CENTER);
 
-        // Painel de botões
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
         
         JButton confirmButton = new JButton("Confirmar");
-        // confirmButton.setIcon(new FlatSVGIcon("resources/confirm.svg"));
         confirmButton.addActionListener(e -> confirmSelectedReservation());
         buttonPanel.add(confirmButton);
 
         JButton rejectButton = new JButton("Rejeitar");
-        // rejectButton.setIcon(new FlatSVGIcon("resources/reject.svg"));
         rejectButton.addActionListener(e -> rejectSelectedReservation());
         buttonPanel.add(rejectButton);
 
         JButton cancelButton = new JButton("Cancelar");
-        // cancelButton.setIcon(new FlatSVGIcon("resources/cancel.svg"));
         cancelButton.addActionListener(e -> cancelSelectedReservation());
         buttonPanel.add(cancelButton);
 
         JButton deleteButton = new JButton("Deletar");
-        // deleteButton.setIcon(new FlatSVGIcon("resources/delete.svg"));
-        deleteButton.putClientProperty("JButton.buttonType", "primary"); // Ação destrutiva
+        deleteButton.putClientProperty("JButton.buttonType", "primary");
         deleteButton.addActionListener(e -> deleteSelectedReservation());
         buttonPanel.add(deleteButton);
         
-        buttonPanel.add(Box.createHorizontalGlue()); // Empurra o botão de refresh para a direita
+        buttonPanel.add(Box.createHorizontalGlue());
 
         JButton refreshButton = new JButton("Atualizar");
-        // refreshButton.setIcon(new FlatSVGIcon("resources/refresh.svg"));
         refreshButton.addActionListener(e -> refreshReservationsList());
         buttonPanel.add(refreshButton);
 
         add(buttonPanel, BorderLayout.SOUTH);
     }
     
+    /**
+     * Oculta a coluna de ID na tabela.
+     * @param table A tabela na qual a coluna será ocultada.
+     */
     private void hideIdColumn(JTable table) {
         TableColumnModel tcm = table.getColumnModel();
         tcm.getColumn(0).setMinWidth(0);
@@ -97,6 +101,9 @@ public class AdminReservationPanel extends JPanel {
         tcm.getColumn(0).setResizable(false);
     }
 
+    /**
+     * Atualiza a lista de reservas na tabela.
+     */
     public void refreshReservationsList() {
         int selectedRow = getSelectedModelRow();
         
@@ -124,6 +131,10 @@ public class AdminReservationPanel extends JPanel {
         }
     }
     
+    /**
+     * Obtém a linha do modelo selecionada na tabela.
+     * @return O índice da linha do modelo selecionada, ou -1 se nenhuma linha estiver selecionada.
+     */
     private int getSelectedModelRow() {
         int selectedViewRow = reservationsTable.getSelectedRow();
         if (selectedViewRow != -1) {
@@ -132,6 +143,10 @@ public class AdminReservationPanel extends JPanel {
         return -1;
     }
 
+    /**
+     * Obtém a reserva selecionada na tabela.
+     * @return A reserva selecionada, ou null se nenhuma reserva for selecionada.
+     */
     private Reservation getSelectedReservation() {
         int selectedRow = getSelectedModelRow();
         if (selectedRow == -1) {
@@ -145,6 +160,9 @@ public class AdminReservationPanel extends JPanel {
                 .orElse(null);
     }
 
+    /**
+     * Confirma a reserva selecionada.
+     */
     private void confirmSelectedReservation() {
         Reservation reservationToConfirm = getSelectedReservation();
         if (reservationToConfirm == null) return;
@@ -161,6 +179,9 @@ public class AdminReservationPanel extends JPanel {
         }
     }
 
+    /**
+     * Rejeita a reserva selecionada.
+     */
     private void rejectSelectedReservation() {
         Reservation reservationToReject = getSelectedReservation();
         if (reservationToReject == null) return;
@@ -183,6 +204,9 @@ public class AdminReservationPanel extends JPanel {
         }
     }
 
+    /**
+     * Cancela a reserva selecionada.
+     */
     private void cancelSelectedReservation() {
         Reservation reservationToCancel = getSelectedReservation();
         if (reservationToCancel == null) return;
@@ -191,7 +215,7 @@ public class AdminReservationPanel extends JPanel {
         if (confirm != JOptionPane.YES_OPTION) return;
 
         String observation = JOptionPane.showInputDialog(this, "Insira a justificativa para o cancelamento:", "Cancelar Reserva", JOptionPane.QUESTION_MESSAGE);
-        if (observation == null) return; // User cancelled the input dialog
+        if (observation == null) return;
 
         try {
             manager.cancelReservation(reservationToCancel, observation);
@@ -203,6 +227,9 @@ public class AdminReservationPanel extends JPanel {
         }
     }
 
+    /**
+     * Exclui a reserva selecionada.
+     */
     private void deleteSelectedReservation() {
         Reservation reservationToDelete = getSelectedReservation();
         if (reservationToDelete == null) return;

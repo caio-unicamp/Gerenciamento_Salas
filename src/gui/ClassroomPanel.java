@@ -9,7 +9,7 @@ import java.awt.*;
 import java.util.List;
 
 /**
- * Painel para visualização das salas cadastradas no sistema.
+ * Painel para exibir as salas de aula.
  */
 public class ClassroomPanel extends JPanel {  
     private ReservationManager manager;
@@ -17,9 +17,8 @@ public class ClassroomPanel extends JPanel {
     private DefaultTableModel classroomTableModel;
 
     /**
-     * Construtor do painel de salas.
-     *
-     * @param manager Gerenciador de reservas e salas.
+     * Construtor do painel de salas de aula.
+     * @param manager O gerenciador de reservas.
      */
     public ClassroomPanel(ReservationManager manager) {
         this.manager = manager;
@@ -29,15 +28,14 @@ public class ClassroomPanel extends JPanel {
     }
 
     /**
-     * Inicializa os componentes gráficos do painel de salas.
+     * Inicializa os componentes da interface gráfica.
      */
     private void initComponents() {
-        // Configuração da tabela de salas
         String[] columnNames = {"Nome", "Capacidade", "Localização", "Projetor", "Características"};
         classroomTableModel = new DefaultTableModel(columnNames, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false; // Torna as células não editáveis
+                return false;
             }
         };
         classroomTable = new JTable(classroomTableModel);
@@ -47,10 +45,10 @@ public class ClassroomPanel extends JPanel {
     }
 
     /**
-     * Atualiza a tabela exibindo todas as salas cadastradas.
+     * Atualiza a lista de salas de aula na tabela.
      */
     public void refreshClassroomList() {
-        classroomTableModel.setRowCount(0); // Limpa a tabela
+        classroomTableModel.setRowCount(0);
         List<Classroom> classrooms = manager.getAllClassrooms();
         for (Classroom classroom : classrooms) {
             classroomTableModel.addRow(new Object[]{
@@ -64,9 +62,8 @@ public class ClassroomPanel extends JPanel {
     }
 
     /**
-     * Retorna o modelo da tabela de salas.
-     *
-     * @return DefaultTableModel utilizado pela tabela de salas.
+     * Obtém o modelo da tabela de salas de aula.
+     * @return O modelo da tabela.
      */
     public DefaultTableModel getClassroomTableModel() {
         return classroomTableModel;

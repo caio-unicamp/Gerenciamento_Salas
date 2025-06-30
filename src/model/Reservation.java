@@ -6,12 +6,11 @@ import java.time.LocalTime;
 import java.util.Objects;
 
 /**
- * Representa uma reserva de sala no sistema.
- * Contém informações sobre a sala, usuário, data, horários, propósito, status e observações.
+ * Representa uma reserva.
  */
 public class Reservation implements Serializable {
-    private static final long serialVersionUID = 1L; // Para serialização
-    private static int nextReservationId = 1; // Variável estática para IDs únicos
+    private static final long serialVersionUID = 1L;
+    private static int nextReservationId = 1;
 
     private int id;
     private Classroom classroom;
@@ -24,122 +23,117 @@ public class Reservation implements Serializable {
     private String observation;
 
     /**
-     * Construtor da reserva.
-     *
-     * @param classroom  Sala reservada.
-     * @param reservedBy Usuário que fez a reserva.
-     * @param date       Data da reserva.
-     * @param startTime  Horário de início.
-     * @param endTime    Horário de término.
-     * @param purpose    Propósito da reserva.
+     * Construtor para uma reserva.
+     * @param classroom A sala de aula.
+     * @param reservedBy O usuário que reservou.
+     * @param date A data da reserva.
+     * @param startTime A hora de início.
+     * @param endTime A hora de término.
+     * @param purpose O propósito da reserva.
      */
     public Reservation(Classroom classroom, User reservedBy, LocalDate date, LocalTime startTime, LocalTime endTime, String purpose) {
-        this.id = generateNextId(); // Utiliza método estático para ID único
+        this.id = generateNextId();
         this.classroom = classroom;
         this.reservedBy = reservedBy;
         this.date = date;
         this.startTime = startTime;
         this.endTime = endTime;
         this.purpose = purpose;
-        this.status = ReservationStatus.PENDING; // Status inicial
+        this.status = ReservationStatus.PENDING;
         this.observation = "";
     }
 
     /**
-     * Método estático para gerar IDs únicos para reservas.
-     * @return Próximo ID disponível.
+     * Gera o próximo ID de reserva.
+     * @return O próximo ID de reserva.
      */
     private static synchronized int generateNextId() {
         return nextReservationId++;
     }
 
     /**
-     * Define o próximo ID de reserva (usado ao carregar dados).
-     * @param newId Novo valor para o próximo ID.
+     * Define o próximo ID de reserva.
+     * @param newId O novo ID.
      */
     public static synchronized void setNextReservationId(int newId) {
         nextReservationId = newId;
     }
 
     /**
-     * Retorna o próximo ID de reserva a ser utilizado.
-     * @return Próximo ID.
+     * Obtém o próximo ID de reserva.
+     * @return O próximo ID de reserva.
      */
     public static synchronized int getNextId() {
         return nextReservationId;
     }
 
-    // Getters 
-
     /**
-     * Retorna o ID da reserva.
-     * @return ID da reserva.
+     * Obtém o ID da reserva.
+     * @return O ID.
      */
     public int getId() {
         return id;
     }
 
     /**
-     * Retorna a sala reservada.
-     * @return Sala.
+     * Obtém a sala de aula.
+     * @return A sala de aula.
      */
     public Classroom getClassroom() {
         return classroom;
     }
 
     /**
-     * Retorna o usuário que fez a reserva.
-     * @return Usuário.
+     * Obtém o usuário que fez a reserva.
+     * @return O usuário.
      */
     public User getReservedBy() {
         return reservedBy;
     }
 
     /**
-     * Retorna a data da reserva.
-     * @return Data.
+     * Obtém a data da reserva.
+     * @return A data.
      */
     public LocalDate getDate() {
         return date;
     }
 
     /**
-     * Retorna o horário de início da reserva.
-     * @return Horário de início.
+     * Obtém a hora de início.
+     * @return A hora de início.
      */
     public LocalTime getStartTime() {
         return startTime;
     }
 
     /**
-     * Retorna o horário de término da reserva.
-     * @return Horário de término.
+     * Obtém a hora de término.
+     * @return A hora de término.
      */
     public LocalTime getEndTime() {
         return endTime;
     }
 
     /**
-     * Retorna o propósito da reserva.
-     * @return Propósito.
+     * Obtém o propósito da reserva.
+     * @return O propósito.
      */
     public String getPurpose() {
         return purpose;
     }
 
     /**
-     * Retorna o status da reserva.
-     * @return Status.
+     * Obtém o status da reserva.
+     * @return O status.
      */
     public ReservationStatus getStatus() {
         return status;
     }
 
-    // Setters (para permitir modificações, se necessário)
-
     /**
      * Define o status da reserva.
-     * @param status Novo status.
+     * @param status O novo status.
      */
     public void setStatus(ReservationStatus status) {
         this.status = status;
@@ -147,23 +141,23 @@ public class Reservation implements Serializable {
 
     /**
      * Define a data da reserva.
-     * @param date Nova data.
+     * @param date A nova data.
      */
     public void setDate(LocalDate date) {
         this.date = date;
     }
 
     /**
-     * Define o horário de início da reserva.
-     * @param startTime Novo horário de início.
+     * Define a hora de início da reserva.
+     * @param startTime A nova hora de início.
      */
     public void setStartTime(LocalTime startTime) {
         this.startTime = startTime;
     }
 
     /**
-     * Define o horário de término da reserva.
-     * @param endTime Novo horário de término.
+     * Define a hora de término da reserva.
+     * @param endTime A nova hora de término.
      */
     public void setEndTime(LocalTime endTime) {
         this.endTime = endTime;
@@ -171,15 +165,15 @@ public class Reservation implements Serializable {
 
     /**
      * Define o propósito da reserva.
-     * @param purpose Novo propósito.
+     * @param purpose O novo propósito.
      */
     public void setPurpose(String purpose) {
         this.purpose = purpose;
     }
 
     /**
-     * Retorna a observação da reserva.
-     * @return Observação (string vazia se nula).
+     * Obtém a observação da reserva.
+     * @return A observação.
      */
     public String getObservation() {
         return observation != null ? observation : "";
@@ -187,34 +181,32 @@ public class Reservation implements Serializable {
 
     /**
      * Define a observação da reserva.
-     * @param observation Observação.
+     * @param observation A nova observação.
      */
     public void setObservation(String observation) {
         this.observation = observation;
     }
 
     /**
-     * Verifica se esta reserva se sobrepõe a outra reserva.
-     * @param other A outra reserva para verificar.
-     * @return true se houver sobreposição, false caso contrário.
+     * Verifica se esta reserva conflita com outra.
+     * @param other A outra reserva.
+     * @return true se houver conflito, false caso contrário.
      */
     public boolean conflictsWith(Reservation other) {
        if (!other.getStatus().equals(ReservationStatus.CONFIRMED)) {
-            return false; // Reservas que não estão confirmadas não causam conflito para novas reservas pendentes.
+            return false;
         }
 
         if (!this.classroom.equals(other.classroom) || !this.date.equals(other.date)) {
-            return false; // Salas ou datas diferentes, não há conflito
+            return false;
         }
 
-        // Verifica a sobreposição de horários
-        // [Este.Inicio, Este.Fim) vs [Outro.Inicio, Outro.Fim)
         return !(this.endTime.isBefore(other.startTime) || this.startTime.isAfter(other.endTime) || this.startTime.equals(other.endTime));
     }
 
     /**
      * Retorna uma representação em string da reserva.
-     * @return String representando a reserva.
+     * @return A representação em string.
      */
     @Override
     public String toString() {
@@ -232,21 +224,21 @@ public class Reservation implements Serializable {
     }
 
     /**
-     * Compara duas reservas pelo ID.
-     * @param o Objeto a ser comparado.
-     * @return true se os IDs forem iguais.
+     * Verifica se dois objetos Reservation são iguais.
+     * @param o O objeto a ser comparado.
+     * @return true se os objetos forem iguais, false caso contrário.
      */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Reservation that = (Reservation) o;
-        return id == that.id; // Duas reservas são iguais se tiverem o mesmo ID
+        return id == that.id;
     }
 
     /**
-     * Retorna o hash code baseado no ID da reserva.
-     * @return Hash code.
+     * Retorna o código hash para o objeto.
+     * @return O código hash.
      */
     @Override
     public int hashCode() {

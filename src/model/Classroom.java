@@ -6,11 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Representa uma sala de aula no sistema.
- * Contém informações como nome, capacidade, localização, presença de projetor e características adicionais.
+ * Representa uma sala de aula.
  */
 public class Classroom implements Serializable {
-    private static final long serialVersionUID = 1L; // Para serialização
+    private static final long serialVersionUID = 1L;
     private String name;
     private int capacity;
     private String location;
@@ -18,12 +17,11 @@ public class Classroom implements Serializable {
     private List<String> features; 
 
     /**
-     * Construtor principal da sala.
-     *
-     * @param name         Nome da sala.
-     * @param capacity     Capacidade máxima da sala.
-     * @param location     Localização da sala.
-     * @param hasProjector Indica se a sala possui projetor.
+     * Construtor para uma sala de aula.
+     * @param name O nome da sala.
+     * @param capacity A capacidade da sala.
+     * @param location A localização da sala.
+     * @param hasProjector Se a sala tem um projetor.
      */
     public Classroom(String name, int capacity, String location, boolean hasProjector) {
         this.name = name;
@@ -34,13 +32,12 @@ public class Classroom implements Serializable {
     }
 
     /**
-     * Construtor sobrecarregado que permite adicionar características extras.
-     *
-     * @param name         Nome da sala.
-     * @param capacity     Capacidade máxima da sala.
-     * @param location     Localização da sala.
-     * @param hasProjector Indica se a sala possui projetor.
-     * @param features     Lista de características adicionais.
+     * Construtor para uma sala de aula com características.
+     * @param name O nome da sala.
+     * @param capacity A capacidade da sala.
+     * @param location A localização da sala.
+     * @param hasProjector Se a sala tem um projetor.
+     * @param features As características da sala.
      */
     public Classroom(String name, int capacity, String location, boolean hasProjector, List<String> features) {
         this(name, capacity, location, hasProjector);
@@ -49,53 +46,49 @@ public class Classroom implements Serializable {
         }
     }
 
-    // Métodos de acesso (Getters) 
-
     /**
-     * Retorna o nome da sala.
-     * @return Nome da sala.
+     * Obtém o nome da sala.
+     * @return O nome.
      */
     public String getName() {
         return name;
     }
 
     /**
-     * Retorna a capacidade máxima da sala.
-     * @return Capacidade da sala.
+     * Obtém a capacidade da sala.
+     * @return A capacidade.
      */
     public int getCapacity() {
         return capacity;
     }
 
     /**
-     * Retorna a localização da sala.
-     * @return Localização da sala.
+     * Obtém a localização da sala.
+     * @return A localização.
      */
     public String getLocation() {
         return location;
     }
 
     /**
-     * Indica se a sala possui projetor.
-     * @return true se possui projetor, false caso contrário.
+     * Verifica se a sala tem um projetor.
+     * @return true se tiver um projetor, false caso contrário.
      */
     public boolean hasProjector() {
         return hasProjector;
     }
 
     /**
-     * Retorna uma lista das características adicionais da sala.
-     * @return Lista de características (cópia defensiva).
+     * Obtém as características da sala.
+     * @return A lista de características.
      */
     public List<String> getFeatures() {
-        return new ArrayList<>(features); // Retorna uma cópia para evitar modificação externa
+        return new ArrayList<>(features);
     }
 
-    // Métodos gerais 
-
     /**
-     * Adiciona uma característica à sala, se ainda não existir.
-     * @param feature Característica a ser adicionada.
+     * Adiciona uma característica à sala.
+     * @param feature A característica a ser adicionada.
      */
     public void addFeature(String feature) {
         if (feature != null && !feature.trim().isEmpty() && !features.contains(feature)) {
@@ -105,15 +98,15 @@ public class Classroom implements Serializable {
 
     /**
      * Remove uma característica da sala.
-     * @param feature Característica a ser removida.
+     * @param feature A característica a ser removida.
      */
     public void removeFeature(String feature) {
         features.remove(feature);
     }
 
     /**
-     * Retorna uma representação em string da sala.
-     * @return String representando a sala.
+     * Retorna uma representação em string da sala de aula.
+     * @return A representação em string.
      */
     @Override
     public String toString() {
@@ -127,21 +120,21 @@ public class Classroom implements Serializable {
     }
 
     /**
-     * Compara duas salas pelo nome.
-     * @param o Objeto a ser comparado.
-     * @return true se os nomes forem iguais.
+     * Verifica se dois objetos Classroom são iguais.
+     * @param o O objeto a ser comparado.
+     * @return true se os objetos forem iguais, false caso contrário.
      */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Classroom classroom = (Classroom) o;
-        return name.equals(classroom.name); // Salas são consideradas iguais se têm o mesmo nome
+        return name.equals(classroom.name);
     }
 
     /**
-     * Retorna o hash code baseado no nome da sala.
-     * @return Hash code.
+     * Retorna o código hash do objeto.
+     * @return O código hash.
      */
     @Override
     public int hashCode() {

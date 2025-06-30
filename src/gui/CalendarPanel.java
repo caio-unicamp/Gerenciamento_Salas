@@ -20,8 +20,7 @@ import java.util.stream.Collectors;
 import java.util.Comparator;
 
 /**
- * Painel de calendário para visualização de reservas confirmadas por dia.
- * Permite navegar entre meses e visualizar reservas do dia selecionado.
+ * Painel que exibe um calendário com as reservas.
  */
 public class CalendarPanel extends JPanel {
     private ReservationManager manager;
@@ -45,9 +44,8 @@ public class CalendarPanel extends JPanel {
     private static final Color RESERVATION_DAY_BORDER_COLOR = new Color(0, 100, 0);
 
     /**
-     * Construtor do painel de calendário.
-     *
-     * @param manager Gerenciador de reservas.
+     * Construtor do painel do calendário.
+     * @param manager O gerenciador de reservas.
      */
     public CalendarPanel(ReservationManager manager) {
         this.manager = manager;
@@ -64,7 +62,7 @@ public class CalendarPanel extends JPanel {
     }
 
     /**
-     * Inicializa os componentes gráficos do painel de calendário.
+     * Inicializa os componentes da UI.
      */
     private void initComponents() {
         JPanel monthNavPanel = new JPanel(new BorderLayout(5, 1));
@@ -96,7 +94,7 @@ public class CalendarPanel extends JPanel {
         monthNavPanel.add(nextMonthButton, BorderLayout.EAST);
         add(monthNavPanel, BorderLayout.NORTH);
 
-        calendarGridPanel = new JPanel(new GridLayout(0, 7, 5, 1)); // VGap de 20
+        calendarGridPanel = new JPanel(new GridLayout(0, 7, 5, 1));
         calendarGridPanel.setBackground(Color.WHITE);
         calendarGridPanel.setBorder(BorderFactory.createCompoundBorder(
             new EmptyBorder(1, 5, 1, 5),
@@ -129,9 +127,8 @@ public class CalendarPanel extends JPanel {
         reservationsForDayTable.getTableHeader().setFont(new Font("SansSerif", Font.BOLD, 13));
         reservationsForDayTable.getTableHeader().setBackground(new Color(220, 220, 220));
 
-        // Cria o scroll pane e define um tamanho preferencial fixo para ele
         JScrollPane reservationsScrollPane = new JScrollPane(reservationsForDayTable);
-        reservationsScrollPane.setPreferredSize(new Dimension(0, 150)); // A altura será fixa em 150 pixels
+        reservationsScrollPane.setPreferredSize(new Dimension(0, 150));
 
         reservationsPanel.add(reservationsScrollPane, BorderLayout.CENTER);
 
@@ -139,9 +136,8 @@ public class CalendarPanel extends JPanel {
     }
 
     /**
-     * Navega para o mês anterior ou seguinte no calendário.
-     *
-     * @param months Quantidade de meses a navegar (negativo para anterior, positivo para próximo).
+     * Navega para o mês anterior ou seguinte.
+     * @param months O número de meses a navegar.
      */
     private void navigateMonth(int months) {
         currentMonth = currentMonth.plusMonths(months);
@@ -155,8 +151,7 @@ public class CalendarPanel extends JPanel {
     }
 
     /**
-     * Atualiza a grade do calendário exibindo os dias do mês atual.
-     * Destaca o dia selecionado, o dia atual e dias com reservas confirmadas.
+     * Atualiza o calendário.
      */
     private void updateCalendar() {
         calendarGridPanel.removeAll();
@@ -188,7 +183,7 @@ public class CalendarPanel extends JPanel {
         for (int day = 1; day <= currentMonth.lengthOfMonth(); day++) {
             LocalDate date = currentMonth.atDay(day);
             JButton dayButton = new JButton(String.valueOf(day));
-            dayButton.setFont(new Font("SansSerif", Font.BOLD, 18)); // Fonte aumentada
+            dayButton.setFont(new Font("SansSerif", Font.BOLD, 18));
             dayButton.setFocusPainted(false);
             dayButton.setBackground(Color.WHITE);
             dayButton.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
@@ -209,11 +204,10 @@ public class CalendarPanel extends JPanel {
 
             if (hasConfirmedReservations) {
                 dayButton.setBorder(BorderFactory.createCompoundBorder(
-                    new LineBorder(RESERVATION_DAY_BORDER_COLOR, 2), // Borda mais visível
+                    new LineBorder(RESERVATION_DAY_BORDER_COLOR, 2),
                     dayButton.getBorder()
                 ));
 
-                // Adiciona um tooltip com a lista de salas reservadas
                 String tooltipText = manager.getAllReservations().stream()
                     .filter(r -> r.getStatus().equals(ReservationStatus.CONFIRMED) && r.getDate().equals(date))
                     .map(r -> r.getClassroom().getName())
@@ -236,7 +230,7 @@ public class CalendarPanel extends JPanel {
     }
 
     /**
-     * Exibe na tabela as reservas confirmadas para o dia selecionado.
+     * Exibe as reservas para o dia selecionado.
      */
     private void displayReservationsForSelectedDay() {
         reservationsForDayTableModel.setRowCount(0);
@@ -262,7 +256,7 @@ public class CalendarPanel extends JPanel {
     }
 
     /**
-     * Atualiza o calendário e a tabela de reservas do dia selecionado.
+     * Atualiza o calendário e as reservas.
      */
     public void refreshCalendarAndReservations() {
         updateCalendar();

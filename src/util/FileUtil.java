@@ -7,21 +7,21 @@ import java.nio.file.Paths;
 import java.util.List;
 
 /**
- * Classe utilitária para operações de arquivo (leitura e gravação) de listas de objetos serializáveis.
+ * Classe utilitária para operações de arquivo.
  */
 public class FileUtil {
 
     /**
-     * Escreve uma lista de objetos serializáveis em um arquivo.
+     * Grava uma lista de objetos em um arquivo.
      *
-     * @param objects  Lista de objetos a serem gravados.
-     * @param filename Caminho do arquivo de destino.
-     * @param <T>      Tipo dos objetos (deve implementar Serializable).
-     * @throws IOException Se ocorrer erro de escrita.
+     * @param objects A lista de objetos a ser gravada.
+     * @param filename O nome do arquivo.
+     * @param <T> O tipo dos objetos na lista.
+     * @throws IOException Se ocorrer um erro de I/O.
      */
     public static <T extends Serializable> void writeObjectToFile(List<T> objects, String filename) throws IOException {
         Path filePath = Paths.get(filename);
-        Files.createDirectories(filePath.getParent()); // Garante que o diretório exista
+        Files.createDirectories(filePath.getParent());
 
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filename))) {
             oos.writeObject(objects);
@@ -29,18 +29,18 @@ public class FileUtil {
     }
 
     /**
-     * Lê uma lista de objetos serializáveis de um arquivo.
+     * Lê uma lista de objetos de um arquivo.
      *
-     * @param filename Caminho do arquivo de origem.
-     * @param <T>      Tipo dos objetos (deve implementar Serializable).
-     * @return Lista de objetos lidos ou null se o arquivo não existir ou estiver vazio.
-     * @throws IOException            Se ocorrer erro de leitura.
-     * @throws ClassNotFoundException Se a classe dos objetos não for encontrada.
+     * @param filename O nome do arquivo.
+     * @param <T> O tipo dos objetos na lista.
+     * @return A lista de objetos lida do arquivo.
+     * @throws IOException Se ocorrer um erro de I/O.
+     * @throws ClassNotFoundException Se a classe do objeto não for encontrada.
      */
-    @SuppressWarnings("unchecked") // Supressão para o cast de Object para List<T>
+    @SuppressWarnings("unchecked")
     public static <T extends Serializable> List<T> readObjectFromFile(String filename) throws IOException, ClassNotFoundException {
         File file = new File(filename);
-        if (!file.exists() || file.length() == 0) { // Verifica se o arquivo existe e não está vazio
+        if (!file.exists() || file.length() == 0) {
             return null;
         }
 

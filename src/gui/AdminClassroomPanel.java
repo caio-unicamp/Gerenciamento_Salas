@@ -9,7 +9,7 @@ import java.awt.*;
 import java.util.List;
 
 /**
- * Painel de administração para gerenciamento de salas de aula.
+ * Painel de administração para salas de aula.
  */
 public class AdminClassroomPanel extends JPanel {
     protected ReservationManager manager;
@@ -19,6 +19,11 @@ public class AdminClassroomPanel extends JPanel {
     private JButton removeButton;
     private Frame mainFrame;
 
+    /**
+     * Construtor para o painel de administração de salas de aula.
+     * @param mainFrame O frame principal.
+     * @param manager O gerenciador de reservas.
+     */
     public AdminClassroomPanel(Frame mainFrame, ReservationManager manager) {
         this.manager = manager;
         this.mainFrame = mainFrame;
@@ -27,6 +32,9 @@ public class AdminClassroomPanel extends JPanel {
         refreshClassroomList();
     }
 
+    /**
+     * Atualiza a lista de salas de aula.
+     */
     public void refreshClassroomList() {
         classroomTableModel.setRowCount(0);
         List<Classroom> classrooms = manager.getAllClassrooms();
@@ -38,15 +46,19 @@ public class AdminClassroomPanel extends JPanel {
         }
     }
     
-    // Método que será sobrescrito pela classe aninhada em MainFrame
+    /**
+     * Chamado quando os dados são alterados.
+     */
     protected void onDataChanged() {
-        // Atualiza os painéis na MainFrame (implementação padrão, pode ser sobrescrita)
         if (SwingUtilities.getWindowAncestor(this) instanceof MainFrame) {
             ((MainFrame) SwingUtilities.getWindowAncestor(this)).revalidate();
             ((MainFrame) SwingUtilities.getWindowAncestor(this)).repaint();
         }
     }
 
+    /**
+     * Inicializa os componentes da UI.
+     */
     private void initComponents() {
         String[] columnNames = {"Nome", "Capacidade", "Localização", "Projetor", "Características"};
         classroomTableModel = new DefaultTableModel(columnNames, 0) {
@@ -69,13 +81,18 @@ public class AdminClassroomPanel extends JPanel {
         add(buttonPanel, BorderLayout.NORTH);
     }
 
+    /**
+     * Abre o diálogo para adicionar uma nova sala de aula.
+     */
     private void addSelectedClassroom() {
         AddClassroomDialog dialog = new AddClassroomDialog(mainFrame, manager);
         dialog.setVisible(true);
-        // Após adicionar, notificamos que os dados mudaram
         onDataChanged();
     }
 
+    /**
+     * Remove a sala de aula selecionada.
+     */
     private void removeSelectedClassroom() {
         int selectedRow = classroomTable.getSelectedRow();
         if (selectedRow == -1) {
@@ -92,7 +109,6 @@ public class AdminClassroomPanel extends JPanel {
                 try {
                     manager.removeClassroom(classroomToRemove);
                     JOptionPane.showMessageDialog(this, "Sala removida com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
-                    // Após remover, notificamos que os dados mudaram
                     onDataChanged();
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(this, "Ocorreu um erro: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);

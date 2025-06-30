@@ -12,19 +12,19 @@ import java.awt.*;
 import java.net.URL;
 
 /**
- * A janela principal (JFrame) única da aplicação.
- * Gerencia a exibição do painel de login e do painel principal do sistema.
- * Implementa LoginListener para saber quando trocar de painel.
+ * O frame principal da aplicação.
  */
 public class MainFrame extends JFrame implements LoginListener {
     private ReservationManager manager;
-    private JPanel mainPanel; // Painel principal que troca de conteúdo
-    private JTabbedPane tabbedPane; // Manter referência ao painel de abas
+    private JPanel mainPanel;
+    private JTabbedPane tabbedPane;
 
+    /**
+     * Construtor do MainFrame.
+     */
     public MainFrame() {
         this.manager = new ReservationManager();
 
-        // Adiciona dados de teste iniciais se os arquivos estiverem vazios.
         initializeDefaultData();
 
         setTitle("Sistema de Gerenciamento de Salas");
@@ -39,6 +39,9 @@ public class MainFrame extends JFrame implements LoginListener {
         showLoginPanel();
     }
 
+    /**
+     * Inicializa os dados padrão.
+     */
     private void initializeDefaultData() {
         try {
             if (manager.getAllClassrooms().isEmpty()) {
@@ -58,8 +61,10 @@ public class MainFrame extends JFrame implements LoginListener {
         }
     }
 
+    /**
+     * Define o ícone da aplicação.
+     */
     private void setIcon() {
-        // O caminho para o recurso deve ser absoluto a partir da raiz do classpath.
         URL iconURL = getClass().getResource("/resources/icon.png");
         if (iconURL != null) {
             setIconImage(new ImageIcon(iconURL).getImage());
@@ -68,15 +73,21 @@ public class MainFrame extends JFrame implements LoginListener {
         }
     }
 
+    /**
+     * Chamado quando o login é bem-sucedido.
+     * @param loggedInUser O usuário que fez login.
+     */
     @Override
     public void onLoginSuccess(User loggedInUser) {
         showMainApplicationPanel(loggedInUser);
     }
 
+    /**
+     * Mostra o painel de login.
+     */
     private void showLoginPanel() {
         setTitle("Sistema de Gerenciamento de Salas - Login");
         
-        // --- [NOVO] Reseta o tamanho mínimo para permitir que a janela encolha ---
         setMinimumSize(null);
 
         mainPanel.removeAll();
@@ -84,34 +95,40 @@ public class MainFrame extends JFrame implements LoginListener {
         mainPanel.add(loginPanel, BorderLayout.CENTER);
         loginPanel.clearFields();
 
-        pack(); // Ajusta o tamanho da janela ao conteúdo do painel de login
-        setLocationRelativeTo(null); // Centraliza a janela novamente
+        pack();
+        setLocationRelativeTo(null);
         revalidate();
         repaint();
     }
 
+    /**
+     * Mostra o painel principal da aplicação.
+     * @param loggedInUser O usuário que fez login.
+     */
     private void showMainApplicationPanel(User loggedInUser) {
         setTitle("Sistema de Gerenciamento de Salas");
         mainPanel.removeAll();
         JPanel appContentPanel = createAppPanel(loggedInUser);
         mainPanel.add(appContentPanel, BorderLayout.CENTER);
 
-        // Redimensiona para o tamanho ideal da aplicação principal
         setSize(1200, 800);
         
-        // --- [NOVO] Define o tamanho mínimo para a janela ---
         setMinimumSize(new Dimension(900, 600));
 
-        setLocationRelativeTo(null); // Centraliza a janela novamente
+        setLocationRelativeTo(null);
         revalidate();
         repaint();
     }
 
+    /**
+     * Cria o painel da aplicação.
+     * @param loggedInUser O usuário que fez login.
+     * @return O painel da aplicação.
+     */
     private JPanel createAppPanel(User loggedInUser) {
         JPanel panel = new JPanel(new BorderLayout(0, 10));
         panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // Painel superior com boas-vindas e logout
         JPanel topPanel = new JPanel(new BorderLayout());
         topPanel.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
         JLabel welcomeLabel = new JLabel("Bem-vindo(a), " + loggedInUser.getName() + " (" + loggedInUser.getRole() + ")", SwingConstants.LEFT);
@@ -119,23 +136,17 @@ public class MainFrame extends JFrame implements LoginListener {
         topPanel.add(welcomeLabel, BorderLayout.CENTER);
 
         JButton logoutButton = new JButton("Logout");
-        // Adicionar ícone ao botão de logout
-        // logoutButton.setIcon(new FlatSVGIcon("resources/logout.svg"));
         logoutButton.addActionListener(e -> performLogout());
         topPanel.add(logoutButton, BorderLayout.EAST);
 
         panel.add(topPanel, BorderLayout.NORTH);
 
-        // Painel de Abas
         this.tabbedPane = new JTabbedPane();
 
-        // Instancia e adiciona os painéis das abas
         ClassroomPanel classroomPanel = new ClassroomPanel(manager);
         ReservationPanel reservationPanel = new ReservationPanel(manager, loggedInUser);
         CalendarPanel calendarPanel = new CalendarPanel(manager);
 
-        // Adicionar ícones às abas
-        // tabbedPane.addTab("Salas", new FlatSVGIcon("resources/classroom.svg"), classroomPanel);
         tabbedPane.addTab("Salas de Aula", classroomPanel);
         tabbedPane.addTab("Minhas Reservas", reservationPanel);
         tabbedPane.addTab("Calendário", calendarPanel);
@@ -153,6 +164,9 @@ public class MainFrame extends JFrame implements LoginListener {
         return panel;
     }
 
+    /**
+     * Realiza o logout do usuário.
+     */
     private void performLogout() {
         int confirm = JOptionPane.showConfirmDialog(this,
                 "Tem certeza que deseja fazer logout?", "Confirmar Logout",
@@ -163,6 +177,9 @@ public class MainFrame extends JFrame implements LoginListener {
         }
     }
 
+    /**
+     * Atualiza todos os painéis.
+     */
     private void refreshAllPanels() {
         if (this.tabbedPane == null) return;
 
@@ -176,18 +193,28 @@ public class MainFrame extends JFrame implements LoginListener {
         System.out.println("Painéis atualizados via callback.");
     }
 
-    // Classe aninhada para passar o callback de atualização
+    /**
+     * Painel de administração de salas de aula.
+     */
     public class AdminClassroomPanel extends gui.AdminClassroomPanel {
         private Runnable refreshCallback;
 
+        /**
+         * Construtor do painel de administração de salas de aula.
+         * @param mainFrame O frame principal.
+         * @param manager O gerenciador de reservas.
+         * @param refreshCallback O callback de atualização.
+         */
         public AdminClassroomPanel(Frame mainFrame, ReservationManager manager, Runnable refreshCallback) {
             super(mainFrame, manager);
             this.refreshCallback = refreshCallback;
         }
 
+        /**
+         * Chamado quando os dados são alterados.
+         */
         @Override
         protected void onDataChanged() {
-            // Em vez de repintar o frame inteiro, chama o callback para atualizar todos os painéis
             if (refreshCallback != null) {
                 refreshCallback.run();
             }

@@ -14,28 +14,26 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
- * Diálogo para criação de nova conta de usuário.
- * Permite registrar estudantes ou administradores no sistema.
+ * Diálogo para registro de um novo usuário.
  */
 public class RegisterDialog extends JDialog {
     private JTextField usernameField;
     private JPasswordField passwordField;
     private JTextField fullNameField;
     private JTextField emailField;
-    private JTextField raField; // Para estudantes
+    private JTextField raField;
     private JComboBox<String> userTypeComboBox;
     private JButton registerButton;
 
     private ReservationManager manager;
 
     /**
-     * Construtor do diálogo de registro de usuário.
-     *
-     * @param parent  Janela pai (LoginDialog) para modalidade.
-     * @param manager Gerenciador de reservas para adicionar o novo usuário.
+     * Construtor do diálogo de registro.
+     * @param parent O frame pai.
+     * @param manager O gerenciador de reservas.
      */
     public RegisterDialog(Frame parent, ReservationManager manager) {
-        super(parent, "Criar Nova Conta", true); // Agora 'parent' é um Frame, o que é válido
+        super(parent, "Criar Nova Conta", true);
         this.manager = manager;
 
         setLayout(new GridLayout(5, 2, 10, 10));
@@ -45,7 +43,7 @@ public class RegisterDialog extends JDialog {
     }
 
     /**
-     * Inicializa os componentes gráficos do diálogo de registro.
+     * Inicializa os componentes da UI.
      */
     private void initUI() {
         setLayout(new BorderLayout());
@@ -57,7 +55,6 @@ public class RegisterDialog extends JDialog {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.anchor = GridBagConstraints.WEST;
 
-        // Linha 0: Tipo de Usuário
         gbc.gridx = 0;
         gbc.gridy = 0;
         formPanel.add(new JLabel("Tipo de Usuário:"), gbc);
@@ -71,7 +68,6 @@ public class RegisterDialog extends JDialog {
         });
         formPanel.add(userTypeComboBox, gbc);
 
-        // Linha 1: Usuário
         gbc.gridx = 0;
         gbc.gridy = 1;
         formPanel.add(new JLabel("Nome de Usuário:"), gbc);
@@ -79,7 +75,6 @@ public class RegisterDialog extends JDialog {
         usernameField = new JTextField(20);
         formPanel.add(usernameField, gbc);
 
-        // Linha 2: Senha
         gbc.gridx = 0;
         gbc.gridy = 2;
         formPanel.add(new JLabel("Senha:"), gbc);
@@ -87,7 +82,6 @@ public class RegisterDialog extends JDialog {
         passwordField = new JPasswordField(20);
         formPanel.add(passwordField, gbc);
 
-        // Linha 3: Nome Completo
         gbc.gridx = 0;
         gbc.gridy = 3;
         formPanel.add(new JLabel("Nome Completo:"), gbc);
@@ -95,7 +89,6 @@ public class RegisterDialog extends JDialog {
         fullNameField = new JTextField(20);
         formPanel.add(fullNameField, gbc);
 
-        // Linha 4: Email
         gbc.gridx = 0;
         gbc.gridy = 4;
         formPanel.add(new JLabel("Email:"), gbc);
@@ -103,7 +96,6 @@ public class RegisterDialog extends JDialog {
         emailField = new JTextField(20);
         formPanel.add(emailField, gbc);
 
-        // Linha 5: RA (apenas para estudante)
         gbc.gridx = 0;
         gbc.gridy = 5;
         JLabel raLabel = new JLabel("RA/Matrícula:");
@@ -112,7 +104,6 @@ public class RegisterDialog extends JDialog {
         raField = new JTextField(20);
         formPanel.add(raField, gbc);
 
-        // Botão de Registro
         registerButton = new JButton("Registrar");
         getRootPane().setDefaultButton(registerButton);
         registerButton.addActionListener(e -> performRegistration());
@@ -123,32 +114,29 @@ public class RegisterDialog extends JDialog {
         add(formPanel, BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);
 
-        // Inicializa a visibilidade dos campos com base na seleção inicial
         updateFieldsVisibility();
     }
 
     /**
-     * Atualiza a visibilidade do campo RA/Matrícula de acordo com o tipo de usuário selecionado.
+     * Atualiza a visibilidade dos campos.
      */
     private void updateFieldsVisibility() {
         String selectedType = (String) userTypeComboBox.getSelectedItem();
         boolean isStudent = "Estudante".equals(selectedType);
 
         raField.setVisible(isStudent);
-        // Oculta/mostra o label correspondente
         for (Component comp : raField.getParent().getComponents()) {
             if (comp instanceof JLabel && ((JLabel) comp).getText().equals("RA/Matrícula:")) {
                 comp.setVisible(isStudent);
                 break;
             }
         }
-        pack(); // Ajusta o tamanho do diálogo após mudar a visibilidade
+        pack();
     }
 
     /**
-     * Valida os campos obrigatórios do formulário de registro.
-     *
-     * @return true se todos os campos obrigatórios estiverem preenchidos, false caso contrário.
+     * Valida os campos do formulário.
+     * @return true se os campos forem válidos, false caso contrário.
      */
     private boolean validateFields() {
         String username = usernameField.getText().trim();
@@ -172,8 +160,7 @@ public class RegisterDialog extends JDialog {
     }
 
     /**
-     * Realiza o registro do novo usuário após validação dos campos.
-     * Exibe mensagens de erro em caso de conflito ou falha inesperada.
+     * Realiza o registro do usuário.
      */
     private void performRegistration() {
         if (!validateFields()) return;
@@ -193,7 +180,7 @@ public class RegisterDialog extends JDialog {
                 newUser = new Administrator(username, password, fullName, email);
             }
 
-            manager.addUser(newUser); // Lança UserConflictException se já existir
+            manager.addUser(newUser);
             JOptionPane.showMessageDialog(this, "Usuário " + username + " registrado com sucesso!", "Registro Concluído", JOptionPane.INFORMATION_MESSAGE);
             dispose();
         } catch (UserConflictException ex) {

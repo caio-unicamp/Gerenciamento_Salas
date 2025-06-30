@@ -17,8 +17,7 @@ import java.time.format.DateTimeParseException;
 import java.util.List;
 
 /**
- * Painel para visualização e gerenciamento das reservas do usuário logado.
- * Permite criar novas reservas e cancelar reservas existentes.
+ * Painel para o usuário gerenciar suas reservas.
  */
 public class ReservationPanel extends JPanel { 
     private ReservationManager manager;
@@ -30,10 +29,9 @@ public class ReservationPanel extends JPanel {
     private JButton cancelReservationButton;
 
     /**
-     * Construtor do painel de reservas.
-     *
-     * @param manager Gerenciador de reservas.
-     * @param loggedInUser Usuário atualmente logado.
+     * Construtor para o painel de reservas.
+     * @param manager O gerenciador de reservas.
+     * @param loggedInUser O usuário logado.
      */
     public ReservationPanel(ReservationManager manager, User loggedInUser) {
         this.manager = manager;
@@ -44,32 +42,30 @@ public class ReservationPanel extends JPanel {
     }
 
     /**
-     * Inicializa os componentes gráficos do painel de reservas.
+     * Inicializa os componentes da UI.
      */
     private void initComponents() {
-        // Tabela de reservas
         String[] columnNames = { "ID", "Sala", "Data", "Início", "Término", "Propósito", "Status", "Observações" };
         reservationTableModel = new DefaultTableModel(columnNames, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false; // Torna as células não editáveis
+                return false;
             }
         };
         reservationTable = new JTable(reservationTableModel);
         reservationTable.setFillsViewportHeight(true);
 
-        reservationTable.setAutoCreateColumnsFromModel(true); // Garante que a tabela use o modelo de colunas
+        reservationTable.setAutoCreateColumnsFromModel(true);
         TableColumnModel tcm = reservationTable.getColumnModel();
         tcm.getColumn(0).setMinWidth(0);
         tcm.getColumn(0).setMaxWidth(0);
         tcm.getColumn(0).setWidth(0);
         tcm.getColumn(0).setPreferredWidth(0);
-        tcm.getColumn(0).setResizable(false); // Impede que o usuário redimensione para ver
+        tcm.getColumn(0).setResizable(false);
 
         JScrollPane scrollPane = new JScrollPane(reservationTable);
         add(scrollPane, BorderLayout.CENTER);
 
-        // Painel de botões
         JPanel buttonPanel = new JPanel();
         newReservationButton = new JButton("Nova Reserva");
         newReservationButton.addActionListener(e -> openNewReservationDialog());
@@ -83,11 +79,11 @@ public class ReservationPanel extends JPanel {
     }
 
     /**
-     * Atualiza a tabela exibindo todas as reservas do usuário logado.
+     * Atualiza a lista de reservas.
      */
     public void refreshReservationList() {
-        reservationTableModel.setRowCount(0); // Limpa a tabela
-        List<Reservation> reservations = manager.getReservationsByUser(loggedInUser); // Exibe apenas as reservas do usuário logado
+        reservationTableModel.setRowCount(0);
+        List<Reservation> reservations = manager.getReservationsByUser(loggedInUser);
         for (Reservation reservation : reservations) {
             reservationTableModel.addRow(new Object[] {
                     reservation.getId(),
@@ -103,20 +99,17 @@ public class ReservationPanel extends JPanel {
     }
 
     /**
-     * Abre o diálogo para criação de uma nova reserva.
-     * Realiza validações e trata conflitos de reserva.
+     * Abre o diálogo para uma nova reserva.
      */
     private void openNewReservationDialog() {
         JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Nova Reserva", true);
-        // [NOVO] Usaremos um painel principal com BorderLayout para melhor controle
         JPanel mainPanel = new JPanel(new BorderLayout(10, 10)); 
         dialog.setContentPane(mainPanel);
 
-        // [NOVO] Painel para o formulário com a borda e layout
         JPanel formPanel = new JPanel(new GridLayout(0, 2, 10, 10));
         formPanel.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createTitledBorder("Detalhes da Reserva"),
-            BorderFactory.createEmptyBorder(10, 10, 10, 10) // Espaçamento interno
+            BorderFactory.createEmptyBorder(10, 10, 10, 10)
         ));
 
         dialog.setLocationRelativeTo(this);
@@ -134,10 +127,8 @@ public class ReservationPanel extends JPanel {
             dialog.dispose();
             return;
         }
-        
         classroomComboBox.setSelectedIndex(0);
 
-        // Adiciona os componentes ao formPanel
         formPanel.add(new JLabel("Sala:"));
         formPanel.add(classroomComboBox);
         formPanel.add(new JLabel("Data (AAAA-MM-DD):"));
@@ -149,58 +140,20 @@ public class ReservationPanel extends JPanel {
         formPanel.add(new JLabel("Propósito:"));
         formPanel.add(purposeField);
         
-        // Adiciona o formPanel ao centro do painel principal
         mainPanel.add(formPanel, BorderLayout.CENTER);
 
         JButton confirmButton = new JButton("Confirmar Reserva");
-        getRootPane().setDefaultButton(confirmButton);
-        confirmButton.addActionListener(e -> {
-            try {
-                Classroom selectedClassroom = (Classroom) manager.getAllClassrooms()
-                        .get(classroomComboBox.getSelectedIndex());
-                LocalDate date = LocalDate.parse(dateField.getText());
-                LocalTime startTime = LocalTime.parse(startTimeField.getText());
-                LocalTime endTime = LocalTime.parse(endTimeField.getText());
-                String purpose = purposeField.getText();
 
-                if (selectedClassroom == null) {
-                    throw new IllegalArgumentException("Selecione uma sala.");
-                }
-
-                manager.makeReservation(selectedClassroom, loggedInUser, date, startTime, endTime, purpose);
-                JOptionPane.showMessageDialog(dialog, "Reserva realizada com sucesso!", "Sucesso",
-                        JOptionPane.INFORMATION_MESSAGE);
-                refreshReservationList(); // Atualiza a tabela de reservas
-                dialog.dispose();
-
-            } catch (DateTimeParseException ex) {
-                JOptionPane.showMessageDialog(dialog, "Formato de data ou hora inválido. Use AAAA-MM-DD e HH:MM.",
-                        "Erro de Formato", JOptionPane.ERROR_MESSAGE);
-            } catch (IllegalArgumentException ex) {
-                JOptionPane.showMessageDialog(dialog, "Erro: " + ex.getMessage(), "Erro de Entrada",
-                        JOptionPane.ERROR_MESSAGE);
-            } catch (ReservationConflictException ex) { // Trata a exceção personalizada
-                JOptionPane.showMessageDialog(dialog, ex.getMessage(), "Conflito de Reserva",
-                        JOptionPane.WARNING_MESSAGE);
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(dialog, "Ocorreu um erro inesperado: " + ex.getMessage(), "Erro",
-                        JOptionPane.ERROR_MESSAGE);
-                ex.printStackTrace();
-            }
-        });
-
-        // [NOVO] Painel para o botão, para centralizá-lo
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(confirmButton);
-        mainPanel.add(buttonPanel, BorderLayout.SOUTH); // Adiciona o painel do botão ao sul
+        mainPanel.add(buttonPanel, BorderLayout.SOUTH);
 
         dialog.pack();
         dialog.setVisible(true);
     }
 
     /**
-     * Cancela a reserva selecionada pelo usuário, após confirmação.
-     * Exibe mensagens de erro caso não haja seleção ou ocorra algum problema.
+     * Cancela a reserva selecionada.
      */
     private void cancelSelectedReservation() {
         int selectedRow = reservationTable.getSelectedRow();
@@ -214,7 +167,6 @@ public class ReservationPanel extends JPanel {
                 "Confirmar Cancelamento", JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
             int reservationId = (int) reservationTableModel.getValueAt(selectedRow, 0);
-            // Encontrar a reserva correta pelo ID (ou por objeto, se tiver uma referência)
             Reservation reservationToCancel = manager.getAllReservations().stream()
                     .filter(r -> r.getId() == reservationId)
                     .findFirst()

@@ -1,27 +1,26 @@
 package model;
 
 /**
- * Representa um usuário do tipo Administrador no sistema.
- * Administradores podem gerenciar detalhes de salas e possuem permissões especiais.
+ * Representa um usuário Administrador.
  */
 public class Administrator extends User {
 
     /**
-     * Construtor do administrador.
+     * Construtor para a classe Administrator.
      *
-     * @param username Nome de usuário.
-     * @param password Senha.
-     * @param name     Nome completo.
-     * @param email    Email do administrador.
+     * @param username O nome de usuário.
+     * @param password A senha.
+     * @param name O nome completo.
+     * @param email O email.
      */
     public Administrator(String username, String password, String name, String email) {
         super(username, password, name, email);
     }
 
     /**
-     * Retorna o papel do usuário.
+     * Obtém a função do usuário.
      *
-     * @return String "Administrator".
+     * @return A string "Administrator".
      */
     @Override
     public String getRole() {
@@ -29,9 +28,9 @@ public class Administrator extends User {
     }
 
     /**
-     * Retorna uma representação em string do administrador.
+     * Retorna uma representação em string do objeto Administrator.
      *
-     * @return String representando o administrador.
+     * @return Uma representação em string do objeto.
      */
     @Override
     public String toString() {
