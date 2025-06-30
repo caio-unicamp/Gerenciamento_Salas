@@ -6,7 +6,7 @@ import model.Reservation;
 import model.User;
 import exception.ReservationConflictException;
 
-import javax.swing.*; 
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 
@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * Painel para o usuário gerenciar suas reservas.
  */
-public class ReservationPanel extends JPanel { 
+public class ReservationPanel extends JPanel {
     private ReservationManager manager;
     private User loggedInUser;
 
@@ -27,15 +27,18 @@ public class ReservationPanel extends JPanel {
     private DefaultTableModel reservationTableModel;
     private JButton newReservationButton;
     private JButton cancelReservationButton;
+    private Runnable onReservationMadeCallback;
 
     /**
      * Construtor para o painel de reservas.
      * @param manager O gerenciador de reservas.
      * @param loggedInUser O usuário logado.
+     * @param onReservationMadeCallback O callback a ser executado quando uma reserva for feita.
      */
-    public ReservationPanel(ReservationManager manager, User loggedInUser) {
+    public ReservationPanel(ReservationManager manager, User loggedInUser, Runnable onReservationMadeCallback) {
         this.manager = manager;
         this.loggedInUser = loggedInUser;
+        this.onReservationMadeCallback = onReservationMadeCallback;
         setLayout(new BorderLayout());
         initComponents();
         refreshReservationList();
@@ -103,7 +106,7 @@ public class ReservationPanel extends JPanel {
      */
     private void openNewReservationDialog() {
         JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Nova Reserva", true);
-        JPanel mainPanel = new JPanel(new BorderLayout(10, 10)); 
+        JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
         dialog.setContentPane(mainPanel);
 
         JPanel formPanel = new JPanel(new GridLayout(0, 2, 10, 10));
@@ -162,7 +165,10 @@ public class ReservationPanel extends JPanel {
                 manager.makeReservation(selectedClassroom, loggedInUser, date, startTime, endTime, purpose);
                 JOptionPane.showMessageDialog(dialog, "Reserva realizada com sucesso!", "Sucesso",
                         JOptionPane.INFORMATION_MESSAGE);
-                refreshReservationList(); // Atualiza a tabela de reservas
+                refreshReservationList();
+                if (onReservationMadeCallback != null) {
+                    onReservationMadeCallback.run();
+                }
                 dialog.dispose();
 
             } catch (DateTimeParseException ex) {
@@ -213,6 +219,9 @@ public class ReservationPanel extends JPanel {
                 JOptionPane.showMessageDialog(this, "Reserva cancelada com sucesso!", "Sucesso",
                         JOptionPane.INFORMATION_MESSAGE);
                 refreshReservationList();
+                if (onReservationMadeCallback != null) {
+                    onReservationMadeCallback.run();
+                }
            
             } else {
                 JOptionPane.showMessageDialog(this, "Erro ao encontrar a reserva para cancelar.", "Erro",

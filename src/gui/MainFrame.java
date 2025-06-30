@@ -144,7 +144,7 @@ public class MainFrame extends JFrame implements LoginListener {
         this.tabbedPane = new JTabbedPane();
 
         ClassroomPanel classroomPanel = new ClassroomPanel(manager);
-        ReservationPanel reservationPanel = new ReservationPanel(manager, loggedInUser);
+        ReservationPanel reservationPanel = new ReservationPanel(manager, loggedInUser, this::refreshAllPanels);
         CalendarPanel calendarPanel = new CalendarPanel(manager);
 
         tabbedPane.addTab("Salas de Aula", classroomPanel);
