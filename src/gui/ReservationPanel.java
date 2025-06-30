@@ -134,6 +134,7 @@ public class ReservationPanel extends JPanel {
             dialog.dispose();
             return;
         }
+        
         classroomComboBox.setSelectedIndex(0);
 
         // Adiciona os componentes ao formPanel
@@ -152,7 +153,41 @@ public class ReservationPanel extends JPanel {
         mainPanel.add(formPanel, BorderLayout.CENTER);
 
         JButton confirmButton = new JButton("Confirmar Reserva");
-        // ... (lógica do botão continua a mesma)
+        getRootPane().setDefaultButton(confirmButton);
+        confirmButton.addActionListener(e -> {
+            try {
+                Classroom selectedClassroom = (Classroom) manager.getAllClassrooms()
+                        .get(classroomComboBox.getSelectedIndex());
+                LocalDate date = LocalDate.parse(dateField.getText());
+                LocalTime startTime = LocalTime.parse(startTimeField.getText());
+                LocalTime endTime = LocalTime.parse(endTimeField.getText());
+                String purpose = purposeField.getText();
+
+                if (selectedClassroom == null) {
+                    throw new IllegalArgumentException("Selecione uma sala.");
+                }
+
+                manager.makeReservation(selectedClassroom, loggedInUser, date, startTime, endTime, purpose);
+                JOptionPane.showMessageDialog(dialog, "Reserva realizada com sucesso!", "Sucesso",
+                        JOptionPane.INFORMATION_MESSAGE);
+                refreshReservationList(); // Atualiza a tabela de reservas
+                dialog.dispose();
+
+            } catch (DateTimeParseException ex) {
+                JOptionPane.showMessageDialog(dialog, "Formato de data ou hora inválido. Use AAAA-MM-DD e HH:MM.",
+                        "Erro de Formato", JOptionPane.ERROR_MESSAGE);
+            } catch (IllegalArgumentException ex) {
+                JOptionPane.showMessageDialog(dialog, "Erro: " + ex.getMessage(), "Erro de Entrada",
+                        JOptionPane.ERROR_MESSAGE);
+            } catch (ReservationConflictException ex) { // Trata a exceção personalizada
+                JOptionPane.showMessageDialog(dialog, ex.getMessage(), "Conflito de Reserva",
+                        JOptionPane.WARNING_MESSAGE);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(dialog, "Ocorreu um erro inesperado: " + ex.getMessage(), "Erro",
+                        JOptionPane.ERROR_MESSAGE);
+                ex.printStackTrace();
+            }
+        });
 
         // [NOVO] Painel para o botão, para centralizá-lo
         JPanel buttonPanel = new JPanel();
