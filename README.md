@@ -1,182 +1,82 @@
-# Sistema de Gerenciamento de Reservas de Salas de Aula
+# Sistema de Gerenciamento de Reservas de Salas
 
-Este projeto implementa um sistema de gerenciamento de reservas de salas de aula utilizando conceitos de Programação Orientada a Objetos (POO) em Java, com uma interface gráfica (GUI) desenvolvida em Swing. O sistema permite cadastrar salas, usuários (administradores e alunos) e realizar/cancelar reservas, com persistência de dados em arquivos.
+Este projeto é um sistema de desktop para gerenciamento de reservas de salas, desenvolvido em Java com a biblioteca Swing para a interface gráfica. Ele foi criado como um estudo prático dos principais conceitos de Programação Orientada a Objetos (POO).
 
-## 1. Objetivo
+O sistema permite que usuários (alunos e administradores) se autentiquem, visualizem salas disponíveis, e realizem ou cancelem reservas. Os administradores possuem privilégios adicionais, como o gerenciamento completo de salas e a aprovação ou rejeição de reservas pendentes. Todos os dados são persistidos localmente.
 
-Estudar e implementar os conceitos de programação orientada a objetos abordados na disciplina, por meio do desenvolvimento de um sistema definido pelo grupo. Este trabalho contempla a proposta, modelagem e implementação de um sistema orientado a objetos. O sistema foi descrito e desenvolvido em sua versão completa, estando pronto para manipulação por parte do usuário.
+## Funcionalidades Principais
 
-## 2. Requisitos do Sistema
+* **Autenticação de Usuários:** Sistema de login que diferencia os papéis de Aluno e Administrador.
+* **Gerenciamento de Salas:** Administradores podem adicionar, remover e visualizar todas as salas cadastradas.
+* **Gerenciamento de Reservas:**
+    * **Alunos:** Podem solicitar novas reservas, visualizar suas reservas (confirmadas, pendentes ou rejeitadas) e cancelar as que ainda não foram finalizadas.
+    * **Administradores:** Têm uma visão geral de todas as reservas do sistema, podendo confirmar, rejeitar, cancelar ou deletar qualquer uma delas.
+* **Visualização em Calendário:** Uma interface de calendário exibe de forma clara todas as reservas já confirmadas para facilitar a visualização de horários ocupados.
+* **Persistência de Dados:** As informações de salas, usuários e reservas são salvas e carregadas de arquivos `.txt` na pasta `data/`, garantindo que os dados não sejam perdidos ao fechar o sistema.
 
-Para compilar e executar este projeto, você precisará dos seguintes softwares:
+## Detalhes Técnicos e Conceitos de POO
 
-* **Java Development Kit (JDK):** Versão 11 ou superior (preferencialmente a versão LTS mais recente, como JDK 17).
-* **Ambiente Gráfico:** O sistema possui uma interface gráfica (GUI)10, portanto, ele deve ser executado em um ambiente que suporte a exibição de janelas (como Windows, macOS, ou um ambiente de desktop Linux).
-    * Se estiver utilizando **WSL (Windows Subsystem for Linux)**, um servidor X no Windows é necessário.
+Este projeto foi estruturado para aplicar diversos conceitos fundamentais da Programação Orientada a Objetos.
 
-## 3. Tópicos de POO Abordados
+### Herança e Polimorfismo
 
-O projeto incorpora os seguintes conceitos de programação orientada a objetos:
+A estrutura de usuários é um exemplo de herança. A classe abstrata `User` define os atributos e métodos comuns a todos os usuários, como `username`, `password` e `name`.
 
-* **Classes, variáveis e métodos:** O sistema contempla classes, seus atributos e métodos, incluindo sobrecarga.
-* **Visibilidade:** Aplicação correta de modificadores de visibilidade (public, private, protected).
-* **Herança:** Ao menos uma estrutura de herança foi implementada (ex: `User` com `Student` e `Administrator`).
-* **Variáveis e métodos estáticos:** Inclui pelo menos uma variável e um método de classe (ex: `nextReservationId` em `Reservation`).
-* **Arrays:** Utilizado quando necessário (ex: `ArrayList` para armazenar coleções de objetos).
-* **Enumerações:** Incluído ao menos um exemplo de uso (ex: `ReservationStatus`).
-* **Entrada e saída de dados:** Permite entrada e/ou saída de dados via GUI e arquivos.
-* **Relacionamentos (associação, agregação ou composição):** Contempla ao menos um tipo de relacionamento (ex: `ReservationManager` agrega `Classroom` e `Reservation`).
-* **Classes abstratas:** Implementada ao menos uma (ex: `User`).
-* **Polimorfismo:** Inclui exemplos de polimorfismo de tipo e de método (ex: `User` e seus subtipos, sobrecarga de `findAvailableClassrooms`).
-* **Interface gráfica:** O sistema é controlado por interface gráfica (GUI).
-* **Tratamento de exceções:** Trata exceções, incluindo pelo menos uma exceção definida pelo grupo (`ReservationConflictException`).
-* **Arquivos (leitura e gravação):** O sistema realiza operações de leitura e escrita em arquivos relevantes ao projeto (`data/classrooms.txt`, `data/reservations.txt`, `data/users.txt`).
+-   `public abstract class User implements Serializable`
 
+As classes `Student` e `Administrator` herdam de `User`, especializando o comportamento. `Student`, por exemplo, adiciona um campo `studentId`, enquanto `Administrator` tem um `role` que lhe concede permissões diferentes na interface.
 
-## 4. Como Configurar e Rodar o Projeto
+O polimorfismo é utilizado em vários pontos, como no `ReservationManager`, que pode gerenciar uma lista de `User` sem precisar saber se o objeto específico é um `Student` ou um `Administrator`.
 
-Siga os passos abaixo para preparar seu ambiente e executar a aplicação.
+### Encapsulamento e Gerenciamento de Lógica
 
-### 4.1. Instalação do JDK
+A classe `ReservationManager` centraliza toda a lógica de negócios, agindo como um "cérebro" para o sistema. Ela encapsula as listas de `classrooms`, `reservations` e `users`, expondo métodos públicos para interagir com esses dados de forma controlada.
 
-Certifique-se de ter o JDK instalado. Você pode baixá-lo do site da Oracle ou usar uma distribuição OpenJDK (como Adoptium Temurin, Amazon Corretto, etc.).
+**Exemplos de métodos importantes em `ReservationManager`:**
+* `makeReservation(...)`: Verifica conflitos de horário e data antes de criar uma nova reserva. Lança uma `ReservationConflictException` se a sala já estiver ocupada.
+* `addUser(...)`: Garante que não existam dois usuários com o mesmo `username`, lançando uma `UserConflictException` em caso de duplicidade.
+* `confirmReservation(...)`: Altera o status de uma reserva de `PENDING` para `CONFIRMED`, validando novamente se não há conflitos.
+* `loadData()` e `saveData()`: Métodos que utilizam a classe `FileUtil` para ler e escrever os dados do sistema, garantindo a persistência.
 
-Para verificar a instalação, abra um terminal (Prompt de Comando no Windows, Terminal no Linux/macOS, ou Terminal WSL) e digite:
+### Tratamento de Exceções Customizadas
 
-```bash
-java -version
-javac -version
-```
+Para um controle de erros mais semântico, foram criadas exceções específicas:
+* `ReservationConflictException`: Lançada quando uma tentativa de reserva ou confirmação falha devido a um conflito com uma reserva já existente.
+* `UserConflictException`: Lançada ao tentar registrar um `username` que já está em uso.
 
-### 4.2. Configuração para Usuários WSL (Windows Subsystem for Linux)
+### Interface Gráfica (GUI com Swing)
 
-Se você estiver rodando o projeto dentro do WSL e quiser que a interface gráfica apareça no Windows, siga estes passos adicionais:
+A interface foi construída utilizando a biblioteca Swing.
+* **`MainFrame`:** É a janela principal que controla a exibição dos painéis. Ela gerencia o estado da aplicação, mostrando a tela de `LoginPanel` ou, após o sucesso na autenticação, o `JTabbedPane` com as funcionalidades principais.
+* **Painéis (`JPanel`):** O conteúdo é organizado em painéis modulares, como `ClassroomPanel`, `ReservationPanel` e `CalendarPanel`, cada um com sua responsabilidade específica.
+* **Diálogos (`JDialog`):** Janelas modais como `AddClassroomDialog` e `RegisterDialog` são usadas para entrada de dados focada, melhorando a experiência do usuário.
 
-1.  **Instale um Servidor X no Windows:**
-    * Recomenda-se o **VcXsrv**.
-    * **Download:** Baixe o VcXsrv (procure por "VcXsrv Windows X Server" no SourceForge).
-    * **Instalação:** Execute o instalador e siga as instruções.
-    * **Configuração e Inicialização:**
-        * Após a instalação, procure por "XLaunch" no menu Iniciar do Windows e execute-o.
-        * Na primeira tela ("Display settings"), escolha "Multiple windows" (ou "One large window").
-        * **CRÍTICO:** Marque a opção "**Disable access control**". Isso permite que o WSL se conecte ao servidor X sem problemas de permissão.
-        * Prossiga com as configurações padrão nas próximas telas e clique em "Finish". Um ícone do VcXsrv aparecerá na bandeja do sistema do Windows, indicando que está em execução.
+## Como Executar (Linux/macOS)
 
-2.  **Configurar Firewall do Windows:**
-    * Certifique-se de que o Firewall do Windows não está bloqueando o VcXsrv.
-    * No Windows, pesquise por "Permitir um aplicativo através do Firewall do Windows".
-    * Clique em "Alterar configurações" e procure por "VcXsrv".
-    * Marque as caixas "Privado" e "Público" para VcXsrv. Se não estiver na lista, clique em "Permitir outro aplicativo...", navegue até o executável (`C:\Program Files\VcXsrv\vcxsrv.exe`) e adicione-o.
-    * Alternativamente, você pode adicionar uma regra de entrada para a porta TCP `6000` (porta padrão do X11) diretamente no "Firewall do Windows Defender com Segurança Avançada".
+### Pré-requisitos
 
-3.  **Configurar Variável `DISPLAY` no WSL:**
-    * Abra seu terminal WSL (ex: Ubuntu).
-    * Adicione as seguintes linhas ao seu arquivo de configuração do shell (`~/.bashrc` para Bash, ou `~/.zshrc` para Zsh):
-        ```bash
-        echo "export DISPLAY=\$(grep nameserver /etc/resolv.conf | awk '{print \$2}'):0.0" >> ~/.bashrc
-        echo "export LIBGL_ALWAYS_INDIRECT=1" >> ~/.bashrc # Pode ser necessário para alguns apps
-        ```
-    * Recarregue o arquivo de configuração para aplicar as mudanças imediatamente:
-        ```bash
-        source ~/.bashrc
-        ```
-    * **Confirme o IP:** Digite `echo $DISPLAY` para verificar se a variável foi definida corretamente com um IP do seu host Windows (ex: `10.255.255.254:0.0`).
+* **JDK (Java Development Kit):** Versão 11 ou superior.
 
-4.  **Instalar Bibliotecas X11 no WSL (se necessário):**
-    ```bash
-    sudo apt update
-    sudo apt install -y libxext6 libxrender1 libxtst6 libfontconfig1 libxi6
-    ```
+Para verificar a instalação, execute: `java -version`.
 
-5.  **Reiniciar o WSL (Altamente Recomendado):**
-    * No PowerShell (ou Prompt de Comando) do Windows, execute:
-        ```powershell
-        wsl --shutdown
-        ```
-    * Espere alguns segundos para que o WSL pare completamente e então reabra seu terminal WSL.
+### Passos
 
-**Observação para Windows 11 / WSLg:** Se você estiver usando Windows 11 com WSLg (Windows Subsystem for Linux GUI), a configuração do servidor X e da variável `DISPLAY` é automática. Você não precisaria realizar os passos de 5.2.1 a 5.2.5; basta ter o WSLg instalado e rodar a aplicação Java diretamente no WSL.
+1.  Clone o repositório e navegue até a pasta raiz do projeto.
+2.  Dê permissão de execução ao script: `chmod +x run.sh`.
+3.  Execute o script: `./run.sh`.
+    *O script compilará os fontes para o diretório `out/` e iniciará a aplicação.*
 
-### 4.3. Compilando e Executando o Projeto
+## Como Executar (Windows)
 
-1.  **Navegue até o Diretório do Projeto:**
-    * Abra um terminal (Prompt de Comando, PowerShell, Terminal Linux/macOS ou Terminal WSL).
-    * Navegue até a raiz do diretório do projeto (onde está o `src` e este `README.md`).
-    * Exemplo no Windows (se o projeto estiver em `C:\Projetos\MC322`):
-        ```bash
-        cd C:\Projetos\MC322
-        ```
-    * Exemplo no WSL (se o projeto estiver em `C:\Projetos\MC322`):
-        ```bash
-        cd /mnt/c/Projetos/MC322
-        ```
+Para instruções detalhadas de compilação e execução no Windows (via CMD ou PowerShell), consulte o arquivo [**README-Windows.md**](./README-Windows.md).
 
-2. **Ative a permissão para o arquivo Shell**
-    * Rode o comando 
-        ```bash
-        chmod +x run.sh 
-        ```
+## Credenciais de Teste
 
-3.  **Compile os Arquivos Java e Execute os arquivos Java:**
-    * Por fim, basta rodar o programa
-        ```bash
-        ./run.sh
-        ```
+Usuários padrão são criados na primeira execução do sistema:
 
-## 5. Primeiros Acessos e Credenciais Padrão
-
-Ao iniciar o sistema pela primeira vez, ele pode carregar alguns dados de exemplo (salas e usuários) se os arquivos de dados na pasta `data/` estiverem vazios ou não existirem.
-
-* **Usuários de Teste (se gerados automaticamente no `Main.java`):**
-    * **Administrador:**
-        * **Usuário:** `admin`
-        * **Senha:** `admin123`
-    * **Aluno:**
-        * **Usuário:** `aluno1`
-        * **Senha:** `aluno123`
-        * **Usuário:** `aluno2`
-        * **Senha:** `aluno123`
-
-## 6. Funcionalidades da Aplicação
-
-O sistema oferece as seguintes funcionalidades principais:
-
-* **Login de Usuários:** Autenticação como aluno ou administrador.
-* **Visualização de Salas:** Lista todas as salas cadastradas com seus detalhes.
-* **Gerenciamento de Reservas (Alunos):**
-    * Permite fazer novas reservas de salas.
-    * Permite visualizar suas próprias reservas.
-    * Permite cancelar reservas existentes.
-* **Gerenciamento de Salas (Administradores):**
-    * Funcionalidades adicionais para adicionar novas salas (acessível via uma aba específica na interface).
-* **Persistência de Dados:** As informações de salas, usuários e reservas são salvas e carregadas automaticamente de arquivos (`.txt`) localizados na pasta `data/`, garantindo a persistência dos dados entre as sessões.
-
-## Diagrama de Classes 
-
-O sistema completo é representado pelo diagrama de classes, mostrando as relações entre as diferentes classes
-![Imagem do diagrama de classes](./UML/diagrama_classes.png)
-
-## Hierarquia Resumida
-
-```
-.
- └── src/
-      └── model/     # Classes de modelo (Classroom , Reservation, User, Student, Administrator)
-      └── manager/   # Classe para gerenciar a lógica de negócios (ReservationManager)
-      └── exception/ # Classes de exceção personalizadas (ReservationConflictException)
-      └── gui/    # Classes da interface gráfica do usuário (Swing)
-      └── util/  # Classes utilitárias (FileUtil)
-      └── Main.Java # Ponto de entrada principal da aplicação
- └── data/   # Diretório para arquivos de persistência de dados (classrooms.txt, reservations.txt, users.txt)
- └── MEMBROS.txt    # Lista dos membros do grupo
- └── Video.txt    # Link para o vídeo de apresentação do projeto
- └── UML/     # Pasta com o diagrama de classes 
- └── README.md     # Este arquivo (descrição do projeto)
-```
-
-## Problemas Comuns e Soluções
-
-* **`java.awt.AWTError: Can't connect to X11 window server...`:** Este erro indica que o ambiente gráfico não foi configurado corretamente ou o servidor X não está acessível.
-    * **Solução:** Revise a Seção 5.2 "Configuração para Usuários WSL", garantindo que o VcXsrv (ou Xming) esteja rodando, que a opção "Disable access control" esteja marcada, que o Firewall do Windows permita a comunicação, e que a variável `DISPLAY` no seu WSL esteja apontando para o IP correto do host Windows (e que o WSL tenha sido reiniciado após as configurações).
-* **`Error: Could not find or load main class Main`:**
-    * **Solução:** Verifique se você está executando o comando `java -cp src Main` a partir do diretório raiz do projeto e se a compilação (`javac`) foi bem-sucedida sem erros.
+* **Administrador:**
+    * **Usuário:** `admin`
+    * **Senha:** `admin123`
+* **Aluno:**
+    * **Usuário:** `aluno1`
+    * **Senha:** `aluno123`
