@@ -37,6 +37,7 @@ public class ForgotPasswordDialog extends JDialog {
         this.manager = manager;
         
         setLayout(new BorderLayout(10, 10));
+        setPreferredSize(new Dimension(500, 450)); // Tamanho aumentado
         pack();
         setLocationRelativeTo(parent);
         initUI();
