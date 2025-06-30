@@ -34,14 +34,13 @@ public class RegisterDialog extends JDialog {
      * @param parent  Janela pai (LoginDialog) para modalidade.
      * @param manager Gerenciador de reservas para adicionar o novo usuário.
      */
-    public RegisterDialog(LoginDialog parent, ReservationManager manager) {
-        super(parent, "Criar Nova Conta", true);
+    public RegisterDialog(Frame parent, ReservationManager manager) {
+        super(parent, "Criar Nova Conta", true); // Agora 'parent' é um Frame, o que é válido
         this.manager = manager;
 
-        setSize(400, 300);
+        setLayout(new GridLayout(5, 2, 10, 10));
+        pack();
         setLocationRelativeTo(parent);
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-
         initUI();
     }
 

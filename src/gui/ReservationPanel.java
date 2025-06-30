@@ -211,9 +211,7 @@ public class ReservationPanel extends JPanel {
                 JOptionPane.showMessageDialog(this, "Reserva cancelada com sucesso!", "Sucesso",
                         JOptionPane.INFORMATION_MESSAGE);
                 refreshReservationList();
-                if (SwingUtilities.getWindowAncestor(this) instanceof MainFrame) {
-                    ((MainFrame) SwingUtilities.getWindowAncestor(this)).refreshPanels();
-                }
+           
             } else {
                 JOptionPane.showMessageDialog(this, "Erro ao encontrar a reserva para cancelar.", "Erro",
                         JOptionPane.ERROR_MESSAGE);

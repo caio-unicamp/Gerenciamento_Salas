@@ -32,15 +32,13 @@ public class ForgotPasswordDialog extends JDialog {
      * @param parent  Janela pai (LoginDialog) para modalidade.
      * @param manager Gerenciador de reservas para buscar e atualizar usuários.
      */
-    public ForgotPasswordDialog(LoginDialog parent, ReservationManager manager) {
-        super(parent, "Esqueci Minha Senha", true);
+    public ForgotPasswordDialog(Frame parent, ReservationManager manager) {
+        super(parent, "Recuperar Senha", true); // 'parent' é um Frame válido
         this.manager = manager;
-        this.foundUser = null;
-
-        setSize(400, 450);
+        
+        setLayout(new BorderLayout(10, 10));
+        pack();
         setLocationRelativeTo(parent);
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-
         initUI();
     }
 

@@ -133,9 +133,7 @@ public class AdminReservationPanel extends JPanel {
                 JOptionPane.showMessageDialog(this, "Reserva confirmada com sucesso!", "Sucesso",
                         JOptionPane.INFORMATION_MESSAGE);
                 refreshReservationsList();
-                if (SwingUtilities.getWindowAncestor(this) instanceof MainFrame) {
-                    ((MainFrame) SwingUtilities.getWindowAncestor(this)).refreshPanels();
-                }
+
             } catch (IllegalArgumentException ex) {
                 JOptionPane.showMessageDialog(this, "Erro: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
             } catch (ReservationConflictException ex) {
@@ -187,9 +185,6 @@ public class AdminReservationPanel extends JPanel {
                     JOptionPane.showMessageDialog(this, "Reserva rejeitada com sucesso!", "Sucesso",
                             JOptionPane.INFORMATION_MESSAGE);
                     refreshReservationsList();
-                    if (SwingUtilities.getWindowAncestor(this) instanceof MainFrame) {
-                        ((MainFrame) SwingUtilities.getWindowAncestor(this)).refreshPanels();
-                    }
                 } catch (IllegalArgumentException ex) {
                     JOptionPane.showMessageDialog(this, "Erro: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
                 } catch (Exception ex) {
@@ -234,9 +229,7 @@ public class AdminReservationPanel extends JPanel {
                     JOptionPane.showMessageDialog(this, "Reserva cancelada com sucesso!", "Sucesso",
                             JOptionPane.INFORMATION_MESSAGE);
                     refreshReservationsList();
-                    if (SwingUtilities.getWindowAncestor(this) instanceof MainFrame) {
-                        ((MainFrame) SwingUtilities.getWindowAncestor(this)).refreshPanels();
-                    }
+
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(this, "Ocorreu um erro ao cancelar: " + ex.getMessage(), "Erro",
                             JOptionPane.ERROR_MESSAGE);
@@ -275,9 +268,7 @@ public class AdminReservationPanel extends JPanel {
                     JOptionPane.showMessageDialog(this, "Reserva deletada com sucesso!", "Sucesso",
                             JOptionPane.INFORMATION_MESSAGE);
                     refreshReservationsList();
-                    if (SwingUtilities.getWindowAncestor(this) instanceof MainFrame) {
-                        ((MainFrame) SwingUtilities.getWindowAncestor(this)).refreshPanels();
-                    }
+      
                 } catch (IllegalArgumentException ex) {
                     JOptionPane.showMessageDialog(this, "Erro: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
                 } catch (Exception ex) {
