@@ -7,12 +7,11 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * Painel de Login da aplicação.
- * Não é mais um JDialog, mas um JPanel para ser exibido na janela principal.
+ * Painel de Login da aplicação, com visual moderno.
  */
 public class LoginPanel extends JPanel {
     private ReservationManager manager;
-    private LoginListener loginListener; // Listener para notificar o sucesso do login
+    private LoginListener loginListener;
 
     private JTextField usernameField;
     private JPasswordField passwordField;
@@ -24,67 +23,85 @@ public class LoginPanel extends JPanel {
         this.manager = manager;
         this.loginListener = loginListener;
 
-        // Configuração do Layout
         setLayout(new GridBagLayout());
-        setBackground(new Color(240, 240, 240)); // Um fundo mais suave
+        setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.insets = new Insets(8, 8, 8, 8);
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
+        // Painel central para o formulário
+        JPanel formPanel = new JPanel(new GridBagLayout());
+        formPanel.setPreferredSize(new Dimension(350, 400));
+        formPanel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1, true),
+                BorderFactory.createEmptyBorder(20, 20, 20, 20)
+        ));
+
         // Título
-        JLabel titleLabel = new JLabel("Login do Sistema", SwingConstants.CENTER);
+        JLabel titleLabel = new JLabel("Sistema de Reservas", SwingConstants.CENTER);
         titleLabel.setFont(new Font("SansSerif", Font.BOLD, 24));
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
         gbc.weightx = 1.0;
-        add(titleLabel, gbc);
+        gbc.insets = new Insets(0, 0, 20, 0);
+        formPanel.add(titleLabel, gbc);
+
+        // Reset insets
+        gbc.insets = new Insets(8, 8, 8, 8);
+        gbc.anchor = GridBagConstraints.WEST;
 
         // Usuário
         gbc.gridwidth = 1;
         gbc.gridy = 1;
         gbc.gridx = 0;
-        gbc.weightx = 0.1;
-        add(new JLabel("Usuário:"), gbc);
+        gbc.weightx = 0.2;
+        formPanel.add(new JLabel("Usuário:"), gbc);
 
         usernameField = new JTextField(20);
+        usernameField.putClientProperty("JTextField.placeholderText", "Digite seu usuário");
         gbc.gridx = 1;
-        gbc.weightx = 0.9;
-        add(usernameField, gbc);
+        gbc.weightx = 0.8;
+        formPanel.add(usernameField, gbc);
 
         // Senha
         gbc.gridy = 2;
         gbc.gridx = 0;
-        gbc.weightx = 0.1;
-        add(new JLabel("Senha:"), gbc);
+        formPanel.add(new JLabel("Senha:"), gbc);
 
         passwordField = new JPasswordField(20);
+        passwordField.putClientProperty("JTextField.placeholderText", "Digite sua senha");
         gbc.gridx = 1;
-        gbc.weightx = 0.9;
-        add(passwordField, gbc);
-        
-        // Ação de login ao pressionar Enter na senha
+        formPanel.add(passwordField, gbc);
         passwordField.addActionListener(e -> performLogin());
 
-        // Painel de Botões
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
-        loginButton = new JButton("Entrar");
-        registerButton = new JButton("Registrar");
-        buttonPanel.add(loginButton);
-        buttonPanel.add(registerButton);
-        buttonPanel.setOpaque(false); // Fundo transparente
-
+        // Botão de Login (Ação Primária)
         gbc.gridy = 3;
         gbc.gridx = 0;
         gbc.gridwidth = 2;
         gbc.anchor = GridBagConstraints.CENTER;
-        add(buttonPanel, gbc);
-        
-        // "Esqueci minha senha"
-        forgotPasswordLabel = new JLabel("<html><a href=''>Esqueci minha senha</a></html>");
+        loginButton = new JButton("Entrar");
+        loginButton.putClientProperty("JButton.buttonType", "roundRect");
+        loginButton.putClientProperty("JButton.buttonType", "primary"); // Estilo FlatLaf para botão primário
+        formPanel.add(loginButton, gbc);
+
+        // Painel para Registrar e Esqueci a senha
+        JPanel bottomPanel = new JPanel(new BorderLayout(20, 0));
+        registerButton = new JButton("Registrar");
+        registerButton.putClientProperty("JButton.buttonType", "roundRect");
+        bottomPanel.add(registerButton, BorderLayout.WEST);
+
+        forgotPasswordLabel = new JLabel("<html><a href=''>Esqueci minha senha</a></html>", SwingConstants.RIGHT);
         forgotPasswordLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        bottomPanel.add(forgotPasswordLabel, BorderLayout.EAST);
+
         gbc.gridy = 4;
-        add(forgotPasswordLabel, gbc);
+        formPanel.add(bottomPanel, gbc);
+
+        // Adiciona o painel do formulário ao painel principal
+        add(formPanel);
 
         // Action Listeners
         loginButton.addActionListener(e -> performLogin());
@@ -101,14 +118,8 @@ public class LoginPanel extends JPanel {
         String password = new String(passwordField.getPassword());
 
         User user = manager.getUserByUsername(username);
-        
-        if (user != null && user.authenticate(password)) {
-            // Notifica o listener que o login foi bem-sucedido
-            JOptionPane.showMessageDialog(this,
-                    "Acesso liberado!",
-                    "Sucesso",
-                    JOptionPane.INFORMATION_MESSAGE);
 
+        if (user != null && user.authenticate(password)) {
             if (loginListener != null) {
                 loginListener.onLoginSuccess(user);
             }
@@ -118,18 +129,17 @@ public class LoginPanel extends JPanel {
                     "Erro de Login",
                     JOptionPane.ERROR_MESSAGE);
             passwordField.setText("");
+            passwordField.requestFocusInWindow();
         }
     }
 
-   private void openRegisterDialog() {
-
+    private void openRegisterDialog() {
         Frame parentFrame = (Frame) SwingUtilities.getWindowAncestor(this);
         RegisterDialog registerDialog = new RegisterDialog(parentFrame, manager);
         registerDialog.setVisible(true);
     }
-    
-    private void openForgotPasswordDialog() {
 
+    private void openForgotPasswordDialog() {
         Frame parentFrame = (Frame) SwingUtilities.getWindowAncestor(this);
         ForgotPasswordDialog forgotPasswordDialog = new ForgotPasswordDialog(parentFrame, manager);
         forgotPasswordDialog.setVisible(true);
