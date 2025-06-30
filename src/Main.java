@@ -24,6 +24,7 @@ public class Main {
 
         SwingUtilities.invokeLater(() -> {
             MainFrame mainFrame = new MainFrame();
+            mainFrame.setTitle("Sistema de Gerenciamento de Salas");
             mainFrame.setVisible(true);
         });
     }

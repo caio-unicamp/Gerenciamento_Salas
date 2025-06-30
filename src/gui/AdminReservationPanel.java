@@ -20,13 +20,16 @@ public class AdminReservationPanel extends JPanel {
     private JTable reservationsTable;
     private DefaultTableModel reservationsTableModel;
     private TableRowSorter<DefaultTableModel> sorter;
+    private Runnable onDataChangedCallback; // Adicionado
 
     /**
      * Construtor do painel de administração de reservas.
      * @param manager O gerenciador de reservas.
+     * @param onDataChangedCallback Callback a ser chamado quando os dados mudam.
      */
-    public AdminReservationPanel(ReservationManager manager) {
+    public AdminReservationPanel(ReservationManager manager, Runnable onDataChangedCallback) { // Modificado
         this.manager = manager;
+        this.onDataChangedCallback = onDataChangedCallback; // Adicionado
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         initComponents();
@@ -170,7 +173,9 @@ public class AdminReservationPanel extends JPanel {
         try {
             manager.confirmReservation(reservationToConfirm);
             JOptionPane.showMessageDialog(this, "Reserva confirmada com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
-            refreshReservationsList();
+            if (onDataChangedCallback != null) { // Adicionado
+                onDataChangedCallback.run();
+            }
         } catch (IllegalArgumentException | ReservationConflictException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Erro ao Confirmar", JOptionPane.ERROR_MESSAGE);
         } catch (Exception ex) {
@@ -195,7 +200,9 @@ public class AdminReservationPanel extends JPanel {
         try {
             manager.rejectReservation(reservationToReject, observation);
             JOptionPane.showMessageDialog(this, "Reserva rejeitada com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
-            refreshReservationsList();
+            if (onDataChangedCallback != null) { // Adicionado
+                onDataChangedCallback.run();
+            }
         } catch (IllegalArgumentException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Erro ao Rejeitar", JOptionPane.ERROR_MESSAGE);
         } catch (Exception ex) {
@@ -220,7 +227,9 @@ public class AdminReservationPanel extends JPanel {
         try {
             manager.cancelReservation(reservationToCancel, observation);
             JOptionPane.showMessageDialog(this, "Reserva cancelada com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
-            refreshReservationsList();
+            if (onDataChangedCallback != null) { // Adicionado
+                onDataChangedCallback.run();
+            }
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Ocorreu um erro ao cancelar: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
             ex.printStackTrace();
@@ -240,7 +249,9 @@ public class AdminReservationPanel extends JPanel {
         try {
             manager.deleteReservation(reservationToDelete);
             JOptionPane.showMessageDialog(this, "Reserva deletada com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
-            refreshReservationsList();
+            if (onDataChangedCallback != null) { // Adicionado
+                onDataChangedCallback.run();
+            }
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Ocorreu um erro inesperado: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
             ex.printStackTrace();

@@ -86,7 +86,7 @@ public class MainFrame extends JFrame implements LoginListener {
      * Mostra o painel de login.
      */
     private void showLoginPanel() {
-        setTitle("Sistema de Gerenciamento de Salas - Login");
+        setTitle("Login");
         
         setMinimumSize(null);
 
@@ -153,8 +153,8 @@ public class MainFrame extends JFrame implements LoginListener {
 
         if (loggedInUser.getRole().equals("Administrator")) {
             AdminClassroomPanel adminClassroomPanel = new AdminClassroomPanel(this, manager, this::refreshAllPanels);
-            AdminReservationPanel adminReservationPanel = new AdminReservationPanel(manager);
-
+            AdminReservationPanel adminReservationPanel = new AdminReservationPanel(manager, this::refreshAllPanels);
+            
             tabbedPane.addTab("Admin: Salas", adminClassroomPanel);
             tabbedPane.addTab("Admin: Reservas", adminReservationPanel);
         }
