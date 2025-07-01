@@ -90,16 +90,19 @@ public class LoginPanel extends JPanel {
         gbc.fill = GridBagConstraints.NONE;
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.insets = new Insets(15, 8, 8, 8);
-        loginButton = new JButton("Entrar");
 
-        JPanel bottomPanel = new JPanel(new BorderLayout(20, 0));
+        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 30, 0));
         registerButton = new JButton("Registrar");
         registerButton.putClientProperty("JButton.buttonType", "roundRect");
-        bottomPanel.add(registerButton, BorderLayout.WEST);
+        bottomPanel.add(registerButton);
 
+        loginButton = new JButton("Entrar");
+        bottomPanel.add(loginButton);
+
+        JPanel forgotPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         forgotPasswordLabel = new JLabel("<html><a href=''>Esqueci minha senha</a></html>", SwingConstants.RIGHT);
         forgotPasswordLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        bottomPanel.add(forgotPasswordLabel, BorderLayout.EAST);
+        forgotPanel.add(forgotPasswordLabel);
 
         gbc.gridy = 4;
         gbc.gridx = 0;
@@ -109,6 +112,10 @@ public class LoginPanel extends JPanel {
         gbc.insets = new Insets(10, 8, 8, 8);
 
         formPanel.add(bottomPanel, gbc);
+
+        gbc.gridy = 5;
+        gbc.insets = new Insets(5, 8, 8, 8);
+        formPanel.add(forgotPanel, gbc);
 
         add(formPanel);
 
